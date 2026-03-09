@@ -97,6 +97,7 @@
     .stock-change { font-size: 12px; font-weight: 500; }
     .stock-change.pos { color: var(--success); }
     .stock-change.neg { color: var(--danger); }
+    .stock-cached { font-size: 9px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1px; }
     .loading-dots::after { content: '...'; animation: dots 1.2s infinite; }
     @keyframes dots { 0%,100%{content:'.'} 33%{content:'..'} 66%{content:'...'} }
 
@@ -181,6 +182,7 @@
     .status-select:focus { border-color: var(--primary); }
     .status-select.applied { background: #dcfce7; border-color: #86efac; color: #15803d; }
     .status-select.consider { background: #fef9c3; border-color: #fde047; color: #854d0e; }
+    .status-select.hold { background: #ede9fe; border-color: #c4b5fd; color: #6d28d9; }
     .status-select.not_interested { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
     /* Opp layout */
     .opp-section-wrap { display: flex; flex-direction: column; height: calc(100vh - 54px - 88px - 72px); }
@@ -1331,6 +1333,7 @@ function renderOpportunities() {
       <td>
         <select class="status-select ${opp.status||'consider'}" onchange="handleOppStatus('${opp.id}', this.value, this)" onclick="event.stopPropagation()">
           <option value="consider" ${opp.status==='consider'?'selected':''}>Consider</option>
+          <option value="hold" ${opp.status==='hold'?'selected':''}>Hold – Deciding</option>
           <option value="applied" ${opp.status==='applied'?'selected':''}>Applied</option>
           <option value="not_interested" ${opp.status==='not_interested'?'selected':''}>Not Interested</option>
         </select>
@@ -1696,29 +1699,85 @@ function weatherIcon(code) {
 //  STOCKS
 // ════════════════════════════════════════
 const STOCKS = ['NVDA', 'AMZN', 'AVGO'];
+const STOCK_CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
+
+function renderStockCard(sym, price, change, changePct, fromCache) {
+  const pos = change >= 0;
+  document.getElementById(`price-${sym}`).textContent = `$${price}`;
+  const el = document.getElementById(`change-${sym}`);
+  el.textContent = `${pos?'+':''}${change} (${pos?'+':''}${changePct}%)`;
+  el.className = `stock-change ${pos ? 'pos' : 'neg'}`;
+  if (fromCache) {
+    const card = document.getElementById(`stock-${sym}`);
+    if (card && !card.querySelector('.stock-cached')) {
+      const badge = document.createElement('div');
+      badge.className = 'stock-cached';
+      badge.textContent = 'cached';
+      card.appendChild(badge);
+    }
+  }
+}
 
 async function loadStocks() {
   const key = cfg('ALPHA_KEY');
   if (!key) { STOCKS.forEach(s => { document.getElementById(`price-${s}`).textContent = 'No key'; }); return; }
-  // Load sequentially to avoid rate limits
+
+  const now = Date.now();
+  const toFetch = [];
+
+  // Show cached data immediately for all tickers
   for (const sym of STOCKS) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(`stockCache_${sym}`) || 'null');
+      if (cached && (now - cached.ts) < STOCK_CACHE_TTL) {
+        renderStockCard(sym, cached.price, cached.change, cached.changePct, true);
+        continue;
+      }
+    } catch(e) {}
+    toFetch.push(sym);
+  }
+
+  if (!toFetch.length) return; // all served from cache
+
+  // Fetch only stale/missing tickers sequentially
+  for (const sym of toFetch) {
     try {
       const r = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${sym}&apikey=${key}`);
       const d = await r.json();
+
+      // Detect rate-limit / info message
+      if (d['Information'] || d['Note']) {
+        // Fall back to stale cache if we have one
+        try {
+          const stale = JSON.parse(localStorage.getItem(`stockCache_${sym}`) || 'null');
+          if (stale) { renderStockCard(sym, stale.price, stale.change, stale.changePct, true); continue; }
+        } catch(e) {}
+        document.getElementById(`price-${sym}`).textContent = '—';
+        document.getElementById(`change-${sym}`).textContent = 'Rate limited';
+        continue;
+      }
+
       const q = d['Global Quote'];
       if (!q || !q['05. price']) { document.getElementById(`price-${sym}`).textContent = '—'; continue; }
+
       const price = parseFloat(q['05. price']).toFixed(2);
       const change = parseFloat(q['09. change']).toFixed(2);
-      const changePct = parseFloat(q['10. change percent']).toFixed(2);
-      const pos = change >= 0;
-      document.getElementById(`price-${sym}`).textContent = `$${price}`;
-      const el = document.getElementById(`change-${sym}`);
-      el.textContent = `${pos?'+':''}${change} (${pos?'+':''}${changePct}%)`;
-      el.className = `stock-change ${pos ? 'pos' : 'neg'}`;
+      const changePct = parseFloat(q['10. change percent']).replace('%','');
+      const changePctFmt = parseFloat(changePct).toFixed(2);
+
+      // Save to cache
+      localStorage.setItem(`stockCache_${sym}`, JSON.stringify({ price, change, changePct: changePctFmt, ts: now }));
+      renderStockCard(sym, price, change, changePctFmt, false);
+
     } catch(e) {
+      // Show stale cache on network error
+      try {
+        const stale = JSON.parse(localStorage.getItem(`stockCache_${sym}`) || 'null');
+        if (stale) { renderStockCard(sym, stale.price, stale.change, stale.changePct, true); continue; }
+      } catch(e2) {}
       document.getElementById(`price-${sym}`).textContent = '—';
     }
-    await new Promise(r => setTimeout(r, 300)); // small delay between calls
+    await new Promise(r => setTimeout(r, 1200)); // stay well under 5 req/min
   }
 }
 
