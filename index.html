@@ -220,6 +220,14 @@
     .opp-article img { max-width: 100%; height: auto; display: block; }
     .opp-fetch-error { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; height: 100%; color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px; }
     .opp-fetch-error a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    .opp-auth-wall { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 28px 24px; max-width: 360px; margin: 0 auto; }
+    .opp-auth-icon { font-size: 32px; }
+    .opp-auth-title { font-size: 14px; font-weight: 700; color: var(--text); }
+    .opp-auth-sub { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .opp-auth-snippet { font-size: 12px; color: var(--text); background: var(--hover); border-radius: 8px; padding: 10px 14px; line-height: 1.5; max-width: 100%; text-align: left; border-left: 3px solid var(--primary); }
+    .opp-auth-img { max-width: 180px; max-height: 60px; object-fit: contain; border-radius: 6px; opacity: 0.85; }
+    .opp-auth-btn { display: inline-block; margin-top: 6px; padding: 8px 18px; background: var(--primary); color: white; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; }
+    .opp-auth-btn:hover { opacity: 0.88; }
     .opp-iframe-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: #f8fafc; color: var(--text-muted); font-size: 13px; text-align: center; transition: opacity 0.2s; }
     .opp-iframe-overlay.hidden { opacity: 0; pointer-events: none; }
     .opp-iframe-spin { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -1427,8 +1435,36 @@ async function fetchOppPreview(url, oppId) {
     const html = await resp.text();
     if (fetchOppPreview._token !== _fetchToken) return;
 
-    // Parse HTML and fix relative URLs
+    // Parse HTML
     const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    // ── Auth/login wall detection ──
+    const bodyText = (doc.body?.innerText || '').toLowerCase();
+    const titleText = (doc.title || '').toLowerCase();
+    const metaDesc = doc.querySelector('meta[name="description"],meta[property="og:description"]')?.content || '';
+    const ogTitle  = doc.querySelector('meta[property="og:title"]')?.content || '';
+    const ogImage  = doc.querySelector('meta[property="og:image"]')?.content || '';
+
+    const loginPhrases = ['signing you in','sign in to','log in to','create an account','join now to','please log in','please sign in','verify you are human'];
+    const isLoginWall = loginPhrases.some(p => bodyText.slice(0, 2000).includes(p)) ||
+                        loginPhrases.some(p => titleText.includes(p));
+
+    if (isLoginWall) {
+      overlay.classList.add('hidden');
+      // Show a helpful auth-wall card using whatever metadata we got
+      const snippet = metaDesc || ogTitle || '';
+      body.innerHTML = `<div class="opp-auth-wall">
+        <div class="opp-auth-icon">🔒</div>
+        <div class="opp-auth-title">Login required to preview</div>
+        <div class="opp-auth-sub">This site requires you to be signed in to view the full job posting.</div>
+        ${snippet ? `<div class="opp-auth-snippet">${escHtml(snippet)}</div>` : ''}
+        ${ogImage ? `<img class="opp-auth-img" src="${escHtml(ogImage)}" alt="">` : ''}
+        <a class="opp-auth-btn" href="${escHtml(url)}" target="_blank">Open job posting ↗</a>
+      </div>`;
+      return;
+    }
+
+    // Fix relative URLs
     const base = doc.createElement('base');
     base.href = url;
     doc.head.prepend(base);
