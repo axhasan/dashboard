@@ -205,16 +205,29 @@
     .opp-preview-notes textarea { flex: 1; width: 100%; min-height: 50px; font-size: 12px; font-family: inherit; border: 1px solid var(--border); border-radius: 6px; padding: 5px 9px; resize: none; outline: none; line-height: 1.5; color: var(--text); background: var(--bg); box-sizing: border-box; }
     .opp-preview-notes textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
     /* Right column: iframe viewer */
-    .opp-preview-iframe-wrap { flex: 1; position: relative; background: #f8fafc; display: flex; flex-direction: column; overflow: hidden; }
-    .opp-preview-iframe-wrap iframe { flex: 1; width: 100%; height: 100%; border: none; display: block; }
-    .opp-iframe-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: #f8fafc; color: var(--text-muted); font-size: 13px; text-align: center; pointer-events: none; transition: opacity 0.2s; }
+    .opp-preview-iframe-wrap { flex: 1; position: relative; background: #f8fafc; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+    .opp-preview-body { flex: 1; overflow-y: auto; padding: 16px 20px; font-size: 13px; line-height: 1.65; color: var(--text); background: #f8fafc; }
+    .opp-preview-body:empty { display: none; }
+    /* Article content styles */
+    .opp-article h1, .opp-article h2 { font-size: 15px; font-weight: 700; margin: 14px 0 6px; }
+    .opp-article h3, .opp-article h4 { font-size: 13px; font-weight: 700; margin: 10px 0 4px; }
+    .opp-article p { margin: 0 0 8px; }
+    .opp-article ul, .opp-article ol { padding-left: 18px; margin: 0 0 8px; }
+    .opp-article li { margin-bottom: 3px; }
+    .opp-article strong, .opp-article b { font-weight: 700; }
+    .opp-article a { color: var(--primary); text-decoration: none; }
+    .opp-article a:hover { text-decoration: underline; }
+    .opp-article img { max-width: 100%; height: auto; display: block; }
+    .opp-fetch-error { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; height: 100%; color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px; }
+    .opp-fetch-error a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    .opp-iframe-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: #f8fafc; color: var(--text-muted); font-size: 13px; text-align: center; transition: opacity 0.2s; }
     .opp-iframe-overlay.hidden { opacity: 0; pointer-events: none; }
     .opp-iframe-spin { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .opp-iframe-bar { width: 100%; padding: 5px 10px; background: #f1f5f9; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 6px; flex-shrink: 0; font-size: 11px; color: var(--text-muted); }
     .opp-iframe-bar a { color: var(--primary); text-decoration: none; font-weight: 600; }
     .opp-iframe-bar a:hover { text-decoration: underline; }
-    .opp-iframe-blocked-msg { display:none; color: #f59e0b; font-size: 11px; }
+    .opp-iframe-blocked-msg { color: #f59e0b; font-size: 11px; }
     .opp-row-selected td { background: #eff6ff !important; }
     .opp-row-selected:hover td { background: #eff6ff !important; }
     .opp-company-cell[contenteditable] { outline: none; cursor: text; min-width: 60px; }
@@ -500,19 +513,21 @@
                   <textarea id="opp-preview-notes-ta" placeholder="Add notes about this opportunity…" oninput="debouncedSaveOppNotes()"></textarea>
                 </div>
               </div>
-              <!-- Right: iframe viewer -->
+              <!-- Right: fetched content viewer -->
               <div class="opp-preview-iframe-wrap" id="opp-iframe-wrap">
-                <iframe id="opp-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" referrerpolicy="no-referrer"></iframe>
-                <!-- Overlay: loading / blocked -->
+                <!-- Scrollable article content -->
+                <div class="opp-preview-body" id="opp-preview-body"></div>
+                <!-- Overlay: loading / error -->
                 <div class="opp-iframe-overlay" id="opp-iframe-overlay">
                   <div class="opp-iframe-spin" id="opp-iframe-spin"></div>
-                  <span id="opp-iframe-status">Loading preview…</span>
+                  <span id="opp-iframe-status">Fetching preview…</span>
+                  <span class="opp-iframe-blocked-msg" id="opp-iframe-blocked-msg"></span>
                 </div>
-                <!-- Bottom bar: direct link + blocked note -->
+                <!-- Bottom bar: direct link -->
                 <div class="opp-iframe-bar" id="opp-iframe-bar" style="display:none;">
                   <span>🔗</span>
-                  <a id="opp-iframe-direct-link" href="#" target="_blank">Open in new tab</a>
-                  <span class="opp-iframe-blocked-msg" id="opp-iframe-blocked-msg">⚠ Site blocked preview — use the link above</span>
+                  <a id="opp-iframe-direct-link" href="#" target="_blank">Open in new tab →</a>
+                  <span style="margin-left:auto;font-size:10px;color:#94a3b8;">via allorigins proxy + Readability</span>
                 </div>
               </div>
             </div>
@@ -612,6 +627,7 @@
 <div id="toast"></div>
 
 <!-- ══════════════════════════════════ SCRIPTS ══════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@mozilla/readability@0.5.0/Readability.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script>
 'use strict';
@@ -1364,15 +1380,15 @@ function showOppPreview(oppId) {
   ta.value = opp.notes || '';
   ta.dataset.oppId = oppId;
 
-  // ── iframe loader ──
+  // ── Fetch + Readability content loader ──
   const iframeWrap = document.getElementById('opp-iframe-wrap');
-  const iframe = document.getElementById('opp-iframe');
   const overlay = document.getElementById('opp-iframe-overlay');
   const bar = document.getElementById('opp-iframe-bar');
   const directLink = document.getElementById('opp-iframe-direct-link');
-  const blockedMsg = document.getElementById('opp-iframe-blocked-msg');
   const statusEl = document.getElementById('opp-iframe-status');
   const spinEl = document.getElementById('opp-iframe-spin');
+  const blockedMsg = document.getElementById('opp-iframe-blocked-msg');
+  const body = document.getElementById('opp-preview-body');
 
   clearTimeout(_iframeBlockedTimer);
 
@@ -1381,50 +1397,70 @@ function showOppPreview(oppId) {
   } else {
     iframeWrap.style.display = 'flex';
     bar.style.display = 'flex';
+    try { directLink.textContent = new URL(opp.link).hostname.replace(/^www\./, '') + ' ↗'; } catch(e) { directLink.textContent = 'Open in new tab →'; }
     directLink.href = opp.link;
-    directLink.textContent = new URL(opp.link).hostname.replace(/^www\./,'');
-    blockedMsg.style.display = 'none';
-
-    // Show loading overlay
+    blockedMsg.textContent = '';
+    body.innerHTML = '';
     overlay.classList.remove('hidden');
     spinEl.style.display = 'block';
-    statusEl.textContent = 'Loading preview…';
+    statusEl.textContent = 'Fetching preview…';
+    fetchOppPreview(opp.link, opp.id);
+  }
+}
 
-    // Set iframe src
-    iframe.onload = () => {
-      clearTimeout(_iframeBlockedTimer);
-      // Try to detect a blank/error page (works for same-origin only)
-      let isBlocked = false;
+async function fetchOppPreview(url, oppId) {
+  const overlay = document.getElementById('opp-iframe-overlay');
+  const statusEl = document.getElementById('opp-iframe-status');
+  const spinEl = document.getElementById('opp-iframe-spin');
+  const blockedMsg = document.getElementById('opp-iframe-blocked-msg');
+  const body = document.getElementById('opp-preview-body');
+
+  // Abort if the user clicked a different row while loading
+  const _fetchToken = Date.now();
+  fetchOppPreview._token = _fetchToken;
+
+  try {
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+    const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(15000) });
+    if (fetchOppPreview._token !== _fetchToken) return; // stale
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const html = await resp.text();
+    if (fetchOppPreview._token !== _fetchToken) return;
+
+    // Parse HTML and fix relative URLs
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const base = doc.createElement('base');
+    base.href = url;
+    doc.head.prepend(base);
+
+    // Remove cruft before Readability
+    doc.querySelectorAll('script,style,noscript,nav,footer,header,[class*="cookie"],[class*="banner"],[id*="cookie"]').forEach(el => el.remove());
+
+    let content = '';
+    if (typeof Readability !== 'undefined') {
       try {
-        const doc = iframe.contentDocument;
-        if (doc && (doc.body?.innerHTML?.length < 20 || doc.title?.toLowerCase().includes('refused'))) isBlocked = true;
-      } catch(e) { /* cross-origin is fine — it loaded */ }
+        const article = new Readability(doc, { charThreshold: 100 }).parse();
+        if (article?.content) content = article.content;
+      } catch(e) {}
+    }
 
-      if (isBlocked) {
-        spinEl.style.display = 'none';
-        statusEl.textContent = 'Preview blocked by this site.';
-        blockedMsg.style.display = 'inline';
-      } else {
-        overlay.classList.add('hidden');
-      }
-    };
-    iframe.onerror = () => {
-      clearTimeout(_iframeBlockedTimer);
-      spinEl.style.display = 'none';
-      statusEl.textContent = 'Could not load preview.';
-      blockedMsg.style.display = 'inline';
-    };
+    // Fallback: grab largest text block if Readability returned nothing
+    if (!content) {
+      const candidates = [...doc.querySelectorAll('article, main, [class*="description"], [class*="content"], [class*="posting"], [id*="description"], [id*="content"]')];
+      const best = candidates.sort((a,b) => b.textContent.length - a.textContent.length)[0];
+      content = best ? best.innerHTML : `<p>${escHtml(doc.body?.innerText?.slice(0,4000) || 'No content found.')}</p>`;
+    }
 
-    // After 7s, if overlay still visible, show blocked warning
-    _iframeBlockedTimer = setTimeout(() => {
-      if (!overlay.classList.contains('hidden')) {
-        spinEl.style.display = 'none';
-        statusEl.textContent = 'Preview may be blocked by this site.';
-        blockedMsg.style.display = 'inline';
-      }
-    }, 7000);
+    overlay.classList.add('hidden');
+    body.innerHTML = `<div class="opp-article">${content}</div>`;
+    // Strip any remaining script tags from injected content
+    body.querySelectorAll('script').forEach(s => s.remove());
 
-    iframe.src = opp.link;
+  } catch(e) {
+    if (fetchOppPreview._token !== _fetchToken) return;
+    spinEl.style.display = 'none';
+    statusEl.textContent = 'Could not fetch preview.';
+    blockedMsg.textContent = e.name === 'TimeoutError' ? 'Request timed out.' : 'Network error — try opening directly.';
   }
 }
 
@@ -1432,10 +1468,11 @@ function hideOppPreview() {
   document.getElementById('opp-preview-empty').style.display = '';
   const content = document.getElementById('opp-preview-content');
   content.style.display = 'none';
-  // Clear iframe to stop loading
   clearTimeout(_iframeBlockedTimer);
-  const iframe = document.getElementById('opp-iframe');
-  if (iframe) { iframe.onload = null; iframe.onerror = null; iframe.src = 'about:blank'; }
+  // Invalidate any in-flight fetch
+  fetchOppPreview._token = null;
+  const body = document.getElementById('opp-preview-body');
+  if (body) body.innerHTML = '';
 }
 
 // ── Drag-to-resize preview panel ──
