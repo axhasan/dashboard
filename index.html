@@ -184,17 +184,37 @@
     .status-select.not_interested { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
     /* Opp layout */
     .opp-section-wrap { display: flex; flex-direction: column; height: calc(100vh - 54px - 88px - 72px); }
-    .opp-table-wrap { background: var(--card); border-radius: var(--radius) var(--radius) 0 0; border: 1px solid var(--border); overflow: auto; flex: 1; min-height: 0; }
-    .opp-preview-panel { background: var(--card); border: 1px solid var(--border); border-top: 2px solid var(--primary); border-radius: 0 0 var(--radius) var(--radius); height: 148px; padding: 12px 18px 10px; overflow: hidden; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; }
-    .opp-preview-empty { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); font-size: 12px; gap: 6px; }
-    .opp-preview-title { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
-    .opp-preview-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+    .opp-table-wrap { background: var(--card); border-radius: var(--radius) var(--radius) 0 0; border: 1px solid var(--border); border-bottom: none; overflow: auto; flex: 1; min-height: 80px; }
+    /* Drag handle between table and preview */
+    .opp-resize-handle { height: 6px; background: var(--border); cursor: ns-resize; flex-shrink: 0; border-left: 1px solid var(--border); border-right: 1px solid var(--border); display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+    .opp-resize-handle:hover, .opp-resize-handle.dragging { background: var(--primary); }
+    .opp-resize-handle::after { content: '⋯'; font-size: 14px; color: #94a3b8; line-height: 1; margin-top: -2px; }
+    .opp-resize-handle:hover::after, .opp-resize-handle.dragging::after { color: white; }
+    /* Preview panel */
+    .opp-preview-panel { background: var(--card); border: 1px solid var(--border); border-top: 2px solid var(--primary); border-radius: 0 0 var(--radius) var(--radius); flex-shrink: 0; display: flex; flex-direction: row; overflow: hidden; }
+    .opp-preview-empty { display: flex; align-items: center; justify-content: center; width: 100%; color: var(--text-muted); font-size: 12px; gap: 6px; }
+    /* Left column: job details + notes */
+    .opp-preview-left { width: 300px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 14px 16px 12px; gap: 8px; overflow: auto; }
+    .opp-preview-title { font-size: 14px; font-weight: 700; line-height: 1.35; }
+    .opp-preview-meta { font-size: 12px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; }
+    .opp-preview-meta span { display: flex; align-items: center; gap: 5px; }
     .opp-preview-meta a { color: var(--primary); text-decoration: none; font-size: 12px; }
     .opp-preview-meta a:hover { text-decoration: underline; }
-    .opp-preview-notes { flex: 1; display: flex; flex-direction: column; gap: 3px; min-height: 0; }
+    .opp-preview-notes { flex: 1; display: flex; flex-direction: column; gap: 3px; min-height: 60px; }
     .opp-preview-notes label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
-    .opp-preview-notes textarea { flex: 1; width: 100%; min-height: 40px; font-size: 12px; font-family: inherit; border: 1px solid var(--border); border-radius: 6px; padding: 5px 9px; resize: none; outline: none; line-height: 1.5; color: var(--text); }
+    .opp-preview-notes textarea { flex: 1; width: 100%; min-height: 50px; font-size: 12px; font-family: inherit; border: 1px solid var(--border); border-radius: 6px; padding: 5px 9px; resize: none; outline: none; line-height: 1.5; color: var(--text); background: var(--bg); box-sizing: border-box; }
     .opp-preview-notes textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+    /* Right column: iframe viewer */
+    .opp-preview-iframe-wrap { flex: 1; position: relative; background: #f8fafc; display: flex; flex-direction: column; overflow: hidden; }
+    .opp-preview-iframe-wrap iframe { flex: 1; width: 100%; height: 100%; border: none; display: block; }
+    .opp-iframe-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: #f8fafc; color: var(--text-muted); font-size: 13px; text-align: center; pointer-events: none; transition: opacity 0.2s; }
+    .opp-iframe-overlay.hidden { opacity: 0; pointer-events: none; }
+    .opp-iframe-spin { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .opp-iframe-bar { width: 100%; padding: 5px 10px; background: #f1f5f9; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 6px; flex-shrink: 0; font-size: 11px; color: var(--text-muted); }
+    .opp-iframe-bar a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    .opp-iframe-bar a:hover { text-decoration: underline; }
+    .opp-iframe-blocked-msg { display:none; color: #f59e0b; font-size: 11px; }
     .opp-row-selected td { background: #eff6ff !important; }
     .opp-row-selected:hover td { background: #eff6ff !important; }
     .opp-company-cell[contenteditable] { outline: none; cursor: text; min-width: 60px; }
@@ -463,16 +483,37 @@
               <tbody id="opp-tbody"></tbody>
             </table>
           </div>
-          <div class="opp-preview-panel" id="opp-preview-panel">
+          <div class="opp-resize-handle" id="opp-resize-handle"></div>
+          <div class="opp-preview-panel" id="opp-preview-panel" style="height:400px;">
+            <!-- Empty state -->
             <div class="opp-preview-empty" id="opp-preview-empty">
-              <span>👆</span><span>Click a row to preview details &amp; edit notes</span>
+              <span>👆</span><span>Click a row to preview the opportunity</span>
             </div>
-            <div id="opp-preview-content" style="display:none;height:100%;display:none;flex-direction:column;gap:6px;">
-              <div class="opp-preview-title" id="opp-preview-title"></div>
-              <div class="opp-preview-meta" id="opp-preview-meta"></div>
-              <div class="opp-preview-notes">
-                <label>Notes</label>
-                <textarea id="opp-preview-notes-ta" placeholder="Add notes about this opportunity…" oninput="debouncedSaveOppNotes()"></textarea>
+            <!-- Loaded content -->
+            <div id="opp-preview-content" style="display:none;width:100%;height:100%;flex-direction:row;">
+              <!-- Left: details + notes -->
+              <div class="opp-preview-left">
+                <div class="opp-preview-title" id="opp-preview-title"></div>
+                <div class="opp-preview-meta" id="opp-preview-meta"></div>
+                <div class="opp-preview-notes">
+                  <label>Notes</label>
+                  <textarea id="opp-preview-notes-ta" placeholder="Add notes about this opportunity…" oninput="debouncedSaveOppNotes()"></textarea>
+                </div>
+              </div>
+              <!-- Right: iframe viewer -->
+              <div class="opp-preview-iframe-wrap" id="opp-iframe-wrap">
+                <iframe id="opp-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" referrerpolicy="no-referrer"></iframe>
+                <!-- Overlay: loading / blocked -->
+                <div class="opp-iframe-overlay" id="opp-iframe-overlay">
+                  <div class="opp-iframe-spin" id="opp-iframe-spin"></div>
+                  <span id="opp-iframe-status">Loading preview…</span>
+                </div>
+                <!-- Bottom bar: direct link + blocked note -->
+                <div class="opp-iframe-bar" id="opp-iframe-bar" style="display:none;">
+                  <span>🔗</span>
+                  <a id="opp-iframe-direct-link" href="#" target="_blank">Open in new tab</a>
+                  <span class="opp-iframe-blocked-msg" id="opp-iframe-blocked-msg">⚠ Site blocked preview — use the link above</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1300,6 +1341,8 @@ function selectOppRow(oppId) {
   showOppPreview(oppId);
 }
 
+let _iframeBlockedTimer = null;
+
 function showOppPreview(oppId) {
   const opp = state.oppData?.opportunities?.find(o => o.id === oppId);
   if (!opp) return;
@@ -1315,19 +1358,116 @@ function showOppPreview(oppId) {
   document.getElementById('opp-preview-meta').innerHTML =
     `<span>🏢 ${escHtml(company)}</span>` +
     `<span>📅 ${dt}</span>` +
-    (opp.link ? `<a href="${escHtml(opp.link)}" target="_blank">🔗 View Job →</a>` : '') +
-    `<span style="margin-left:auto;font-size:11px;color:var(--text-muted)">source: ${escHtml(opp.source||'manual')}</span>`;
+    `<span>🏷 ${escHtml(opp.source||'manual')}</span>`;
 
   const ta = document.getElementById('opp-preview-notes-ta');
   ta.value = opp.notes || '';
   ta.dataset.oppId = oppId;
+
+  // ── iframe loader ──
+  const iframeWrap = document.getElementById('opp-iframe-wrap');
+  const iframe = document.getElementById('opp-iframe');
+  const overlay = document.getElementById('opp-iframe-overlay');
+  const bar = document.getElementById('opp-iframe-bar');
+  const directLink = document.getElementById('opp-iframe-direct-link');
+  const blockedMsg = document.getElementById('opp-iframe-blocked-msg');
+  const statusEl = document.getElementById('opp-iframe-status');
+  const spinEl = document.getElementById('opp-iframe-spin');
+
+  clearTimeout(_iframeBlockedTimer);
+
+  if (!opp.link) {
+    iframeWrap.style.display = 'none';
+  } else {
+    iframeWrap.style.display = 'flex';
+    bar.style.display = 'flex';
+    directLink.href = opp.link;
+    directLink.textContent = new URL(opp.link).hostname.replace(/^www\./,'');
+    blockedMsg.style.display = 'none';
+
+    // Show loading overlay
+    overlay.classList.remove('hidden');
+    spinEl.style.display = 'block';
+    statusEl.textContent = 'Loading preview…';
+
+    // Set iframe src
+    iframe.onload = () => {
+      clearTimeout(_iframeBlockedTimer);
+      // Try to detect a blank/error page (works for same-origin only)
+      let isBlocked = false;
+      try {
+        const doc = iframe.contentDocument;
+        if (doc && (doc.body?.innerHTML?.length < 20 || doc.title?.toLowerCase().includes('refused'))) isBlocked = true;
+      } catch(e) { /* cross-origin is fine — it loaded */ }
+
+      if (isBlocked) {
+        spinEl.style.display = 'none';
+        statusEl.textContent = 'Preview blocked by this site.';
+        blockedMsg.style.display = 'inline';
+      } else {
+        overlay.classList.add('hidden');
+      }
+    };
+    iframe.onerror = () => {
+      clearTimeout(_iframeBlockedTimer);
+      spinEl.style.display = 'none';
+      statusEl.textContent = 'Could not load preview.';
+      blockedMsg.style.display = 'inline';
+    };
+
+    // After 7s, if overlay still visible, show blocked warning
+    _iframeBlockedTimer = setTimeout(() => {
+      if (!overlay.classList.contains('hidden')) {
+        spinEl.style.display = 'none';
+        statusEl.textContent = 'Preview may be blocked by this site.';
+        blockedMsg.style.display = 'inline';
+      }
+    }, 7000);
+
+    iframe.src = opp.link;
+  }
 }
 
 function hideOppPreview() {
   document.getElementById('opp-preview-empty').style.display = '';
   const content = document.getElementById('opp-preview-content');
   content.style.display = 'none';
+  // Clear iframe to stop loading
+  clearTimeout(_iframeBlockedTimer);
+  const iframe = document.getElementById('opp-iframe');
+  if (iframe) { iframe.onload = null; iframe.onerror = null; iframe.src = 'about:blank'; }
 }
+
+// ── Drag-to-resize preview panel ──
+(function() {
+  let dragging = false, startY = 0, startH = 0;
+  document.addEventListener('DOMContentLoaded', () => {
+    const handle = document.getElementById('opp-resize-handle');
+    const panel = document.getElementById('opp-preview-panel');
+    if (!handle || !panel) return;
+    handle.addEventListener('mousedown', e => {
+      dragging = true;
+      startY = e.clientY;
+      startH = panel.offsetHeight;
+      handle.classList.add('dragging');
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor = 'ns-resize';
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      const delta = startY - e.clientY; // drag up = bigger panel
+      const newH = Math.max(120, Math.min(startH + delta, window.innerHeight * 0.75));
+      panel.style.height = newH + 'px';
+    });
+    document.addEventListener('mouseup', () => {
+      if (!dragging) return;
+      dragging = false;
+      handle.classList.remove('dragging');
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+    });
+  });
+})();
 
 function debouncedSaveOppNotes() {
   clearTimeout(_notesSaveTimer);
