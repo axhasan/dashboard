@@ -1,0 +1,50 @@
+name: LinkedIn Opportunity Scanner
+
+on:
+  schedule:
+    # 6:00 AM Pacific Time = 14:00 UTC (standard time) / 13:00 UTC (daylight saving)
+    # Using 14:00 UTC to cover both — will run at 6am PT (winter) or 7am PT (summer)
+    - cron: '0 14 * * *'
+  workflow_dispatch:  # Allow manual trigger from GitHub Actions tab
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Needed to commit updated opportunities.json
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install \
+            google-auth \
+            google-auth-oauthlib \
+            google-auth-httplib2 \
+            google-api-python-client
+
+      - name: Run LinkedIn scanner
+        env:
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+        run: python scripts/scan_linkedin.py
+
+      - name: Commit updated opportunities
+        run: |
+          git config --global user.name "LinkedIn Scanner Bot"
+          git config --global user.email "scanner@github-actions.local"
+          git add data/opportunities.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit — no new opportunities found."
+          else
+            git commit -m "🔍 Auto-scan: LinkedIn opportunities [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+            git push
+          fi

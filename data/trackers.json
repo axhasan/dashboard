@@ -1,0 +1,26 @@
+{
+  "applications": {
+    "columns": [
+      {"id": "company", "label": "Company"},
+      {"id": "role", "label": "Role"},
+      {"id": "date", "label": "Date Applied"},
+      {"id": "status", "label": "Status"},
+      {"id": "url", "label": "Job URL"},
+      {"id": "notes", "label": "Notes"}
+    ],
+    "rows": []
+  },
+  "contacts": {
+    "columns": [
+      {"id": "name", "label": "Name"},
+      {"id": "company", "label": "Company"},
+      {"id": "linkedin", "label": "LinkedIn"},
+      {"id": "email", "label": "Email"},
+      {"id": "last_contact", "label": "Last Contact"},
+      {"id": "next_followup", "label": "Next Follow-up"},
+      {"id": "notes", "label": "Notes"}
+    ],
+    "rows": []
+  },
+  "applied": []
+}

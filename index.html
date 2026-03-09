@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Allay's Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sidebar-bg: #0f172a;
+      --sidebar-text: #94a3b8;
+      --sidebar-hover: rgba(255,255,255,0.06);
+      --sidebar-active-bg: rgba(59,130,246,0.15);
+      --sidebar-active: #60a5fa;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --radius: 10px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; }
+
+    /* ── SETUP MODAL ── */
+    #setup-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.85); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+    #setup-modal { background: var(--card); border-radius: 16px; padding: 36px; width: 480px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    #setup-modal h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    #setup-modal p { color: var(--text-muted); font-size: 13px; margin-bottom: 24px; }
+    .setup-field { margin-bottom: 14px; }
+    .setup-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .setup-field input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.15s; }
+    .setup-field input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+    .btn-primary { width: 100%; padding: 11px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; margin-top: 8px; font-family: inherit; }
+    .btn-primary:hover { background: var(--primary-dark); }
+
+    /* ── LOGIN SCREEN ── */
+    #login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+    #login-screen h1 { color: white; font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+    #login-screen p { color: #94a3b8; font-size: 15px; margin-bottom: 36px; }
+    #google-signin-btn { display: flex; align-items: center; gap: 12px; padding: 13px 28px; background: white; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 500; color: var(--text); border: none; font-family: inherit; box-shadow: var(--shadow-md); transition: transform 0.1s, box-shadow 0.15s; }
+    #google-signin-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+    #google-signin-btn svg { width: 20px; height: 20px; }
+    #access-denied { display: none; color: #f87171; margin-top: 16px; font-size: 14px; }
+
+    /* ── MAIN APP ── */
+    #app { display: flex; flex-direction: column; height: 100vh; }
+
+    /* Header */
+    #header { height: 54px; background: var(--card); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 16px; position: relative; z-index: 100; flex-shrink: 0; }
+    #header-logo { font-size: 16px; font-weight: 700; color: var(--text); }
+    #header-title { font-size: 14px; font-weight: 500; color: var(--text-muted); flex: 1; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    #user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+    #user-name { font-size: 13px; font-weight: 500; }
+    .icon-btn { width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: background 0.15s, color 0.15s; }
+    .icon-btn:hover { background: var(--bg); color: var(--text); }
+    #save-indicator { font-size: 12px; color: var(--text-muted); display: none; }
+    #save-indicator.saving { color: var(--warning); display: flex; align-items: center; gap: 4px; }
+    #save-indicator.saved { color: var(--success); display: flex; align-items: center; gap: 4px; }
+
+    /* Body */
+    #body { display: flex; flex: 1; overflow: hidden; }
+
+    /* Sidebar */
+    #sidebar { width: 210px; background: var(--sidebar-bg); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+    .nav-section { padding: 16px 12px 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #475569; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; margin: 1px 8px; border-radius: 8px; cursor: pointer; color: var(--sidebar-text); font-size: 13px; font-weight: 500; transition: background 0.15s, color 0.15s; user-select: none; }
+    .nav-item:hover { background: var(--sidebar-hover); color: #cbd5e1; }
+    .nav-item.active { background: var(--sidebar-active-bg); color: var(--sidebar-active); }
+    .nav-item .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+    .nav-badge { margin-left: auto; background: var(--primary); color: white; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 20px; }
+    #sidebar-footer { margin-top: auto; padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+    /* Main content */
+    #main { flex: 1; overflow-y: auto; padding: 20px 24px; }
+
+    /* Bottom bar */
+    #bottom-bar { height: 88px; background: var(--card); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 12px; flex-shrink: 0; overflow-x: auto; }
+    .weather-card { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: linear-gradient(135deg, #0ea5e9, #0284c7); border-radius: var(--radius); color: white; flex-shrink: 0; min-width: 180px; }
+    .weather-card .temp { font-size: 22px; font-weight: 700; }
+    .weather-card .weather-info .city { font-size: 11px; opacity: 0.8; }
+    .weather-card .weather-info .desc { font-size: 13px; font-weight: 500; }
+    .weather-icon { font-size: 28px; }
+    .stock-card { padding: 8px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); flex-shrink: 0; min-width: 120px; cursor: pointer; transition: box-shadow 0.15s; }
+    .stock-card:hover { box-shadow: var(--shadow-md); }
+    .stock-symbol { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+    .stock-price { font-size: 17px; font-weight: 700; }
+    .stock-change { font-size: 12px; font-weight: 500; }
+    .stock-change.pos { color: var(--success); }
+    .stock-change.neg { color: var(--danger); }
+    .loading-dots::after { content: '...'; animation: dots 1.2s infinite; }
+    @keyframes dots { 0%,100%{content:'.'} 33%{content:'..'} 66%{content:'...'} }
+
+    /* Sections */
+    .section { display: none; }
+    .section.active { display: block; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .section-header h2 { font-size: 18px; font-weight: 700; }
+
+    /* ── INBOX ── */
+    #inbox-container { display: flex; gap: 16px; height: calc(100vh - 54px - 88px - 76px); }
+    #email-list { width: 300px; flex-shrink: 0; background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); overflow-y: auto; }
+    #email-detail { flex: 1; background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+    .email-item { padding: 12px 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; position: relative; }
+    .email-item:hover { background: var(--bg); }
+    .email-item.active { background: #eff6ff; border-left: 3px solid var(--primary); }
+    .email-item.unread .email-from { font-weight: 700; }
+    .email-from { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .email-subject { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    .email-date { font-size: 11px; color: var(--text-muted); position: absolute; top: 12px; right: 12px; }
+    .email-unread-dot { width: 7px; height: 7px; background: var(--primary); border-radius: 50%; position: absolute; left: 6px; top: 50%; transform: translateY(-50%); }
+    #email-detail-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; color: var(--text-muted); gap: 10px; }
+    #email-detail-empty svg { opacity: 0.3; }
+    #email-content { flex: 1; padding: 20px; overflow-y: auto; }
+    #email-content .email-subject-full { font-size: 17px; font-weight: 700; margin-bottom: 12px; }
+    #email-content .email-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    #email-content .email-body { font-size: 13px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+    #reply-section { padding: 14px 20px; border-top: 1px solid var(--border); background: #fafafa; }
+    #reply-area { display: none; }
+    #reply-textarea { width: 100%; height: 100px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-family: inherit; resize: vertical; outline: none; line-height: 1.6; }
+    #reply-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+    .btn { padding: 7px 14px; border-radius: 7px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+    .btn-sm { padding: 5px 11px; font-size: 12px; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: var(--bg); }
+    .btn-blue { background: var(--primary); color: white; }
+    .btn-blue:hover { background: var(--primary-dark); }
+    .btn-green { background: var(--success); color: white; }
+    .btn-green:hover { background: #059669; }
+    .reply-actions { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+    #reply-spinner { display: none; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── CALENDAR ── */
+    #calendar-nav { display: flex; align-items: center; gap: 10px; }
+    #calendar-nav span { font-size: 14px; font-weight: 600; min-width: 140px; text-align: center; }
+    #cal-grid-wrap { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; }
+    #cal-days-header { display: grid; grid-template-columns: 50px repeat(7, 1fr); background: var(--bg); border-bottom: 1px solid var(--border); }
+    #cal-days-header div { padding: 10px 6px; text-align: center; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    #cal-days-header div.today-col { color: var(--primary); }
+    #cal-body { display: grid; grid-template-columns: 50px repeat(7, 1fr); max-height: calc(100vh - 54px - 88px - 130px); overflow-y: auto; }
+    .cal-time-label { padding: 4px 6px; font-size: 10px; color: var(--text-muted); text-align: right; border-right: 1px solid var(--border); height: 48px; line-height: 1; }
+    .cal-cell { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); height: 48px; position: relative; }
+    .cal-cell:last-child { border-right: none; }
+    .cal-event { position: absolute; left: 2px; right: 2px; border-radius: 4px; padding: 2px 4px; font-size: 10px; font-weight: 500; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; cursor: pointer; z-index: 1; }
+    .all-day-row { display: grid; grid-template-columns: 50px repeat(7, 1fr); border-bottom: 1px solid var(--border); background: #fafcff; min-height: 24px; }
+    .all-day-cell { border-right: 1px solid var(--border); padding: 2px; }
+    .all-day-event { background: #dbeafe; color: #1d4ed8; border-radius: 4px; padding: 1px 5px; font-size: 11px; font-weight: 500; margin: 1px; }
+
+    /* ── TRACKER TABLES ── */
+    .tracker-wrap { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); overflow: auto; max-height: calc(100vh - 54px - 88px - 120px); }
+    .tracker-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+    .tracker-table th { background: var(--bg); padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    .tracker-table th.add-col-th { width: 40px; cursor: pointer; color: var(--primary); text-align: center; font-size: 16px; }
+    .tracker-table th.add-col-th:hover { background: #eff6ff; }
+    .tracker-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; min-width: 80px; }
+    .tracker-table td[contenteditable=true] { outline: none; cursor: text; }
+    .tracker-table td[contenteditable=true]:focus { background: #eff6ff; border-radius: 4px; box-shadow: inset 0 0 0 2px var(--primary); }
+    .tracker-table tr:hover td { background: #fafafa; }
+    .tracker-table tr:last-child td { border-bottom: none; }
+    .del-row-btn { visibility: hidden; border: none; background: transparent; color: var(--danger); cursor: pointer; font-size: 16px; padding: 0; }
+    .tracker-table tr:hover .del-row-btn { visibility: visible; }
+    .url-cell a { color: var(--primary); text-decoration: none; font-size: 12px; }
+    .url-cell a:hover { text-decoration: underline; }
+    .add-row-btn { margin-top: 10px; }
+
+    /* ── OPPORTUNITIES ── */
+    .opp-table .opp-not-interested td { text-decoration: line-through; opacity: 0.5; }
+    .status-select { padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-family: inherit; cursor: pointer; background: white; outline: none; }
+    .status-select:focus { border-color: var(--primary); }
+    .status-select.applied { background: #dcfce7; border-color: #86efac; color: #15803d; }
+    .status-select.consider { background: #fef9c3; border-color: #fde047; color: #854d0e; }
+    .status-select.not_interested { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
+
+    /* ── APPLIED DASHBOARD ── */
+    .applied-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+    .applied-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 16px; }
+    .applied-card .applied-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .applied-card .applied-company { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+    .applied-card .applied-link { color: var(--primary); font-size: 12px; text-decoration: none; }
+    .applied-card .applied-link:hover { text-decoration: underline; }
+    .applied-card .applied-date { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+
+    /* ── MODAL ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 5000; }
+    .modal { background: var(--card); border-radius: 12px; padding: 24px; min-width: 320px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+    .modal h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+    .modal input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 7px; font-size: 13px; font-family: inherit; outline: none; margin-bottom: 12px; }
+    .modal input:focus { border-color: var(--primary); }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+    /* ── TOAST ── */
+    #toast { position: fixed; bottom: 100px; right: 20px; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; color: white; opacity: 0; transition: opacity 0.3s; z-index: 9000; }
+    #toast.show { opacity: 1; }
+    #toast.success { background: var(--success); }
+    #toast.error { background: var(--danger); }
+    #toast.info { background: var(--primary); }
+
+    /* ── EMPTY STATES ── */
+    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; color: var(--text-muted); gap: 10px; text-align: center; }
+    .empty-state .es-icon { font-size: 36px; opacity: 0.4; }
+    .empty-state p { font-size: 13px; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    /* Utility */
+    .flex { display: flex; }
+    .gap-8 { gap: 8px; }
+    .ml-auto { margin-left: auto; }
+    .mt-12 { margin-top: 12px; }
+    .text-muted { color: var(--text-muted); font-size: 12px; }
+    [hidden] { display: none !important; }
+    .spin { animation: spin 0.7s linear infinite; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════ SETUP MODAL ══════════════════════════════════ -->
+<div id="setup-overlay" hidden>
+  <div id="setup-modal">
+    <h2>⚙️ First-Time Setup</h2>
+    <p>Enter your API keys below. They are stored only in this browser and never sent anywhere except to the respective services.</p>
+    <div class="setup-field">
+      <label>Google OAuth Client ID</label>
+      <input id="s-google" type="text" placeholder="123456789.apps.googleusercontent.com">
+    </div>
+    <div class="setup-field">
+      <label>Claude API Key</label>
+      <input id="s-claude" type="password" placeholder="sk-ant-...">
+    </div>
+    <div class="setup-field">
+      <label>Alpha Vantage Key (stocks)</label>
+      <input id="s-alpha" type="text" placeholder="Your Alpha Vantage key">
+    </div>
+    <div class="setup-field">
+      <label>OpenWeather API Key</label>
+      <input id="s-weather" type="text" placeholder="Your OpenWeatherMap key">
+    </div>
+    <div class="setup-field">
+      <label>GitHub Personal Access Token (PAT)</label>
+      <input id="s-pat" type="password" placeholder="ghp_...">
+    </div>
+    <button class="btn-primary" onclick="saveSetup()">Save &amp; Continue →</button>
+    <p style="margin-top:12px; font-size:11px; color:var(--text-muted); margin-bottom:0;">Need help getting these keys? See SETUP.md in your dashboard repo.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ LOGIN SCREEN ══════════════════════════════════ -->
+<div id="login-screen">
+  <h1>☀️ Good Morning, Allay</h1>
+  <p>Sign in to access your personal dashboard</p>
+  <button id="google-signin-btn" onclick="handleLogin()">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
+    Sign in with Google
+  </button>
+  <p id="access-denied">⛔ Access denied. This dashboard is private.</p>
+  <button onclick="showSetup()" style="margin-top:20px; background:transparent; border:none; color:#475569; font-size:12px; cursor:pointer; font-family:inherit;">⚙ Configure API Keys</button>
+</div>
+
+<!-- ══════════════════════════════════ MAIN APP ══════════════════════════════════ -->
+<div id="app" hidden>
+
+  <!-- Header -->
+  <div id="header">
+    <div id="header-logo">Dashboard</div>
+    <div id="header-title"></div>
+    <div class="header-right">
+      <div id="save-indicator"></div>
+      <button class="icon-btn" onclick="showSetup()" title="Settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <div id="user-avatar">A</div>
+      <span id="user-name"></span>
+      <button class="btn btn-outline btn-sm" onclick="logout()">Sign out</button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div id="body">
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+      <div style="padding:16px 12px 8px; color:#60a5fa; font-weight:700; font-size:14px;">✦ Allay</div>
+      <div class="nav-item active" onclick="showSection('inbox')" data-section="inbox">
+        <span class="nav-icon">📧</span> Inbox
+        <span class="nav-badge" id="inbox-badge" hidden>0</span>
+      </div>
+      <div class="nav-item" onclick="showSection('calendar')" data-section="calendar">
+        <span class="nav-icon">📅</span> Calendar
+      </div>
+      <div style="height:8px"></div>
+      <div class="nav-section">Job Search</div>
+      <div class="nav-item" onclick="showSection('applications')" data-section="applications">
+        <span class="nav-icon">💼</span> Applications
+      </div>
+      <div class="nav-item" onclick="showSection('contacts')" data-section="contacts">
+        <span class="nav-icon">👥</span> Contacts
+      </div>
+      <div class="nav-item" onclick="showSection('opportunities')" data-section="opportunities">
+        <span class="nav-icon">🔗</span> Opportunities
+        <span class="nav-badge" id="opp-badge" hidden>0</span>
+      </div>
+      <div class="nav-item" onclick="showSection('applied')" data-section="applied">
+        <span class="nav-icon">✅</span> Applied
+      </div>
+      <div id="sidebar-footer">
+        <div style="font-size:11px; color:#475569; text-align:center;" id="last-sync-label"></div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main">
+
+      <!-- ── INBOX ── -->
+      <div id="section-inbox" class="section active">
+        <div class="section-header">
+          <h2>📧 Inbox</h2>
+          <button class="btn btn-outline btn-sm" onclick="loadInbox()">↻ Refresh</button>
+        </div>
+        <div id="inbox-container">
+          <div id="email-list">
+            <div id="email-list-loading" class="empty-state" style="padding:40px 10px">
+              <div class="loading-dots" style="font-size:13px;color:var(--text-muted)">Loading</div>
+            </div>
+          </div>
+          <div id="email-detail">
+            <div id="email-detail-empty">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <span style="font-size:13px">Select an email to read</span>
+            </div>
+            <div id="email-content" hidden></div>
+            <div id="reply-section" hidden>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                <button class="btn btn-blue btn-sm" onclick="generateReply()">✦ Generate Reply</button>
+                <div id="reply-spinner"></div>
+              </div>
+              <div id="reply-area">
+                <textarea id="reply-textarea" placeholder="AI-generated reply will appear here..."></textarea>
+                <div class="reply-actions">
+                  <button class="btn btn-green btn-sm" onclick="copyReply()">📋 Copy Reply</button>
+                  <button class="btn btn-outline btn-sm" onclick="openInGmail()">↗ Open in Gmail</button>
+                  <span id="copy-confirmation" style="font-size:12px;color:var(--success);display:none;">Copied!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CALENDAR ── -->
+      <div id="section-calendar" class="section">
+        <div class="section-header">
+          <h2>📅 Calendar</h2>
+          <div id="calendar-nav">
+            <button class="btn btn-outline btn-sm" onclick="calNav(-1)">‹</button>
+            <span id="cal-range-label"></span>
+            <button class="btn btn-outline btn-sm" onclick="calNav(1)">›</button>
+            <button class="btn btn-outline btn-sm" onclick="calNav(0)">Today</button>
+          </div>
+        </div>
+        <div id="cal-grid-wrap">
+          <div id="cal-days-header"></div>
+          <div class="all-day-row" id="cal-all-day"></div>
+          <div id="cal-body"></div>
+        </div>
+      </div>
+
+      <!-- ── APPLICATIONS TRACKER ── -->
+      <div id="section-applications" class="section">
+        <div class="section-header">
+          <h2>💼 Application Tracker</h2>
+          <button class="btn btn-blue btn-sm" onclick="addRow('applications')">+ Add Application</button>
+        </div>
+        <div class="tracker-wrap">
+          <table class="tracker-table" id="apps-table"></table>
+        </div>
+      </div>
+
+      <!-- ── CONTACTS TRACKER ── -->
+      <div id="section-contacts" class="section">
+        <div class="section-header">
+          <h2>👥 Contact Reachout Tracker</h2>
+          <button class="btn btn-blue btn-sm" onclick="addRow('contacts')">+ Add Contact</button>
+        </div>
+        <div class="tracker-wrap">
+          <table class="tracker-table" id="contacts-table"></table>
+        </div>
+      </div>
+
+      <!-- ── OPPORTUNITIES ── -->
+      <div id="section-opportunities" class="section">
+        <div class="section-header">
+          <h2>🔗 LinkedIn Opportunities</h2>
+          <div class="flex gap-8">
+            <span class="text-muted" style="align-self:center;" id="opp-scan-time"></span>
+            <button class="btn btn-outline btn-sm" onclick="loadOpportunities()">↻ Refresh</button>
+          </div>
+        </div>
+        <div class="tracker-wrap" style="max-height:calc(100vh - 54px - 88px - 100px)">
+          <table class="tracker-table opp-table" id="opp-table">
+            <thead>
+              <tr>
+                <th>Title / Subject</th>
+                <th>Company</th>
+                <th>Link</th>
+                <th>Date Found</th>
+                <th style="width:140px">Status</th>
+              </tr>
+            </thead>
+            <tbody id="opp-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── APPLIED DASHBOARD ── -->
+      <div id="section-applied" class="section">
+        <div class="section-header">
+          <h2>✅ Applied Dashboard</h2>
+          <span class="text-muted" id="applied-count"></span>
+        </div>
+        <div class="applied-grid" id="applied-grid"></div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /body -->
+
+  <!-- Bottom Bar -->
+  <div id="bottom-bar">
+    <div class="weather-card" id="weather-card">
+      <div class="weather-icon" id="weather-icon">🌤️</div>
+      <div>
+        <div class="temp" id="weather-temp"><span class="loading-dots"></span></div>
+        <div class="weather-info">
+          <div class="city">Pleasanton, CA</div>
+          <div class="desc" id="weather-desc">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="stock-card" id="stock-NVDA" onclick="window.open('https://finance.yahoo.com/quote/NVDA','_blank')">
+      <div class="stock-symbol">NVDA</div>
+      <div class="stock-price" id="price-NVDA"><span class="loading-dots"></span></div>
+      <div class="stock-change" id="change-NVDA">—</div>
+    </div>
+    <div class="stock-card" id="stock-AMZN" onclick="window.open('https://finance.yahoo.com/quote/AMZN','_blank')">
+      <div class="stock-symbol">AMZN</div>
+      <div class="stock-price" id="price-AMZN"><span class="loading-dots"></span></div>
+      <div class="stock-change" id="change-AMZN">—</div>
+    </div>
+    <div class="stock-card" id="stock-AVGO" onclick="window.open('https://finance.yahoo.com/quote/AVGO','_blank')">
+      <div class="stock-symbol">AVGO</div>
+      <div class="stock-price" id="price-AVGO"><span class="loading-dots"></span></div>
+      <div class="stock-change" id="change-AVGO">—</div>
+    </div>
+    <div style="margin-left:auto; font-size:11px; color:var(--text-muted); flex-shrink:0" id="market-time"></div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- Add Column Modal -->
+<div id="col-modal" class="modal-overlay" hidden onclick="if(event.target===this)this.hidden=true">
+  <div class="modal">
+    <h3>Add Column</h3>
+    <input id="col-name-input" placeholder="Column name (e.g. Salary, HR Contact)" onkeydown="if(event.key==='Enter')confirmAddCol()">
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="document.getElementById('col-modal').hidden=true">Cancel</button>
+      <button class="btn btn-blue" onclick="confirmAddCol()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════ SCRIPTS ══════════════════════════════════ -->
+<script src="https://accounts.google.com/gsi/client" async></script>
+<script>
+'use strict';
+
+// ════════════════════════════════════════
+//  CONFIG  (stored in localStorage)
+// ════════════════════════════════════════
+const CFG_KEYS = ['GOOGLE_CLIENT_ID','CLAUDE_KEY','ALPHA_KEY','WEATHER_KEY','GITHUB_PAT'];
+const ALLOWED_EMAIL = 'ahasan@gmail.com';
+const GITHUB_OWNER = 'axhasan';
+const GITHUB_REPO = 'dashboard';
+
+function cfg(key) { return localStorage.getItem('dash_' + key) || ''; }
+function cfgSet(key, val) { localStorage.setItem('dash_' + key, val); }
+function isConfigured() { return CFG_KEYS.every(k => cfg(k)); }
+
+function saveSetup() {
+  cfgSet('GOOGLE_CLIENT_ID', document.getElementById('s-google').value.trim());
+  cfgSet('CLAUDE_KEY', document.getElementById('s-claude').value.trim());
+  cfgSet('ALPHA_KEY', document.getElementById('s-alpha').value.trim());
+  cfgSet('WEATHER_KEY', document.getElementById('s-weather').value.trim());
+  cfgSet('GITHUB_PAT', document.getElementById('s-pat').value.trim());
+  document.getElementById('setup-overlay').hidden = true;
+  showToast('Configuration saved!', 'success');
+  initGoogleAuth();
+}
+
+function showSetup() {
+  document.getElementById('s-google').value = cfg('GOOGLE_CLIENT_ID');
+  document.getElementById('s-claude').value = cfg('CLAUDE_KEY');
+  document.getElementById('s-alpha').value = cfg('ALPHA_KEY');
+  document.getElementById('s-weather').value = cfg('WEATHER_KEY');
+  document.getElementById('s-pat').value = cfg('GITHUB_PAT');
+  document.getElementById('setup-overlay').hidden = false;
+}
+
+// ════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════
+const state = {
+  accessToken: null,
+  userEmail: null,
+  userName: null,
+  tokenClient: null,
+  currentSection: 'inbox',
+  currentEmailId: null,
+  currentEmailThread: null,
+  calWeekOffset: 0,
+  trackerData: null,
+  trackerSha: null,
+  oppData: null,
+  oppSha: null,
+  pendingColTracker: null,
+  saveTimer: null
+};
+
+// ════════════════════════════════════════
+//  GOOGLE AUTH
+// ════════════════════════════════════════
+function initGoogleAuth() {
+  if (!cfg('GOOGLE_CLIENT_ID')) return;
+  state.tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: cfg('GOOGLE_CLIENT_ID'),
+    scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar.readonly email profile',
+    callback: handleAuthResponse
+  });
+}
+
+function handleLogin() {
+  if (!cfg('GOOGLE_CLIENT_ID')) { showSetup(); return; }
+  if (!state.tokenClient) initGoogleAuth();
+  state.tokenClient.requestAccessToken({ prompt: 'select_account' });
+}
+
+async function handleAuthResponse(resp) {
+  if (resp.error) { console.error('Auth error', resp); return; }
+  state.accessToken = resp.access_token;
+  // Verify user identity
+  try {
+    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${state.accessToken}` }
+    });
+    const info = await r.json();
+    if (info.email.toLowerCase() !== ALLOWED_EMAIL.toLowerCase()) {
+      document.getElementById('access-denied').style.display = 'block';
+      state.accessToken = null;
+      return;
+    }
+    state.userEmail = info.email;
+    state.userName = info.given_name || info.name || 'Allay';
+    bootDashboard();
+  } catch(e) { console.error('User info error', e); }
+}
+
+function logout() {
+  if (state.tokenClient) google.accounts.oauth2.revoke(state.accessToken, ()=>{});
+  state.accessToken = null;
+  document.getElementById('app').hidden = true;
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+// ════════════════════════════════════════
+//  DASHBOARD BOOT
+// ════════════════════════════════════════
+async function bootDashboard() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').hidden = false;
+  document.getElementById('user-name').textContent = state.userName;
+  document.getElementById('user-avatar').textContent = state.userName[0].toUpperCase();
+
+  // Load everything in parallel
+  await loadTrackerData();
+  loadInbox();
+  loadCalendar();
+  loadOpportunities();
+  loadWeather();
+  loadStocks();
+  updateMarketTime();
+  setInterval(updateMarketTime, 60000);
+}
+
+// ════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  document.querySelector(`[data-section="${name}"]`).classList.add('active');
+  document.getElementById('header-title').textContent = {
+    inbox:'Inbox', calendar:'Calendar', applications:'Application Tracker',
+    contacts:'Contact Reachout Tracker', opportunities:'LinkedIn Opportunities', applied:'Applied Dashboard'
+  }[name] || '';
+  state.currentSection = name;
+  if (name === 'calendar') renderCalendar();
+  if (name === 'applications') renderTracker('applications');
+  if (name === 'contacts') renderTracker('contacts');
+  if (name === 'opportunities') renderOpportunities();
+  if (name === 'applied') renderApplied();
+}
+
+// ════════════════════════════════════════
+//  GMAIL
+// ════════════════════════════════════════
+async function gmailFetch(path, params={}) {
+  const url = new URL('https://gmail.googleapis.com/gmail/v1/' + path);
+  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+  const r = await fetch(url, { headers: { Authorization: `Bearer ${state.accessToken}` } });
+  if (!r.ok) throw new Error(`Gmail ${r.status}`);
+  return r.json();
+}
+
+async function loadInbox() {
+  document.getElementById('email-list').innerHTML = '<div class="empty-state" style="padding:40px 10px"><div class="loading-dots" style="font-size:13px;color:var(--text-muted)">Loading</div></div>';
+  try {
+    const data = await gmailFetch('users/me/messages', { labelIds: 'INBOX', maxResults: 25 });
+    const messages = data.messages || [];
+    const previews = await Promise.all(messages.map(m =>
+      gmailFetch(`users/me/messages/${m.id}`, { format: 'metadata', metadataHeaders: 'Subject,From,Date' })
+    ));
+    renderEmailList(previews);
+    const unread = previews.filter(m => m.labelIds && m.labelIds.includes('UNREAD')).length;
+    const badge = document.getElementById('inbox-badge');
+    if (unread > 0) { badge.textContent = unread; badge.hidden = false; }
+    else badge.hidden = true;
+  } catch(e) {
+    document.getElementById('email-list').innerHTML = `<div class="empty-state"><p>Could not load inbox.<br><small>${e.message}</small></p></div>`;
+  }
+}
+
+function getHeader(msg, name) {
+  return (msg.payload?.headers?.find(h => h.name.toLowerCase() === name.toLowerCase()) || {}).value || '';
+}
+
+function renderEmailList(messages) {
+  const el = document.getElementById('email-list');
+  if (!messages.length) { el.innerHTML = '<div class="empty-state"><p>No messages</p></div>'; return; }
+  el.innerHTML = messages.map(m => {
+    const from = getHeader(m, 'From').replace(/<.*>/, '').trim();
+    const subject = getHeader(m, 'Subject') || '(no subject)';
+    const date = formatEmailDate(getHeader(m, 'Date'));
+    const unread = m.labelIds?.includes('UNREAD') ? 'unread' : '';
+    return `<div class="email-item ${unread}" onclick="openEmail('${m.id}')" id="ei-${m.id}">
+      ${unread ? '<div class="email-unread-dot"></div>' : ''}
+      <div class="email-date">${date}</div>
+      <div class="email-from">${escHtml(from)}</div>
+      <div class="email-subject">${escHtml(subject)}</div>
+    </div>`;
+  }).join('');
+}
+
+async function openEmail(msgId) {
+  document.querySelectorAll('.email-item').forEach(e => e.classList.remove('active'));
+  const li = document.getElementById(`ei-${msgId}`);
+  if (li) li.classList.add('active');
+  state.currentEmailId = msgId;
+
+  document.getElementById('email-detail-empty').hidden = true;
+  document.getElementById('email-content').hidden = false;
+  document.getElementById('reply-section').hidden = false;
+  document.getElementById('email-content').innerHTML = '<div class="empty-state" style="padding:40px"><div class="loading-dots">Loading</div></div>';
+  document.getElementById('reply-area').style.display = 'none';
+  document.getElementById('reply-textarea').value = '';
+
+  try {
+    const msg = await gmailFetch(`users/me/messages/${msgId}`, { format: 'full' });
+    state.currentEmailThread = msg;
+    const subject = getHeader(msg, 'Subject') || '(no subject)';
+    const from = getHeader(msg, 'From');
+    const date = new Date(getHeader(msg, 'Date')).toLocaleString();
+    const body = extractEmailBody(msg.payload);
+
+    document.getElementById('email-content').innerHTML = `
+      <div class="email-subject-full">${escHtml(subject)}</div>
+      <div class="email-meta">
+        <strong>From:</strong> ${escHtml(from)}<br>
+        <strong>Date:</strong> ${date}
+      </div>
+      <div class="email-body">${escHtml(body)}</div>`;
+  } catch(e) {
+    document.getElementById('email-content').innerHTML = `<div class="empty-state"><p>Error loading email: ${e.message}</p></div>`;
+  }
+}
+
+function extractEmailBody(payload) {
+  if (!payload) return '';
+  if (payload.body?.data) return decodeB64(payload.body.data);
+  if (payload.parts) {
+    for (const part of payload.parts) {
+      if (part.mimeType === 'text/plain' && part.body?.data) return decodeB64(part.body.data);
+    }
+    for (const part of payload.parts) {
+      const r = extractEmailBody(part);
+      if (r) return r;
+    }
+  }
+  return '';
+}
+
+function decodeB64(data) {
+  try { return decodeURIComponent(escape(atob(data.replace(/-/g,'+').replace(/_/g,'/')))) } catch(e) { return '' }
+}
+
+async function generateReply() {
+  if (!state.currentEmailThread) return;
+  if (!cfg('CLAUDE_KEY')) { showToast('Claude API key not configured', 'error'); return; }
+
+  const subject = getHeader(state.currentEmailThread, 'Subject');
+  const from = getHeader(state.currentEmailThread, 'From');
+  const body = extractEmailBody(state.currentEmailThread.payload);
+
+  document.getElementById('reply-spinner').style.display = 'block';
+  document.getElementById('reply-area').style.display = 'none';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': cfg('CLAUDE_KEY'),
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 600,
+        messages: [{
+          role: 'user',
+          content: `You are drafting a professional email reply for Allay Hasan (ahasan@gmail.com).\n\nIncoming email:\nFrom: ${from}\nSubject: ${subject}\nBody:\n${body.slice(0, 2000)}\n\nWrite a concise, professional reply. Output ONLY the reply body text — no subject line, no "Dear...", no sign-off unless it flows naturally. Keep it under 150 words.`
+        }]
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Could not generate reply.';
+    document.getElementById('reply-textarea').value = reply;
+    document.getElementById('reply-area').style.display = 'block';
+  } catch(e) {
+    showToast('Reply generation failed: ' + e.message, 'error');
+  } finally {
+    document.getElementById('reply-spinner').style.display = 'none';
+  }
+}
+
+function copyReply() {
+  const txt = document.getElementById('reply-textarea').value;
+  navigator.clipboard.writeText(txt).then(() => {
+    const c = document.getElementById('copy-confirmation');
+    c.style.display = 'inline';
+    setTimeout(() => c.style.display = 'none', 2000);
+  });
+}
+
+function openInGmail() {
+  if (state.currentEmailId) window.open(`https://mail.google.com/mail/u/0/#inbox/${state.currentEmailId}`, '_blank');
+}
+
+// ════════════════════════════════════════
+//  CALENDAR
+// ════════════════════════════════════════
+function getWeekStart(offset=0) {
+  const d = new Date();
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + offset * 7); // Monday
+  d.setHours(0,0,0,0);
+  return d;
+}
+
+async function loadCalendar() { await renderCalendar(); }
+
+async function renderCalendar() {
+  const weekStart = getWeekStart(state.calWeekOffset);
+  const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 7);
+
+  const days = Array.from({length:7}, (_,i) => { const d=new Date(weekStart); d.setDate(d.getDate()+i); return d; });
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  // Header
+  const headerEl = document.getElementById('cal-days-header');
+  headerEl.innerHTML = '<div style="padding:10px 6px"></div>' + days.map(d => {
+    const isToday = d.toDateString() === today.toDateString();
+    const label = d.toLocaleDateString('en-US', {weekday:'short'}) + ' ' + d.getDate();
+    return `<div class="${isToday ? 'today-col' : ''}">${label}</div>`;
+  }).join('');
+
+  // Range label
+  const fmt = d => d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+  document.getElementById('cal-range-label').textContent = `${fmt(weekStart)} – ${fmt(new Date(weekEnd.getTime()-1))}`;
+
+  // Body: 7am-9pm = 14 hours * 2 slots of 30min
+  const calBody = document.getElementById('cal-body');
+  const allDayRow = document.getElementById('cal-all-day');
+  calBody.innerHTML = '<div style="font-size:10px;color:var(--text-muted);padding:4px;text-align:right;border-right:1px solid var(--border)"></div>' + days.map(() => '<div class="cal-cell" style="height:0;border-bottom:none"></div>').join('');
+
+  const hours = Array.from({length:16}, (_,i) => i+7); // 7am to 10pm
+  const timeLabels = document.createElement('div');
+  timeLabels.style.display='contents';
+
+  // Build grid cells
+  let gridHtml = '';
+  hours.forEach(h => {
+    const label = h < 12 ? `${h}am` : h === 12 ? '12pm' : `${h-12}pm`;
+    gridHtml += `<div class="cal-time-label">${label}</div>`;
+    days.forEach((d,di) => {
+      gridHtml += `<div class="cal-cell" id="cal-cell-${di}-${h}"></div>`;
+    });
+  });
+  calBody.innerHTML = gridHtml;
+
+  // Fetch events
+  try {
+    const r = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${weekStart.toISOString()}&timeMax=${weekEnd.toISOString()}&singleEvents=true&orderBy=startTime&maxResults=100`,
+      { headers: { Authorization: `Bearer ${state.accessToken}` } }
+    );
+    const data = await r.json();
+    const events = data.items || [];
+
+    // Render all-day events
+    const allDayHtml = ['<div style="padding:2px;font-size:10px;color:var(--text-muted);text-align:right">All day</div>', ...days.map(() => '<div class="all-day-cell"></div>')];
+    const allDayCells = [null, ...days.map((_,i) => i)];
+
+    events.filter(ev => ev.start?.date).forEach(ev => {
+      const evStart = new Date(ev.start.date);
+      days.forEach((d, di) => {
+        if (evStart.toDateString() === d.toDateString()) {
+          allDayHtml[di+1] = `<div class="all-day-cell"><div class="all-day-event">${escHtml(ev.summary||'Event')}</div></div>`;
+        }
+      });
+    });
+    allDayRow.innerHTML = allDayHtml.join('');
+
+    // Render timed events
+    const colors = ['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#ec4899'];
+    events.filter(ev => ev.start?.dateTime).forEach((ev, idx) => {
+      const evStart = new Date(ev.start.dateTime);
+      const evEnd = new Date(ev.end.dateTime);
+      const dayIdx = days.findIndex(d => d.toDateString() === new Date(evStart).setHours(0,0,0,0) && true);
+      const matchDay = days.findIndex(d => {
+        const ds = new Date(d); ds.setHours(0,0,0,0);
+        const es = new Date(evStart); es.setHours(0,0,0,0);
+        return ds.toDateString() === es.toDateString();
+      });
+      if (matchDay === -1) return;
+      const hour = evStart.getHours();
+      if (hour < 7 || hour > 22) return;
+      const cell = document.getElementById(`cal-cell-${matchDay}-${hour}`);
+      if (!cell) return;
+      const duration = Math.max((evEnd - evStart)/60000, 30);
+      const height = Math.round(duration / 60 * 48);
+      const top = Math.round(evStart.getMinutes() / 60 * 48);
+      const color = colors[idx % colors.length];
+      const timeStr = evStart.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      cell.style.position = 'relative';
+      cell.innerHTML += `<div class="cal-event" title="${escHtml(ev.summary||'')}\n${timeStr}" style="top:${top}px;height:${height}px;background:${color}20;color:${color};border-left:3px solid ${color}">
+        <span>${escHtml(ev.summary||'Event')}</span>
+      </div>`;
+    });
+  } catch(e) {
+    console.error('Calendar error', e);
+  }
+}
+
+function calNav(dir) {
+  state.calWeekOffset = dir === 0 ? 0 : state.calWeekOffset + dir;
+  renderCalendar();
+}
+
+// ════════════════════════════════════════
+//  GITHUB DATA LAYER
+// ════════════════════════════════════════
+function ghHeaders() {
+  return { Authorization: `token ${cfg('GITHUB_PAT')}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' };
+}
+
+async function ghLoad(path) {
+  const r = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, { headers: ghHeaders() });
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error(`GitHub ${r.status}`);
+  const d = await r.json();
+  const content = decodeURIComponent(escape(atob(d.content.replace(/\n/g,''))));
+  return { data: JSON.parse(content), sha: d.sha };
+}
+
+async function ghSave(path, data, sha) {
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+  const body = { message: `Update ${path} [dashboard]`, content, ...(sha ? {sha} : {}) };
+  const r = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
+    method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body)
+  });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
+  const d = await r.json();
+  return d.content.sha;
+}
+
+function setSaveIndicator(state) {
+  const el = document.getElementById('save-indicator');
+  el.className = state;
+  el.innerHTML = state === 'saving' ? '↻ Saving…' : state === 'saved' ? '✓ Saved' : '';
+  if (state === 'saved') setTimeout(() => { el.className=''; el.innerHTML=''; }, 2500);
+}
+
+// ════════════════════════════════════════
+//  TRACKERS (Applications + Contacts)
+// ════════════════════════════════════════
+const DEFAULT_TRACKER_DATA = {
+  applications: {
+    columns: [
+      {id:'company', label:'Company'}, {id:'role', label:'Role'},
+      {id:'date', label:'Date Applied'}, {id:'status', label:'Status'},
+      {id:'url', label:'Job URL'}, {id:'notes', label:'Notes'}
+    ],
+    rows: []
+  },
+  contacts: {
+    columns: [
+      {id:'name', label:'Name'}, {id:'company', label:'Company'},
+      {id:'linkedin', label:'LinkedIn'}, {id:'email', label:'Email'},
+      {id:'last_contact', label:'Last Contact'}, {id:'next_followup', label:'Next Follow-up'},
+      {id:'notes', label:'Notes'}
+    ],
+    rows: []
+  },
+  applied: []
+};
+
+async function loadTrackerData() {
+  try {
+    const result = await ghLoad('data/trackers.json');
+    if (result) {
+      state.trackerData = result.data;
+      state.trackerSha = result.sha;
+    } else {
+      state.trackerData = JSON.parse(JSON.stringify(DEFAULT_TRACKER_DATA));
+      state.trackerSha = null;
+      await saveTrackerData();
+    }
+  } catch(e) {
+    state.trackerData = JSON.parse(JSON.stringify(DEFAULT_TRACKER_DATA));
+    showToast('Could not load tracker data — working offline', 'error');
+  }
+}
+
+function saveTrackerDataDebounced() {
+  clearTimeout(state.saveTimer);
+  setSaveIndicator('saving');
+  state.saveTimer = setTimeout(saveTrackerData, 1200);
+}
+
+async function saveTrackerData() {
+  try {
+    const newSha = await ghSave('data/trackers.json', state.trackerData, state.trackerSha);
+    state.trackerSha = newSha;
+    setSaveIndicator('saved');
+  } catch(e) {
+    setSaveIndicator('');
+    showToast('Save failed: ' + e.message, 'error');
+  }
+}
+
+function renderTracker(type) {
+  if (!state.trackerData) return;
+  const tracker = state.trackerData[type];
+  const tableEl = document.getElementById(`${type === 'applications' ? 'apps' : 'contacts'}-table`);
+  const cols = tracker.columns;
+  const rows = tracker.rows;
+
+  tableEl.innerHTML = `
+    <thead>
+      <tr>
+        ${cols.map(c => `<th>${escHtml(c.label)}</th>`).join('')}
+        <th class="add-col-th" onclick="openAddCol('${type}')" title="Add column">＋</th>
+        <th style="width:30px"></th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows.map(row => `
+        <tr>
+          ${cols.map(c => {
+            const val = row[c.id] || '';
+            if (c.id === 'url' || c.id === 'linkedin') {
+              return `<td class="url-cell" contenteditable="true" onblur="updateCell('${type}','${row.id}','${c.id}',this.innerText)" data-col="${c.id}">${val ? `<a href="${escHtml(val)}" target="_blank">${escHtml(val)}</a>` : ''}</td>`;
+            }
+            return `<td contenteditable="true" onblur="updateCell('${type}','${row.id}','${c.id}',this.innerText)" data-col="${c.id}">${escHtml(val)}</td>`;
+          }).join('')}
+          <td></td>
+          <td><button class="del-row-btn" onclick="deleteRow('${type}','${row.id}')" title="Delete row">✕</button></td>
+        </tr>`).join('')}
+    </tbody>`;
+}
+
+function addRow(type) {
+  if (!state.trackerData) return;
+  const tracker = state.trackerData[type];
+  const row = { id: `row_${Date.now()}` };
+  tracker.columns.forEach(c => row[c.id] = '');
+  tracker.rows.push(row);
+  renderTracker(type);
+  saveTrackerDataDebounced();
+  // Focus first cell of new row
+  const tbody = document.querySelector(`#${type === 'applications' ? 'apps' : 'contacts'}-table tbody`);
+  const lastRow = tbody?.lastElementChild;
+  lastRow?.querySelector('td[contenteditable]')?.focus();
+}
+
+function deleteRow(type, rowId) {
+  if (!state.trackerData) return;
+  state.trackerData[type].rows = state.trackerData[type].rows.filter(r => r.id !== rowId);
+  renderTracker(type);
+  saveTrackerDataDebounced();
+}
+
+function updateCell(type, rowId, colId, value) {
+  if (!state.trackerData) return;
+  const row = state.trackerData[type].rows.find(r => r.id === rowId);
+  if (row) {
+    row[colId] = value.trim();
+    saveTrackerDataDebounced();
+  }
+}
+
+function openAddCol(type) {
+  state.pendingColTracker = type;
+  document.getElementById('col-name-input').value = '';
+  document.getElementById('col-modal').hidden = false;
+  document.getElementById('col-name-input').focus();
+}
+
+function confirmAddCol() {
+  const name = document.getElementById('col-name-input').value.trim();
+  if (!name) return;
+  const type = state.pendingColTracker;
+  const id = 'col_' + name.toLowerCase().replace(/\s+/g,'_') + '_' + Date.now();
+  state.trackerData[type].columns.push({ id, label: name });
+  state.trackerData[type].rows.forEach(r => r[id] = '');
+  renderTracker(type);
+  saveTrackerDataDebounced();
+  document.getElementById('col-modal').hidden = true;
+  showToast(`Column "${name}" added`, 'success');
+}
+
+// ════════════════════════════════════════
+//  OPPORTUNITIES
+// ════════════════════════════════════════
+const DEFAULT_OPP_DATA = { opportunities: [], applied: [], lastScan: null };
+
+async function loadOpportunities() {
+  try {
+    const result = await ghLoad('data/opportunities.json');
+    if (result) {
+      state.oppData = result.data;
+      state.oppSha = result.sha;
+      if (!state.oppData.applied) state.oppData.applied = [];
+    } else {
+      state.oppData = JSON.parse(JSON.stringify(DEFAULT_OPP_DATA));
+      state.oppSha = null;
+      await saveOppData();
+    }
+    renderOpportunities();
+    renderApplied();
+    updateOppBadge();
+  } catch(e) {
+    state.oppData = JSON.parse(JSON.stringify(DEFAULT_OPP_DATA));
+  }
+}
+
+async function saveOppData() {
+  try {
+    const newSha = await ghSave('data/opportunities.json', state.oppData, state.oppSha);
+    state.oppSha = newSha;
+  } catch(e) {
+    showToast('Could not save opportunities: ' + e.message, 'error');
+  }
+}
+
+function renderOpportunities() {
+  if (!state.oppData) return;
+  const tbody = document.getElementById('opp-tbody');
+  const opps = state.oppData.opportunities || [];
+
+  if (!opps.length) {
+    tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="es-icon">🔍</div><p>No opportunities yet.<br>The 6am scan will populate this automatically.</p></div></td></tr>';
+    return;
+  }
+
+  // Sort: not_interested last, rest by date desc
+  const sorted = [...opps].sort((a,b) => {
+    if (a.status === 'not_interested' && b.status !== 'not_interested') return 1;
+    if (b.status === 'not_interested' && a.status !== 'not_interested') return -1;
+    return new Date(b.added||0) - new Date(a.added||0);
+  });
+
+  tbody.innerHTML = sorted.map(opp => {
+    const ni = opp.status === 'not_interested' ? 'opp-not-interested' : '';
+    const dt = opp.added ? new Date(opp.added).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—';
+    return `<tr class="${ni}" id="opp-row-${opp.id}">
+      <td>${escHtml(opp.title||'(unknown)')}</td>
+      <td>${escHtml(opp.company||'—')}</td>
+      <td class="url-cell">${opp.link ? `<a href="${escHtml(opp.link)}" target="_blank">View →</a>` : '—'}</td>
+      <td>${dt}</td>
+      <td>
+        <select class="status-select ${opp.status||'consider'}" onchange="handleOppStatus('${opp.id}', this.value, this)">
+          <option value="consider" ${opp.status==='consider'?'selected':''}>Consider</option>
+          <option value="applied" ${opp.status==='applied'?'selected':''}>Applied</option>
+          <option value="not_interested" ${opp.status==='not_interested'?'selected':''}>Not Interested</option>
+        </select>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const lastScan = state.oppData.lastScan;
+  if (lastScan) {
+    document.getElementById('opp-scan-time').textContent = 'Last scan: ' + new Date(lastScan).toLocaleString();
+  }
+}
+
+function handleOppStatus(oppId, newStatus, selectEl) {
+  selectEl.className = `status-select ${newStatus}`;
+  const opp = state.oppData.opportunities.find(o => o.id === oppId);
+  if (!opp) return;
+  opp.status = newStatus;
+
+  if (newStatus === 'applied') {
+    // Move to applied, remove from opportunities
+    opp.appliedDate = new Date().toISOString();
+    state.oppData.applied = state.oppData.applied || [];
+    state.oppData.applied.push({...opp});
+    state.oppData.opportunities = state.oppData.opportunities.filter(o => o.id !== oppId);
+    showToast(`Moved "${opp.title}" to Applied Dashboard`, 'success');
+    renderOpportunities();
+    renderApplied();
+  } else if (newStatus === 'not_interested') {
+    const row = document.getElementById(`opp-row-${oppId}`);
+    if (row) row.className = 'opp-not-interested';
+    showToast('Marked as Not Interested', 'info');
+  }
+  saveOppData();
+  updateOppBadge();
+}
+
+function updateOppBadge() {
+  const opps = state.oppData?.opportunities || [];
+  const count = opps.filter(o => o.status === 'consider').length;
+  const badge = document.getElementById('opp-badge');
+  if (count > 0) { badge.textContent = count; badge.hidden = false; }
+  else badge.hidden = true;
+}
+
+function renderApplied() {
+  if (!state.oppData) return;
+  const applied = state.oppData.applied || [];
+  const grid = document.getElementById('applied-grid');
+  document.getElementById('applied-count').textContent = applied.length ? `${applied.length} application${applied.length>1?'s':''}` : '';
+
+  if (!applied.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">✅</div><p>No applications moved here yet.<br>Mark a LinkedIn opportunity as "Applied" to add it here.</p></div>';
+    return;
+  }
+  grid.innerHTML = applied.map(a => {
+    const d = a.appliedDate ? new Date(a.appliedDate).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '—';
+    return `<div class="applied-card">
+      <div class="applied-title">${escHtml(a.title||'Position')}</div>
+      <div class="applied-company">${escHtml(a.company||'Unknown Company')}</div>
+      ${a.link ? `<a href="${escHtml(a.link)}" target="_blank" class="applied-link">View Job Posting →</a>` : ''}
+      <div class="applied-date">Applied: ${d}</div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════
+//  WEATHER
+// ════════════════════════════════════════
+async function loadWeather() {
+  const key = cfg('WEATHER_KEY');
+  if (!key) { document.getElementById('weather-temp').textContent = 'No key'; return; }
+  try {
+    const r = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Pleasanton,CA,US&appid=${key}&units=imperial`);
+    const d = await r.json();
+    if (d.cod !== 200) throw new Error(d.message);
+    const temp = Math.round(d.main.temp);
+    const desc = d.weather[0].description;
+    const icon = weatherIcon(d.weather[0].icon);
+    document.getElementById('weather-temp').textContent = `${temp}°F`;
+    document.getElementById('weather-desc').textContent = desc.charAt(0).toUpperCase() + desc.slice(1);
+    document.getElementById('weather-icon').textContent = icon;
+  } catch(e) {
+    document.getElementById('weather-temp').textContent = '--°F';
+  }
+}
+
+function weatherIcon(code) {
+  if (code.startsWith('01')) return '☀️';
+  if (code.startsWith('02') || code.startsWith('03')) return '⛅';
+  if (code.startsWith('04')) return '☁️';
+  if (code.startsWith('09') || code.startsWith('10')) return '🌧️';
+  if (code.startsWith('11')) return '⛈️';
+  if (code.startsWith('13')) return '❄️';
+  if (code.startsWith('50')) return '🌫️';
+  return '🌤️';
+}
+
+// ════════════════════════════════════════
+//  STOCKS
+// ════════════════════════════════════════
+const STOCKS = ['NVDA', 'AMZN', 'AVGO'];
+
+async function loadStocks() {
+  const key = cfg('ALPHA_KEY');
+  if (!key) { STOCKS.forEach(s => { document.getElementById(`price-${s}`).textContent = 'No key'; }); return; }
+  // Load sequentially to avoid rate limits
+  for (const sym of STOCKS) {
+    try {
+      const r = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${sym}&apikey=${key}`);
+      const d = await r.json();
+      const q = d['Global Quote'];
+      if (!q || !q['05. price']) { document.getElementById(`price-${sym}`).textContent = '—'; continue; }
+      const price = parseFloat(q['05. price']).toFixed(2);
+      const change = parseFloat(q['09. change']).toFixed(2);
+      const changePct = parseFloat(q['10. change percent']).toFixed(2);
+      const pos = change >= 0;
+      document.getElementById(`price-${sym}`).textContent = `$${price}`;
+      const el = document.getElementById(`change-${sym}`);
+      el.textContent = `${pos?'+':''}${change} (${pos?'+':''}${changePct}%)`;
+      el.className = `stock-change ${pos ? 'pos' : 'neg'}`;
+    } catch(e) {
+      document.getElementById(`price-${sym}`).textContent = '—';
+    }
+    await new Promise(r => setTimeout(r, 300)); // small delay between calls
+  }
+}
+
+function updateMarketTime() {
+  const el = document.getElementById('market-time');
+  const now = new Date();
+  const nyTime = new Intl.DateTimeFormat('en-US', { timeZone:'America/New_York', hour:'numeric', minute:'2-digit', hour12:true }).format(now);
+  const isWeekday = now.getDay() > 0 && now.getDay() < 6;
+  const nyHour = parseInt(Intl.DateTimeFormat('en-US', {timeZone:'America/New_York', hour:'numeric', hour12:false}).format(now));
+  const marketOpen = isWeekday && nyHour >= 9 && nyHour < 16;
+  el.innerHTML = `🕒 ${nyTime} ET &nbsp;${marketOpen ? '<span style="color:var(--success)">● Market Open</span>' : '<span style="color:var(--danger)">● Market Closed</span>'}`;
+}
+
+// ════════════════════════════════════════
+//  UTILITIES
+// ════════════════════════════════════════
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+function formatEmailDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const now = new Date();
+  const isToday = d.toDateString() === now.toDateString();
+  if (isToday) return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+function showToast(msg, type='info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `show ${type}`;
+  setTimeout(() => { el.className = type; }, 3000);
+}
+
+// ════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════
+window.addEventListener('load', () => {
+  if (!isConfigured()) {
+    showSetup();
+  } else {
+    // Wait for GIS to load
+    const waitForGIS = setInterval(() => {
+      if (window.google?.accounts?.oauth2) {
+        clearInterval(waitForGIS);
+        initGoogleAuth();
+      }
+    }, 100);
+  }
+});
+</script>
+</body>
+</html>
