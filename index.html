@@ -114,9 +114,11 @@
     .email-item:hover { background: var(--bg); }
     .email-item.active { background: #eff6ff; border-left: 3px solid var(--primary); }
     .email-item.unread .email-from { font-weight: 700; }
-    .email-from { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .email-subject { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
-    .email-date { font-size: 11px; color: var(--text-muted); position: absolute; top: 12px; right: 12px; }
+    .email-from { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 52px; }
+    .email-from-addr { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+    .email-subject { font-size: 12px; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; }
+    .email-snippet { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; opacity: 0.8; }
+    .email-date { font-size: 11px; color: var(--text-muted); position: absolute; top: 10px; right: 12px; white-space: nowrap; }
     .email-unread-dot { width: 7px; height: 7px; background: var(--primary); border-radius: 50%; position: absolute; left: 6px; top: 50%; transform: translateY(-50%); }
     #email-detail-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; color: var(--text-muted); gap: 10px; }
     #email-detail-empty svg { opacity: 0.3; }
@@ -636,7 +638,11 @@ function showSection(name) {
 // ════════════════════════════════════════
 async function gmailFetch(path, params={}) {
   const url = new URL('https://gmail.googleapis.com/gmail/v1/' + path);
-  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+  // Handle repeated params (e.g. metadataHeaders must be passed individually)
+  Object.entries(params).forEach(([k,v]) => {
+    if (Array.isArray(v)) v.forEach(val => url.searchParams.append(k, val));
+    else url.searchParams.append(k, v);
+  });
   const r = await fetch(url, { headers: { Authorization: `Bearer ${state.accessToken}` } });
   if (!r.ok) throw new Error(`Gmail ${r.status}`);
   return r.json();
@@ -648,7 +654,10 @@ async function loadInbox() {
     const data = await gmailFetch('users/me/messages', { labelIds: 'INBOX', maxResults: 25 });
     const messages = data.messages || [];
     const previews = await Promise.all(messages.map(m =>
-      gmailFetch(`users/me/messages/${m.id}`, { format: 'metadata', metadataHeaders: 'Subject,From,Date' })
+      gmailFetch(`users/me/messages/${m.id}`, {
+        format: 'metadata',
+        metadataHeaders: ['Subject', 'From', 'Date']
+      })
     ));
     renderEmailList(previews);
     const unread = previews.filter(m => m.labelIds && m.labelIds.includes('UNREAD')).length;
@@ -664,19 +673,33 @@ function getHeader(msg, name) {
   return (msg.payload?.headers?.find(h => h.name.toLowerCase() === name.toLowerCase()) || {}).value || '';
 }
 
+function parseFromHeader(raw) {
+  // Parses "Display Name <email@example.com>" or just "email@example.com"
+  const nameMatch = raw.match(/^"?([^"<]+)"?\s*</);
+  const emailMatch = raw.match(/<([^>]+)>/);
+  const name = nameMatch ? nameMatch[1].trim() : '';
+  const email = emailMatch ? emailMatch[1].trim() : raw.trim();
+  return { name: name || email, email };
+}
+
 function renderEmailList(messages) {
   const el = document.getElementById('email-list');
   if (!messages.length) { el.innerHTML = '<div class="empty-state"><p>No messages</p></div>'; return; }
   el.innerHTML = messages.map(m => {
-    const from = getHeader(m, 'From').replace(/<.*>/, '').trim();
+    const rawFrom = getHeader(m, 'From');
+    const { name: fromName, email: fromEmail } = parseFromHeader(rawFrom);
     const subject = getHeader(m, 'Subject') || '(no subject)';
     const date = formatEmailDate(getHeader(m, 'Date'));
+    const snippet = m.snippet ? escHtml(m.snippet) : '';
     const unread = m.labelIds?.includes('UNREAD') ? 'unread' : '';
+    const showEmail = fromName !== fromEmail; // only show addr separately if name differs
     return `<div class="email-item ${unread}" onclick="openEmail('${m.id}')" id="ei-${m.id}">
       ${unread ? '<div class="email-unread-dot"></div>' : ''}
       <div class="email-date">${date}</div>
-      <div class="email-from">${escHtml(from)}</div>
+      <div class="email-from">${escHtml(fromName)}</div>
+      ${showEmail ? `<div class="email-from-addr">${escHtml(fromEmail)}</div>` : ''}
       <div class="email-subject">${escHtml(subject)}</div>
+      ${snippet ? `<div class="email-snippet">${snippet}</div>` : ''}
     </div>`;
   }).join('');
 }
