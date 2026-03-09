@@ -100,6 +100,19 @@ def parse_title_company(subject, body):
     subject = re.sub(r"(?i)^re:\s*", "", subject).strip()
     subject = re.sub(r"(?i)^fwd?:\s*", "", subject).strip()
 
+    # LinkedIn digest format: "search keyword": Company - Job Title [and more]
+    # e.g. "vice president gtm": XBOW - Head of GTM Strategy and more
+    linkedin_digest = re.match(
+        r'^["\u201c\u201e][^"\u201c\u201d\u201e]+["\u201d\u201e]\s*:\s*'
+        r'([A-Z][^\n\-]{2,50}?)\s*[-\u2013]\s*(.{5,}?)(?:\s+and\s+more.*)?$',
+        subject,
+        re.IGNORECASE,
+    )
+    if linkedin_digest:
+        company = linkedin_digest.group(1).strip().rstrip(",. ")
+        title = linkedin_digest.group(2).strip()
+        return title[:80], company
+
     for pattern in TITLE_PATTERNS:
         m = re.match(pattern, subject, re.IGNORECASE)
         if m:
