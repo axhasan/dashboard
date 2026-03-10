@@ -32,6 +32,16 @@
     ],
     "rows": [
       {
+        "id": "row_1773132649273",
+        "company": "Klaviyo",
+        "role": "VP, GTM Systems",
+        "date": "03/10/2026",
+        "status": "Applied",
+        "url": "https://www.linkedin.com/jobs/view/4291961413/",
+        "notes": "Cold Apply, good match",
+        "col_next_steps_1773126858633": ""
+      },
+      {
         "id": "row_1773093949487",
         "company": "HPE",
         "role": "Sr.Dr PCBE Poduct Mgmt",
@@ -100,6 +110,16 @@
         "url": "https://www.klaviyo.com/careers/jobs/6749688003?gh_jid=6749688003&gh_src=1284ec8c3us",
         "notes": "",
         "col_next_steps_1773126858633": "Wait"
+      },
+      {
+        "id": "row_1773133105869",
+        "company": "AWS",
+        "role": "4xPrincipal/Sr.Mgr BD and GTM",
+        "date": "02/25",
+        "status": "Internal",
+        "url": "",
+        "notes": "So far nothing.",
+        "col_next_steps_1773126858633": ""
       }
     ],
     "colWidths": {
