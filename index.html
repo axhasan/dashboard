@@ -90,14 +90,7 @@
     .weather-card .weather-info .city { font-size: 11px; opacity: 0.8; }
     .weather-card .weather-info .desc { font-size: 13px; font-weight: 500; }
     .weather-icon { font-size: 28px; }
-    .stock-card { padding: 8px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); flex-shrink: 0; min-width: 120px; cursor: pointer; transition: box-shadow 0.15s; }
-    .stock-card:hover { box-shadow: var(--shadow-md); }
-    .stock-symbol { font-size: 12px; font-weight: 700; color: var(--text-muted); }
-    .stock-price { font-size: 17px; font-weight: 700; }
-    .stock-change { font-size: 12px; font-weight: 500; }
-    .stock-change.pos { color: var(--success); }
-    .stock-change.neg { color: var(--danger); }
-    .stock-cached { font-size: 9px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1px; }
+    /* stock CSS removed — replaced by motivational quote */
     .tracker-dropdown { padding: 3px 6px; border: 1px solid var(--border); border-radius: 5px; font-size: 12px; font-family: inherit; background: var(--bg); color: var(--text); cursor: pointer; outline: none; }
     .tracker-dropdown:focus { border-color: var(--primary); }
     .tracker-dropdown option[value="Call"]      { background: #eff6ff; }
@@ -225,39 +218,58 @@
 
     /* ── TASKS DASHBOARD ── */
     #tasks-container { max-height: calc(100vh - 54px - 88px - 80px); overflow-y: auto; padding-bottom: 8px; }
-    .tasks-week { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 16px; overflow: hidden; }
-    .tasks-week-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--bg); border-bottom: 1px solid var(--border); }
-    .tasks-week-label { font-size: 14px; font-weight: 700; flex: 1; outline: none; color: var(--text); border: none; background: transparent; border-bottom: 2px solid transparent; font-family: inherit; padding: 2px 0; }
-    .tasks-week-label:focus { border-bottom-color: var(--primary); }
+    /* ── TASKS: week card ── */
+    .tasks-week { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 20px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .tasks-week-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #1e293b; border-bottom: 1px solid #334155; }
+    .tasks-week-label { font-size: 14px; font-weight: 700; flex: 1; outline: none; color: #f1f5f9; border: none; background: transparent; border-bottom: 2px solid transparent; font-family: inherit; padding: 2px 0; }
+    .tasks-week-label:focus { border-bottom-color: #60a5fa; }
+    /* ── TASKS: daily section ── */
+    .tasks-daily-section { border-bottom: 1px solid var(--border); }
+    .tasks-section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; padding: 6px 14px; display: flex; align-items: center; gap: 5px; }
+    .tasks-daily-section .tasks-section-label { background: #dbeafe; color: #1d4ed8; border-bottom: 1px solid #bfdbfe; }
     .tasks-table-wrap { overflow-x: auto; }
-    .tasks-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-    .tasks-table th { background: var(--bg); padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); white-space: nowrap; position: relative; overflow: hidden; }
-    .tasks-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+    .tasks-table { width: 100%; border-collapse: collapse; }
+    .tasks-table th { padding: 7px 12px; text-align: left; font-size: 11px; font-weight: 700; color: #1e40af; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #bfdbfe; background: #eff6ff; white-space: nowrap; position: relative; overflow: hidden; }
+    .tasks-table td { padding: 7px 10px; border-bottom: 1px solid #e2e8f0; font-size: 13px; vertical-align: top; }
     .tasks-table tr:last-child td { border-bottom: none; }
-    .tasks-table tr:hover td { background: #fafafa; }
-    .task-date-cell { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; min-width: 100px; }
-    .task-date-day { font-size: 11px; color: var(--text-muted); font-weight: 500; }
-    .task-date-cell.today { color: var(--primary); }
-    .task-date-cell.today .task-date-day { color: var(--primary); }
-    .task-date-cell.weekend { color: #94a3b8; }
-    .task-checkbox { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); flex-shrink: 0; }
-    tr.task-done .task-cell { text-decoration: line-through; color: #94a3b8; }
-    .task-cell { outline: none; min-height: 18px; display: block; line-height: 1.5; }
-    .task-cell:empty::before { content: attr(data-placeholder); color: #cbd5e1; font-style: italic; pointer-events: none; }
-    .task-cell:focus { background: #eff6ff; border-radius: 4px; box-shadow: inset 0 0 0 2px var(--primary); padding: 2px 5px; }
-    /* ── Task entry lists (per-column independent) ── */
+    .tasks-table tbody tr:hover td { background: #f0f9ff; }
+    .tasks-table tbody tr.task-today td { background: #eff6ff; }
+    .tasks-table tbody tr.task-today td.task-date-td { border-left: 3px solid #3b82f6; }
+    .tasks-table tbody tr.task-weekend td { background: #f8fafc; }
+    .task-date-cell { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; }
+    .task-date-day { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-top: 1px; }
+    tr.task-today .task-date-cell { color: #1d4ed8; }
+    tr.task-today .task-date-day { color: #3b82f6; }
+    tr.task-weekend .task-date-cell { color: #94a3b8; }
+    /* ── TASKS: entry lists ── */
     .task-entries-td { padding: 5px 10px !important; vertical-align: top !important; }
     .task-entry-list { display: flex; flex-direction: column; gap: 3px; }
     .task-entry-item { display: flex; align-items: flex-start; gap: 5px; }
-    .task-entry-chk { width: 14px; height: 14px; cursor: pointer; accent-color: var(--primary); margin-top: 3px; flex-shrink: 0; }
+    .task-entry-chk { width: 14px; height: 14px; cursor: pointer; accent-color: #3b82f6; margin-top: 3px; flex-shrink: 0; }
     .task-entry-text { flex: 1; outline: none; font-size: 13px; line-height: 1.5; min-height: 18px; color: var(--text); background: transparent; word-break: break-word; cursor: text; border-radius: 3px; padding: 0 2px; }
     .task-entry-text:empty::before { content: attr(data-ph); color: #cbd5e1; font-style: italic; pointer-events: none; }
-    .task-entry-text:focus { background: #eff6ff; box-shadow: inset 0 0 0 1px var(--primary); padding: 0 4px; }
+    .task-entry-text:focus { background: #eff6ff; box-shadow: inset 0 0 0 1px #3b82f6; padding: 0 4px; }
     .task-entry-item.done .task-entry-text { text-decoration: line-through; color: #94a3b8; }
     .task-entry-del { background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 11px; padding: 0 2px; opacity: 0; flex-shrink: 0; margin-top: 3px; line-height: 1.4; transition: opacity 0.15s; }
     .task-entry-item:hover .task-entry-del { opacity: 1; }
-    .task-add-entry-btn { font-size: 11px; color: var(--primary); background: none; border: 1px dashed var(--border); border-radius: 4px; cursor: pointer; padding: 2px 8px; margin-top: 3px; opacity: 0.6; display: inline-flex; align-items: center; gap: 3px; }
+    .task-add-entry-btn { font-size: 11px; color: #3b82f6; background: none; border: 1px dashed #93c5fd; border-radius: 4px; cursor: pointer; padding: 2px 8px; margin-top: 4px; opacity: 0.8; display: inline-flex; align-items: center; gap: 3px; }
     .task-add-entry-btn:hover { opacity: 1; background: #eff6ff; }
+    /* ── TASKS: weekly panels ── */
+    .tasks-weekly-row { display: flex; gap: 0; }
+    .tasks-weekly-panel { flex: 1; min-width: 0; }
+    .tasks-weekly-panel:first-child { border-right: 1px solid var(--border); }
+    .tasks-weekly-panel-header { font-size: 11px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; padding: 6px 14px; border-bottom: 1px solid; }
+    .tasks-goals-panel .tasks-weekly-panel-header { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+    .tasks-outcomes-panel .tasks-weekly-panel-header { background: #f3e8ff; color: #7e22ce; border-color: #e9d5ff; }
+    .tasks-weekly-panel-body { padding: 10px 14px 12px; }
+    .tasks-goals-panel .task-entry-chk { accent-color: #16a34a; }
+    .tasks-goals-panel .task-add-entry-btn { border-color: #86efac; color: #15803d; }
+    .tasks-goals-panel .task-add-entry-btn:hover { background: #dcfce7; }
+    .tasks-goals-panel .task-entry-text:focus { background: #f0fdf4; box-shadow: inset 0 0 0 1px #16a34a; }
+    .tasks-outcomes-panel .task-entry-chk { accent-color: #9333ea; }
+    .tasks-outcomes-panel .task-add-entry-btn { border-color: #d8b4fe; color: #7e22ce; }
+    .tasks-outcomes-panel .task-add-entry-btn:hover { background: #f3e8ff; }
+    .tasks-outcomes-panel .task-entry-text:focus { background: #faf5ff; box-shadow: inset 0 0 0 1px #9333ea; }
 
     /* ── APPLIED DASHBOARD ── */
     /* email delete button */
@@ -659,22 +671,13 @@
         </div>
       </div>
     </div>
-    <div class="stock-card" id="stock-NVDA" onclick="window.open('https://finance.yahoo.com/quote/NVDA','_blank')">
-      <div class="stock-symbol">NVDA</div>
-      <div class="stock-price" id="price-NVDA"><span class="loading-dots"></span></div>
-      <div class="stock-change" id="change-NVDA">—</div>
+    <div id="motivational-quote-card" style="flex:1;min-width:0;background:linear-gradient(135deg,#1e3a5f 0%,#1e293b 100%);border:1px solid #334155;border-radius:var(--radius);padding:10px 18px;display:flex;align-items:center;gap:12px;overflow:hidden;">
+      <div style="font-size:22px;flex-shrink:0;opacity:0.7">💬</div>
+      <div style="min-width:0;">
+        <div id="quote-text" style="font-size:13px;font-style:italic;color:#e2e8f0;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Loading quote…</div>
+        <div id="quote-author" style="font-size:11px;color:#64748b;margin-top:3px;"></div>
+      </div>
     </div>
-    <div class="stock-card" id="stock-AMZN" onclick="window.open('https://finance.yahoo.com/quote/AMZN','_blank')">
-      <div class="stock-symbol">AMZN</div>
-      <div class="stock-price" id="price-AMZN"><span class="loading-dots"></span></div>
-      <div class="stock-change" id="change-AMZN">—</div>
-    </div>
-    <div class="stock-card" id="stock-AVGO" onclick="window.open('https://finance.yahoo.com/quote/AVGO','_blank')">
-      <div class="stock-symbol">AVGO</div>
-      <div class="stock-price" id="price-AVGO"><span class="loading-dots"></span></div>
-      <div class="stock-change" id="change-AVGO">—</div>
-    </div>
-    <div style="margin-left:auto; font-size:11px; color:var(--text-muted); flex-shrink:0" id="market-time"></div>
   </div>
 
 </div><!-- /app -->
@@ -919,9 +922,10 @@ async function bootDashboard() {
   loadCalendar();
   loadOpportunities();
   loadWeather();
-  loadStocks();
-  updateMarketTime();
-  setInterval(updateMarketTime, 60000);
+  renderMotivationalQuote();
+  // Refresh quote every hour
+  const msUntilNextHour = (60 - new Date().getMinutes()) * 60000 - new Date().getSeconds() * 1000;
+  setTimeout(() => { renderMotivationalQuote(); setInterval(renderMotivationalQuote, 3600000); }, msUntilNextHour);
 }
 
 // ════════════════════════════════════════
@@ -2131,7 +2135,76 @@ function weatherIcon(code) {
 }
 
 // ════════════════════════════════════════
-//  STOCKS
+//  MOTIVATIONAL QUOTE  (replaces stocks)
+// ════════════════════════════════════════
+const QUOTES = [
+  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+  { text: "Our greatest glory is not in never falling, but in rising every time we fall.", author: "Confucius" },
+  { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+  { text: "Hard work beats talent when talent doesn't work hard.", author: "Tim Notke" },
+  { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+  { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+  { text: "Push yourself, because no one else is going to do it for you.", author: "Unknown" },
+  { text: "Great things never came from comfort zones.", author: "Unknown" },
+  { text: "Dream it. Wish it. Do it.", author: "Unknown" },
+  { text: "Success doesn't just find you. You have to go out and get it.", author: "Unknown" },
+  { text: "The harder you work for something, the greater you'll feel when you achieve it.", author: "Unknown" },
+  { text: "Dream bigger. Do bigger.", author: "Unknown" },
+  { text: "Don't stop when you're tired. Stop when you're done.", author: "Unknown" },
+  { text: "Wake up with determination. Go to bed with satisfaction.", author: "Unknown" },
+  { text: "Little things make big days.", author: "Unknown" },
+  { text: "It's going to be hard, but hard does not mean impossible.", author: "Unknown" },
+  { text: "Don't wait for opportunity. Create it.", author: "Unknown" },
+  { text: "Sometimes later becomes never. Do it now.", author: "Unknown" },
+  { text: "Great things take time. Be patient.", author: "Unknown" },
+  { text: "Stay focused and never give up.", author: "Unknown" },
+  { text: "The key to success is to focus on goals, not obstacles.", author: "Unknown" },
+  { text: "Your limitation—it's only your imagination.", author: "Unknown" },
+  { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+  { text: "You miss 100% of the shots you don't take.", author: "Wayne Gretzky" },
+  { text: "Whether you think you can or think you can't, you're right.", author: "Henry Ford" },
+  { text: "If life were predictable it would cease to be life.", author: "Eleanor Roosevelt" },
+  { text: "Spread love everywhere you go.", author: "Mother Teresa" },
+  { text: "When you reach the end of your rope, tie a knot in it and hang on.", author: "Franklin D. Roosevelt" },
+  { text: "Always remember that you are absolutely unique.", author: "Margaret Mead" },
+  { text: "Do not go where the path may lead, go instead where there is no path and leave a trail.", author: "Ralph Waldo Emerson" },
+  { text: "You will face many defeats in life, but never let yourself be defeated.", author: "Maya Angelou" },
+  { text: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
+  { text: "In the end, it's not the years in your life that count. It's the life in your years.", author: "Abraham Lincoln" },
+  { text: "Never let the fear of striking out keep you from playing the game.", author: "Babe Ruth" },
+  { text: "Life is either a daring adventure or nothing at all.", author: "Helen Keller" },
+  { text: "Many of life's failures are people who did not realize how close they were to success when they gave up.", author: "Thomas A. Edison" },
+  { text: "You have brains in your head. You have feet in your shoes. You can steer yourself any direction you choose.", author: "Dr. Seuss" },
+  { text: "If you look at what you have in life, you'll always have more.", author: "Oprah Winfrey" },
+  { text: "If you set your goals ridiculously high and it's a failure, you will fail above everyone else's success.", author: "James Cameron" },
+  { text: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
+  { text: "To handle yourself, use your head; to handle others, use your heart.", author: "Eleanor Roosevelt" },
+  { text: "It is during our darkest moments that we must focus to see the light.", author: "Aristotle" },
+  { text: "Do not pray for an easy life, pray for the strength to endure a difficult one.", author: "Bruce Lee" },
+  { text: "Be yourself; everyone else is already taken.", author: "Oscar Wilde" },
+  { text: "Perfection is not attainable, but if we chase perfection we can catch excellence.", author: "Vince Lombardi" },
+  { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
+];
+
+function getHourlyQuote() {
+  // Pick quote by hour-of-day + day-of-year so it changes every hour but is consistent per hour
+  const now = new Date();
+  const hourIndex = now.getHours() + now.getDate() * 24 + now.getMonth() * 744;
+  return QUOTES[hourIndex % QUOTES.length];
+}
+
+function renderMotivationalQuote() {
+  const q = getHourlyQuote();
+  const textEl   = document.getElementById('quote-text');
+  const authorEl = document.getElementById('quote-author');
+  if (textEl)   textEl.textContent   = `"${q.text}"`;
+  if (authorEl) authorEl.textContent = q.author !== 'Unknown' ? `— ${q.author}` : '';
+}
+
+// ════════════════════════════════════════
+//  STOCKS (legacy functions kept to avoid errors, but no longer called)
 // ════════════════════════════════════════
 const STOCKS = ['NVDA', 'AMZN', 'AVGO'];
 const STOCK_CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
@@ -2279,9 +2352,7 @@ function createNewDay(isoDate) {
   return {
     id: `day_${Date.now()}_${Math.random().toString(36).slice(2,5)}`,
     date: isoDate,
-    dailyEntries:   [createNewEntry()],
-    weeklyGoals:    [createNewEntry()],
-    weeklyOutcomes: [createNewEntry()]
+    dailyEntries: [createNewEntry()]
   };
 }
 
@@ -2308,7 +2379,14 @@ function createNewWeek() {
   });
 
   const label = 'Week of ' + monday.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  return { id: `week_${Date.now()}`, label, startDate: monday.toISOString().slice(0, 10), days };
+  return {
+    id: `week_${Date.now()}`,
+    label,
+    startDate: monday.toISOString().slice(0, 10),
+    days,
+    weeklyGoals:    [createNewEntry()],
+    weeklyOutcomes: [createNewEntry()]
+  };
 }
 
 function formatTaskDate(isoDate) {
@@ -2338,6 +2416,24 @@ function renderEntryList(weekId, dayId, field, entries, placeholder) {
   </div>`;
 }
 
+function renderWeekEntryList(weekId, field, entries, placeholder) {
+  const safeWid = weekId.replace(/'/g, "\\'");
+  const safeF   = field.replace(/'/g, "\\'");
+  return `<div class="task-entry-list" data-week="${escHtml(weekId)}" data-wfield="${escHtml(field)}">
+    ${(entries || []).map(e => `
+      <div class="task-entry-item ${e.done ? 'done' : ''}" id="wentry-${e.id}">
+        <input type="checkbox" class="task-entry-chk" ${e.done ? 'checked' : ''}
+          onchange="toggleWeekEntry('${safeWid}','${safeF}','${e.id}',this.checked)">
+        <div contenteditable="true" class="task-entry-text" data-ph="${escHtml(placeholder)}"
+          onblur="updateWeekEntry('${safeWid}','${safeF}','${e.id}',this.innerText)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();addWeekEntry('${safeWid}','${safeF}')}"
+        >${escHtml(e.text || '')}</div>
+        <button class="task-entry-del" onclick="deleteWeekEntry('${safeWid}','${safeF}','${e.id}')" title="Remove">✕</button>
+      </div>`).join('')}
+    <button class="task-add-entry-btn" onclick="addWeekEntry('${safeWid}','${safeF}')">+ Add</button>
+  </div>`;
+}
+
 function renderTasks() {
   if (!state.tasksData) return;
   const container = document.getElementById('tasks-container');
@@ -2354,65 +2450,95 @@ function renderTasks() {
     return;
   }
 
-  const wDate  = colWidths.date    || 110;
-  const wDaily = colWidths.daily   || 260;
-  const wGoal  = colWidths.goal    || 200;
-  const wOutc  = colWidths.outcome || 200;
+  const wDate  = colWidths.date  || 110;
+  const wDaily = colWidths.daily || 'auto';
 
   container.innerHTML = weeks.map(week => {
-    // Migrate old format (week.tasks) to new format (week.days) on the fly
-    const days = week.days || (week.tasks || []).map(t => ({
-      id: t.id, date: t.date,
-      dailyEntries:   [{id:`e_${t.id}_d`, text: t.daily   || '', done: t.done || false}],
-      weeklyGoals:    [{id:`e_${t.id}_g`, text: t.goal    || '', done: false}],
-      weeklyOutcomes: [{id:`e_${t.id}_o`, text: t.outcome || '', done: false}]
-    }));
+    // Migrate old flat tasks format → new days format
+    if (!week.days && week.tasks) {
+      week.days = week.tasks.map(t => ({
+        id: t.id, date: t.date,
+        dailyEntries: [{id:`e_${t.id}_d`, text: t.daily || '', done: t.done || false}]
+      }));
+    }
+    const days = week.days || [];
+
+    // Migrate per-day weeklyGoals/weeklyOutcomes to week-level (collect all non-empty)
+    if (!week.weeklyGoals) {
+      const collected = [];
+      days.forEach(d => { if (d.weeklyGoals) d.weeklyGoals.forEach(e => { if (e.text) collected.push({...e}); }); });
+      week.weeklyGoals = collected.length ? collected : [createNewEntry()];
+      days.forEach(d => { delete d.weeklyGoals; });
+    }
+    if (!week.weeklyOutcomes) {
+      const collected = [];
+      days.forEach(d => { if (d.weeklyOutcomes) d.weeklyOutcomes.forEach(e => { if (e.text) collected.push({...e}); }); });
+      week.weeklyOutcomes = collected.length ? collected : [createNewEntry()];
+      days.forEach(d => { delete d.weeklyOutcomes; });
+    }
+
+    const safeWid = week.id.replace(/'/g, "\\'");
 
     return `
     <div class="tasks-week" id="week-${week.id}">
       <div class="tasks-week-header">
         <input type="text" class="tasks-week-label" value="${escHtml(week.label)}"
-          onblur="updateWeekLabel('${week.id}',this.value)"
+          onblur="updateWeekLabel('${safeWid}',this.value)"
           onkeydown="if(event.key==='Enter')this.blur()">
-        <button class="btn btn-outline btn-sm" style="font-size:11px;padding:3px 9px;color:var(--danger);border-color:var(--danger);" onclick="deleteWeek('${week.id}')">✕ Week</button>
+        <button class="btn btn-sm" style="font-size:11px;padding:3px 9px;color:#f87171;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);" onclick="deleteWeek('${safeWid}')">✕ Delete Week</button>
       </div>
-      <div class="tasks-table-wrap">
-        <table class="tasks-table" id="tasks-table-${week.id}">
-          <thead>
-            <tr>
-              <th class="row-drag-th"></th>
-              <th style="width:${wDate}px;min-width:${wDate}px;" data-col-id="date">Date &amp; Day<span class="col-resize-handle" data-col="date"></span></th>
-              <th style="width:${wDaily}px;min-width:${wDaily}px;" data-col-id="daily">Daily Entry<span class="col-resize-handle" data-col="daily"></span></th>
-              <th style="width:${wGoal}px;min-width:${wGoal}px;" data-col-id="goal">Weekly Goals<span class="col-resize-handle" data-col="goal"></span></th>
-              <th style="width:${wOutc}px;min-width:${wOutc}px;" data-col-id="outcome">Weekly Outcomes<span class="col-resize-handle" data-col="outcome"></span></th>
-              <th style="width:32px;min-width:32px;"></th>
-            </tr>
-          </thead>
-          <tbody>
-            ${days.map(day => {
-              const fd = day.date ? formatTaskDate(day.date) : null;
-              const isToday = day.date === todayISO;
-              const dateClass = isToday ? 'task-date-cell today' : (fd?.isWeekend ? 'task-date-cell weekend' : 'task-date-cell');
-              const dateCellHtml = fd
-                ? `<div class="${dateClass}"><div>${fd.date}</div><div class="task-date-day">${fd.day}</div></div>`
-                : `<div class="task-date-cell" style="color:#cbd5e1;font-style:italic;font-size:11px;">—</div>`;
-              return `
-              <tr id="day-${day.id}" draggable="true" data-day-id="${day.id}">
-                <td class="row-drag-td" title="Drag to reorder">⠿</td>
-                <td>${dateCellHtml}</td>
-                <td class="task-entries-td">${renderEntryList(week.id, day.id, 'dailyEntries',   day.dailyEntries,   'Add entry…')}</td>
-                <td class="task-entries-td">${renderEntryList(week.id, day.id, 'weeklyGoals',    day.weeklyGoals,    'Add goal…')}</td>
-                <td class="task-entries-td">${renderEntryList(week.id, day.id, 'weeklyOutcomes', day.weeklyOutcomes, 'Add outcome…')}</td>
-                <td></td>
-              </tr>`;
-            }).join('')}
-          </tbody>
-        </table>
+
+      <!-- Daily Entries section -->
+      <div class="tasks-daily-section">
+        <div class="tasks-section-label">📅 Daily Entries</div>
+        <div class="tasks-table-wrap">
+          <table class="tasks-table" id="tasks-table-${week.id}">
+            <thead>
+              <tr>
+                <th class="row-drag-th"></th>
+                <th style="width:${wDate}px;min-width:${wDate}px;" data-col-id="date">Date<span class="col-resize-handle" data-col="date"></span></th>
+                <th data-col-id="daily">Daily Entry<span class="col-resize-handle" data-col="daily"></span></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${days.map(day => {
+                const fd = day.date ? formatTaskDate(day.date) : null;
+                const isToday = day.date === todayISO;
+                const trClass = isToday ? 'task-today' : (fd?.isWeekend ? 'task-weekend' : '');
+                const dateCellHtml = fd
+                  ? `<div class="task-date-cell"><div>${fd.date}</div><div class="task-date-day">${fd.day}</div></div>`
+                  : `<div class="task-date-cell" style="color:#cbd5e1;font-style:italic;font-size:11px;">—</div>`;
+                return `
+                <tr id="day-${day.id}" class="${trClass}" draggable="true" data-day-id="${day.id}">
+                  <td class="row-drag-td" title="Drag to reorder">⠿</td>
+                  <td class="task-date-td">${dateCellHtml}</td>
+                  <td class="task-entries-td">${renderEntryList(week.id, day.id, 'dailyEntries', day.dailyEntries, 'Add entry…')}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Weekly Goals + Outcomes -->
+      <div class="tasks-weekly-row">
+        <div class="tasks-weekly-panel tasks-goals-panel">
+          <div class="tasks-weekly-panel-header">🎯 Weekly Goals</div>
+          <div class="tasks-weekly-panel-body">
+            ${renderWeekEntryList(week.id, 'weeklyGoals', week.weeklyGoals, 'Add goal…')}
+          </div>
+        </div>
+        <div class="tasks-weekly-panel tasks-outcomes-panel">
+          <div class="tasks-weekly-panel-header">✅ Weekly Outcomes</div>
+          <div class="tasks-weekly-panel-body">
+            ${renderWeekEntryList(week.id, 'weeklyOutcomes', week.weeklyOutcomes, 'Add outcome…')}
+          </div>
+        </div>
       </div>
     </div>`;
   }).join('');
 
-  // Initialize resize + drag for each week's table
+  // Initialize column resize + row drag for each daily table
   weeks.forEach(week => {
     const tableEl = document.getElementById(`tasks-table-${week.id}`);
     if (tableEl) {
@@ -2605,6 +2731,55 @@ function updateEntry(weekId, dayId, field, entryId, text) {
   const day = findDay(weekId, dayId);
   if (!day || !day[field]) return;
   const entry = day[field].find(e => e.id === entryId);
+  if (entry) { entry.text = (text || '').trim(); saveTaskDataDebounced(); }
+}
+
+// ── Week-level CRUD (weeklyGoals / weeklyOutcomes) ──
+function findWeek(weekId) {
+  return state.tasksData?.weeks?.find(w => w.id === weekId) || null;
+}
+
+function addWeekEntry(weekId, field) {
+  const week = findWeek(weekId);
+  if (!week) return;
+  if (!week[field]) week[field] = [];
+  const entry = createNewEntry();
+  week[field].push(entry);
+  saveTaskDataDebounced();
+  const listEl = document.querySelector(`.task-entry-list[data-week="${weekId}"][data-wfield="${field}"]`);
+  if (listEl) {
+    listEl.outerHTML = renderWeekEntryList(weekId, field, week[field],
+      field === 'weeklyGoals' ? 'Add goal…' : 'Add outcome…');
+    document.querySelector(`#wentry-${entry.id} .task-entry-text`)?.focus();
+  }
+}
+
+function deleteWeekEntry(weekId, field, entryId) {
+  const week = findWeek(weekId);
+  if (!week || !week[field]) return;
+  week[field] = week[field].filter(e => e.id !== entryId);
+  if (!week[field].length) week[field] = [createNewEntry()];
+  saveTaskDataDebounced();
+  const listEl = document.querySelector(`.task-entry-list[data-week="${weekId}"][data-wfield="${field}"]`);
+  if (listEl) listEl.outerHTML = renderWeekEntryList(weekId, field, week[field],
+    field === 'weeklyGoals' ? 'Add goal…' : 'Add outcome…');
+}
+
+function toggleWeekEntry(weekId, field, entryId, done) {
+  const week = findWeek(weekId);
+  if (!week || !week[field]) return;
+  const entry = week[field].find(e => e.id === entryId);
+  if (entry) {
+    entry.done = done;
+    saveTaskDataDebounced();
+    document.getElementById(`wentry-${entryId}`)?.classList.toggle('done', done);
+  }
+}
+
+function updateWeekEntry(weekId, field, entryId, text) {
+  const week = findWeek(weekId);
+  if (!week || !week[field]) return;
+  const entry = week[field].find(e => e.id === entryId);
   if (entry) { entry.text = (text || '').trim(); saveTaskDataDebounced(); }
 }
 
