@@ -24,6 +24,10 @@
       {
         "id": "notes",
         "label": "Notes"
+      },
+      {
+        "id": "col_next_steps_1773126858633",
+        "label": "Next Steps"
       }
     ],
     "rows": [
@@ -34,7 +38,8 @@
         "date": "02/05",
         "status": "Closed",
         "url": "",
-        "notes": "Had a chat with recruiter. Submitted app but never got a chance to interview. Amir Ch. referral."
+        "notes": "Had a chat with recruiter. Submitted app but never got a chance to interview. Amir Ch. referral.",
+        "col_next_steps_1773126858633": ""
       },
       {
         "id": "row_1773125328699",
@@ -43,7 +48,8 @@
         "date": "02/26",
         "status": "On-Going",
         "url": "https://salesforce.wd12.myworkdayjobs.com/en-US/External_Career_Site/userHome",
-        "notes": "Cold apply off the web. Linked in to SFDC jobs page."
+        "notes": "Cold apply off the web. Linked in to SFDC jobs page.",
+        "col_next_steps_1773126858633": ""
       },
       {
         "id": "row_1773125467567",
@@ -52,7 +58,8 @@
         "date": "02/10",
         "status": "No response",
         "url": "",
-        "notes": ""
+        "notes": "",
+        "col_next_steps_1773126858633": ""
       },
       {
         "id": "row_1773126486821",
@@ -61,7 +68,8 @@
         "date": "03/10",
         "status": "Sent to Hassan Shaikh",
         "url": "https://www.linkedin.com/jobs/view/4377986342/?trk=flagship3_job_home_savedjobs&refId=d005ce8a-dc53-4420-a077-faaa072ce4fe&trackingId=fjuuUBg9ROGOz7nZljtzUw%3D%3D",
-        "notes": ""
+        "notes": "",
+        "col_next_steps_1773126858633": ""
       },
       {
         "id": "row_1773126674817",
@@ -70,7 +78,8 @@
         "date": "03/10",
         "status": "Sent to Hassan Shaikh",
         "url": "https://www.google.com/about/careers/applications/jobs/results/108849208877818566-managing-director-global-strategic-initiatives-americas",
-        "notes": ""
+        "notes": "",
+        "col_next_steps_1773126858633": ""
       }
     ],
     "colWidths": {
