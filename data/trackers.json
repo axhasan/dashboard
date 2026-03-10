@@ -151,6 +151,11 @@
         "label": "Tech"
       },
       {
+        "id": "heatmap",
+        "label": "Heatmap",
+        "type": "heatmap"
+      },
+      {
         "id": "linkedin",
         "label": "LinkedIn"
       },
@@ -176,11 +181,6 @@
         "id": "next_followup",
         "label": "Next Follow Up",
         "type": "date"
-      },
-      {
-        "id": "heatmap",
-        "label": "Heatmap",
-        "type": "heatmap"
       },
       {
         "id": "notes",
