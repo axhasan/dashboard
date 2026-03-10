@@ -59,7 +59,7 @@
         "status": "No response",
         "url": "",
         "notes": "",
-        "col_next_steps_1773126858633": ""
+        "col_next_steps_1773126858633": "Find a way in, maybe Sundip knows"
       },
       {
         "id": "row_1773126486821",
@@ -88,7 +88,8 @@
       "status": 112,
       "date": 108,
       "notes": 353,
-      "url": 783
+      "url": 783,
+      "col_next_steps_1773126858633": 288
     }
   },
   "contacts": {
