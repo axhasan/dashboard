@@ -18,16 +18,16 @@
         "label": "Status"
       },
       {
-        "id": "url",
-        "label": "Job URL"
-      },
-      {
         "id": "notes",
         "label": "Notes"
       },
       {
         "id": "col_next_steps_1773126858633",
         "label": "Next Steps"
+      },
+      {
+        "id": "url",
+        "label": "Job URL"
       }
     ],
     "rows": [
