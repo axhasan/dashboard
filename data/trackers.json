@@ -528,7 +528,8 @@
       }
     ],
     "colWidths": {
-      "title": 241
+      "title": 241,
+      "company": 158
     }
   },
   "applied": []
