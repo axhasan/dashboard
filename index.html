@@ -296,22 +296,27 @@
     .opp-match-gaps li::before { content: '△'; color: var(--warning); flex-shrink: 0; font-weight: 700; margin-top: 1px; }
 
     /* ── TASKS DASHBOARD ── */
+    #tasks-container { max-height: calc(100vh - 54px - 88px - 80px); overflow-y: auto; padding-bottom: 8px; }
     .tasks-week { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 16px; overflow: hidden; }
     .tasks-week-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--bg); border-bottom: 1px solid var(--border); }
-    .tasks-week-label { font-size: 14px; font-weight: 700; flex: 1; outline: none; color: var(--text); border: none; background: transparent; border-bottom: 2px solid transparent; font-family: inherit; }
+    .tasks-week-label { font-size: 14px; font-weight: 700; flex: 1; outline: none; color: var(--text); border: none; background: transparent; border-bottom: 2px solid transparent; font-family: inherit; padding: 2px 0; }
     .tasks-week-label:focus { border-bottom-color: var(--primary); }
-    .tasks-table { width: 100%; border-collapse: collapse; }
-    .tasks-table th { padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); background: #fafafa; white-space: nowrap; }
-    .tasks-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+    .tasks-table-wrap { overflow-x: auto; }
+    .tasks-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+    .tasks-table th { background: var(--bg); padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); white-space: nowrap; position: relative; overflow: hidden; }
+    .tasks-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
     .tasks-table tr:last-child td { border-bottom: none; }
     .tasks-table tr:hover td { background: #fafafa; }
+    .task-date-cell { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; min-width: 100px; }
+    .task-date-day { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+    .task-date-cell.today { color: var(--primary); }
+    .task-date-cell.today .task-date-day { color: var(--primary); }
+    .task-date-cell.weekend { color: #94a3b8; }
     .task-checkbox { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); flex-shrink: 0; }
-    tr.task-done td:not(:first-child):not(:last-child) { text-decoration: line-through; color: var(--text-muted); }
-    .task-cell { outline: none; min-height: 18px; display: block; }
+    tr.task-done .task-cell { text-decoration: line-through; color: #94a3b8; }
+    .task-cell { outline: none; min-height: 18px; display: block; line-height: 1.5; }
     .task-cell:empty::before { content: attr(data-placeholder); color: #cbd5e1; font-style: italic; pointer-events: none; }
-    .task-cell:focus { background: #eff6ff; border-radius: 4px; box-shadow: inset 0 0 0 2px var(--primary); padding: 2px 4px; }
-    .tasks-add-row { padding: 8px 12px; background: #fafafa; border-top: 1px solid var(--border); }
-    #section-tasks .tracker-wrap { max-height: calc(100vh - 54px - 88px - 100px); overflow-y: auto; }
+    .task-cell:focus { background: #eff6ff; border-radius: 4px; box-shadow: inset 0 0 0 2px var(--primary); padding: 2px 5px; }
 
     /* ── APPLIED DASHBOARD ── */
     .applied-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
@@ -2193,18 +2198,55 @@ function saveTaskDataDebounced() {
   state.saveTimer = setTimeout(saveTaskData, 1200);
 }
 
-function createNewWeek() {
-  const now = new Date();
-  // Find Monday of current week
-  const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon...
-  const monday = new Date(now);
-  monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
-  const label = 'Week of ' + monday.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  return { id: `week_${Date.now()}`, label, tasks: [createNewTask()] };
+function getThisMonday(fromDate) {
+  const d = fromDate ? new Date(fromDate) : new Date();
+  d.setHours(0, 0, 0, 0);
+  const day = d.getDay(); // 0=Sun
+  d.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+  return d;
 }
 
-function createNewTask() {
-  return { id: `task_${Date.now()}_${Math.random().toString(36).slice(2,6)}`, daily: '', goal: '', outcome: '', done: false };
+function createNewWeek() {
+  // Find the Monday to start: the next Monday after the latest existing week, or this week's Monday
+  let monday;
+  if (state.tasksData?.weeks?.length) {
+    const latestStart = state.tasksData.weeks
+      .filter(w => w.startDate)
+      .map(w => new Date(w.startDate + 'T00:00:00'))
+      .sort((a, b) => b - a)[0];
+    if (latestStart) {
+      monday = new Date(latestStart);
+      monday.setDate(latestStart.getDate() + 7);
+    }
+  }
+  if (!monday) monday = getThisMonday();
+
+  const DAY_NAMES = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const tasks = DAY_NAMES.map((dayName, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return {
+      id: `task_${Date.now()}_${i}${Math.random().toString(36).slice(2,4)}`,
+      date: d.toISOString().slice(0, 10), // YYYY-MM-DD
+      daily: '', goal: '', outcome: '', done: false
+    };
+  });
+
+  const label = 'Week of ' + monday.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return { id: `week_${Date.now()}`, label, startDate: monday.toISOString().slice(0, 10), tasks };
+}
+
+function createNewTask(weekId) {
+  // Extra task without a date (added manually)
+  return { id: `task_${Date.now()}_${Math.random().toString(36).slice(2,6)}`, date: '', daily: '', goal: '', outcome: '', done: false };
+}
+
+function formatTaskDate(isoDate) {
+  if (!isoDate) return '';
+  const d = new Date(isoDate + 'T00:00:00');
+  const DAYS  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return { day: DAYS[d.getDay()], date: `${MONTHS[d.getMonth()]} ${d.getDate()}`, isWeekend: d.getDay() === 0 || d.getDay() === 6 };
 }
 
 function renderTasks() {
@@ -2212,6 +2254,8 @@ function renderTasks() {
   const container = document.getElementById('tasks-container');
   if (!container) return;
   const weeks = state.tasksData.weeks || [];
+  const colWidths = state.tasksData.colWidths || {};
+  const todayISO = new Date().toISOString().slice(0, 10);
 
   if (!weeks.length) {
     container.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--text-muted);font-size:13px;">
@@ -2221,59 +2265,186 @@ function renderTasks() {
     return;
   }
 
+  const wDate  = colWidths.date    || 110;
+  const wDaily = colWidths.daily   || 260;
+  const wGoal  = colWidths.goal    || 200;
+  const wOutc  = colWidths.outcome || 200;
+
   container.innerHTML = weeks.map(week => `
     <div class="tasks-week" id="week-${week.id}">
       <div class="tasks-week-header">
         <input type="text" class="tasks-week-label" value="${escHtml(week.label)}"
           onblur="updateWeekLabel('${week.id}',this.value)"
           onkeydown="if(event.key==='Enter')this.blur()">
-        <button class="btn btn-blue btn-sm" style="font-size:11px;padding:4px 10px;" onclick="addTask('${week.id}')">+ Task</button>
-        <button class="btn btn-outline btn-sm" style="font-size:11px;padding:4px 10px;color:var(--danger);border-color:var(--danger);" onclick="deleteWeek('${week.id}')">✕ Week</button>
+        <button class="btn btn-outline btn-sm" style="font-size:11px;padding:3px 9px;" onclick="addTask('${week.id}')">+ Row</button>
+        <button class="btn btn-outline btn-sm" style="font-size:11px;padding:3px 9px;color:var(--danger);border-color:var(--danger);" onclick="deleteWeek('${week.id}')">✕ Week</button>
       </div>
-      <table class="tasks-table">
-        <thead>
-          <tr>
-            <th style="width:36px;text-align:center;">✓</th>
-            <th style="min-width:220px;">Daily Entry</th>
-            <th style="min-width:180px;">Weekly Goals</th>
-            <th style="min-width:180px;">Weekly Outcomes</th>
-            <th style="width:36px;"></th>
-          </tr>
-        </thead>
-        <tbody>
-          ${(week.tasks || []).map(task => `
-            <tr class="${task.done ? 'task-done' : ''}" id="task-${task.id}">
-              <td style="text-align:center;vertical-align:middle;">
-                <input type="checkbox" class="task-checkbox" ${task.done ? 'checked' : ''}
-                  onchange="toggleTask('${week.id}','${task.id}',this.checked)">
-              </td>
-              <td>
-                <div contenteditable="true" class="task-cell" data-placeholder="Add daily task…"
-                  onblur="updateTaskField('${week.id}','${task.id}','daily',this.innerText)">${escHtml(task.daily || '')}</div>
-              </td>
-              <td>
-                <div contenteditable="true" class="task-cell" data-placeholder="Weekly goal…"
-                  onblur="updateTaskField('${week.id}','${task.id}','goal',this.innerText)">${escHtml(task.goal || '')}</div>
-              </td>
-              <td>
-                <div contenteditable="true" class="task-cell" data-placeholder="Outcome…"
-                  onblur="updateTaskField('${week.id}','${task.id}','outcome',this.innerText)">${escHtml(task.outcome || '')}</div>
-              </td>
-              <td><button class="del-row-btn" onclick="deleteTask('${week.id}','${task.id}')" title="Delete task">✕</button></td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
+      <div class="tasks-table-wrap">
+        <table class="tasks-table" id="tasks-table-${week.id}">
+          <thead>
+            <tr>
+              <th class="row-drag-th"></th>
+              <th style="width:36px;min-width:36px;text-align:center;">✓</th>
+              <th style="width:${wDate}px;min-width:${wDate}px;" data-col-id="date">Date &amp; Day<span class="col-resize-handle" data-col="date"></span></th>
+              <th style="width:${wDaily}px;min-width:${wDaily}px;" data-col-id="daily">Daily Entry<span class="col-resize-handle" data-col="daily"></span></th>
+              <th style="width:${wGoal}px;min-width:${wGoal}px;" data-col-id="goal">Weekly Goals<span class="col-resize-handle" data-col="goal"></span></th>
+              <th style="width:${wOutc}px;min-width:${wOutc}px;" data-col-id="outcome">Weekly Outcomes<span class="col-resize-handle" data-col="outcome"></span></th>
+              <th style="width:32px;min-width:32px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${(week.tasks || []).map(task => {
+              const fd = task.date ? formatTaskDate(task.date) : null;
+              const isToday = task.date === todayISO;
+              const dateClass = isToday ? 'task-date-cell today' : (fd?.isWeekend ? 'task-date-cell weekend' : 'task-date-cell');
+              const dateCellHtml = fd
+                ? `<div class="${dateClass}"><div>${fd.date}</div><div class="task-date-day">${fd.day}</div></div>`
+                : `<div class="task-date-cell" style="color:#cbd5e1;font-style:italic;font-size:11px;">—</div>`;
+              return `
+              <tr class="${task.done ? 'task-done' : ''}" id="task-${task.id}" draggable="true" data-task-id="${task.id}">
+                <td class="row-drag-td" title="Drag to reorder">⠿</td>
+                <td style="text-align:center;vertical-align:middle;width:36px;">
+                  <input type="checkbox" class="task-checkbox" ${task.done ? 'checked' : ''}
+                    onchange="toggleTask('${week.id}','${task.id}',this.checked)">
+                </td>
+                <td>${dateCellHtml}</td>
+                <td><div contenteditable="true" class="task-cell" data-placeholder="Add task…"
+                  onblur="updateTaskField('${week.id}','${task.id}','daily',this.innerText)">${escHtml(task.daily || '')}</div></td>
+                <td><div contenteditable="true" class="task-cell" data-placeholder="Weekly goal…"
+                  onblur="updateTaskField('${week.id}','${task.id}','goal',this.innerText)">${escHtml(task.goal || '')}</div></td>
+                <td><div contenteditable="true" class="task-cell" data-placeholder="Outcome…"
+                  onblur="updateTaskField('${week.id}','${task.id}','outcome',this.innerText)">${escHtml(task.outcome || '')}</div></td>
+                <td><button class="del-row-btn" onclick="deleteTask('${week.id}','${task.id}')" title="Delete">✕</button></td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
     </div>
   `).join('');
+
+  // Initialize resize + drag for each week's table
+  weeks.forEach(week => {
+    const tableEl = document.getElementById(`tasks-table-${week.id}`);
+    if (tableEl) {
+      initTaskColResize(tableEl);
+      initTaskRowDrag(tableEl, week.id);
+    }
+  });
 }
 
 function addWeek() {
   if (!state.tasksData) return;
-  state.tasksData.weeks.unshift(createNewWeek());
+  const newWeek = createNewWeek();
+  state.tasksData.weeks.push(newWeek); // newest at bottom, chronological order
   renderTasks();
   saveTaskDataDebounced();
-  // Focus the new week label
-  setTimeout(() => document.querySelector('.tasks-week-label')?.select(), 50);
+  setTimeout(() => {
+    const el = document.getElementById(`week-${newWeek.id}`);
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el?.querySelector('.tasks-week-label')?.select();
+  }, 100);
+}
+
+// ── Task table: column resize ──
+function initTaskColResize(tableEl) {
+  const headers = tableEl.querySelectorAll('th[data-col-id]');
+  let activeTh = null, activeHandle = null, startX = 0, startW = 0;
+
+  headers.forEach(th => {
+    const handle = th.querySelector('.col-resize-handle');
+    if (!handle) return;
+    handle.addEventListener('mousedown', e => {
+      e.preventDefault();
+      activeTh = th; activeHandle = handle;
+      startX = e.clientX; startW = th.offsetWidth;
+      handle.classList.add('col-resizing');
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor = 'col-resize';
+    });
+  });
+
+  const onMove = e => {
+    if (!activeTh) return;
+    const newW = Math.max(60, startW + (e.clientX - startX));
+    activeTh.style.width = newW + 'px';
+    activeTh.style.minWidth = newW + 'px';
+  };
+
+  const onUp = () => {
+    if (!activeTh) return;
+    document.body.style.userSelect = '';
+    document.body.style.cursor = '';
+    activeHandle?.classList.remove('col-resizing');
+    const colId = activeTh.dataset.colId;
+    if (colId) {
+      if (!state.tasksData.colWidths) state.tasksData.colWidths = {};
+      state.tasksData.colWidths[colId] = activeTh.offsetWidth;
+      saveTaskDataDebounced();
+    }
+    activeTh = null; activeHandle = null;
+  };
+
+  if (tableEl._taskColMoveListener) document.removeEventListener('mousemove', tableEl._taskColMoveListener);
+  if (tableEl._taskColUpListener)   document.removeEventListener('mouseup',   tableEl._taskColUpListener);
+  tableEl._taskColMoveListener = onMove;
+  tableEl._taskColUpListener   = onUp;
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+}
+
+// ── Task table: row drag-to-reorder ──
+function initTaskRowDrag(tableEl, weekId) {
+  const tbody = tableEl.querySelector('tbody');
+  if (!tbody) return;
+  let dragSrcId = null;
+
+  tbody.addEventListener('dragstart', e => {
+    const tr = e.target.closest('tr[data-task-id]');
+    if (!tr) return;
+    dragSrcId = tr.dataset.taskId;
+    tr.classList.add('row-dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', dragSrcId);
+  });
+
+  tbody.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const tr = e.target.closest('tr[data-task-id]');
+    tbody.querySelectorAll('tr').forEach(r => r.classList.remove('row-drag-over-top', 'row-drag-over-bottom'));
+    if (!tr || tr.dataset.taskId === dragSrcId) return;
+    const rect = tr.getBoundingClientRect();
+    tr.classList.add(e.clientY < rect.top + rect.height / 2 ? 'row-drag-over-top' : 'row-drag-over-bottom');
+  });
+
+  tbody.addEventListener('dragleave', () => {
+    tbody.querySelectorAll('tr').forEach(r => r.classList.remove('row-drag-over-top', 'row-drag-over-bottom'));
+  });
+
+  tbody.addEventListener('drop', e => {
+    e.preventDefault();
+    tbody.querySelectorAll('tr').forEach(r => r.classList.remove('row-drag-over-top', 'row-drag-over-bottom', 'row-dragging'));
+    const targetTr = e.target.closest('tr[data-task-id]');
+    if (!targetTr || !dragSrcId || targetTr.dataset.taskId === dragSrcId) return;
+    const week = state.tasksData.weeks.find(w => w.id === weekId);
+    if (!week) return;
+    const srcIdx = week.tasks.findIndex(t => t.id === dragSrcId);
+    const tgtIdx = week.tasks.findIndex(t => t.id === targetTr.dataset.taskId);
+    if (srcIdx < 0 || tgtIdx < 0) return;
+    const rect = targetTr.getBoundingClientRect();
+    const insertAfter = e.clientY >= rect.top + rect.height / 2;
+    const [moved] = week.tasks.splice(srcIdx, 1);
+    const newIdx = srcIdx < tgtIdx ? (insertAfter ? tgtIdx : tgtIdx - 1) : (insertAfter ? tgtIdx + 1 : tgtIdx);
+    week.tasks.splice(Math.max(0, Math.min(newIdx, week.tasks.length)), 0, moved);
+    renderTasks();
+    saveTaskDataDebounced();
+  });
+
+  tbody.addEventListener('dragend', () => {
+    tbody.querySelectorAll('tr').forEach(r => r.classList.remove('row-dragging', 'row-drag-over-top', 'row-drag-over-bottom'));
+    dragSrcId = null;
+  });
 }
 
 function deleteWeek(weekId) {
@@ -2294,10 +2465,10 @@ function addTask(weekId) {
   if (!state.tasksData) return;
   const week = state.tasksData.weeks.find(w => w.id === weekId);
   if (!week) return;
-  week.tasks.push(createNewTask());
+  week.tasks.push(createNewTask(weekId));
   renderTasks();
   saveTaskDataDebounced();
-  // Focus first cell of the new row
+  // Focus daily-entry cell of the new row
   setTimeout(() => {
     const weekEl = document.getElementById(`week-${weekId}`);
     const lastRow = weekEl?.querySelector('tbody tr:last-child');
