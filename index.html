@@ -197,6 +197,19 @@
     .url-cell a { color: var(--primary); text-decoration: none; font-size: 12px; }
     .url-cell a:hover { text-decoration: underline; }
     .add-row-btn { margin-top: 10px; }
+    /* ── Column drag & delete ── */
+    .tracker-table th[data-col-id] { cursor: grab; }
+    .tracker-table th[data-col-id]:active { cursor: grabbing; }
+    th.col-dragging { opacity: 0.4; }
+    th.col-drag-over-left  { border-left:  3px solid var(--primary) !important; }
+    th.col-drag-over-right { border-right: 3px solid var(--primary) !important; }
+    .col-del-btn { position: absolute; top: 50%; right: 18px; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: transparent; font-size: 10px; padding: 1px 3px; border-radius: 3px; line-height: 1; z-index: 2; transition: color 0.15s, background 0.15s; }
+    .tracker-table th:hover .col-del-btn { color: #94a3b8; }
+    .col-del-btn:hover { color: var(--danger) !important; background: #fee2e2; }
+    /* ── Task day-row delete ── */
+    .task-day-del-btn { visibility: hidden; background: none; border: none; cursor: pointer; color: #ef4444; font-size: 12px; padding: 2px 4px; border-radius: 4px; line-height: 1; }
+    .tasks-table tr:hover .task-day-del-btn { visibility: visible; }
+    .task-day-del-btn:hover { background: #fee2e2; }
 
     /* ── OPPORTUNITIES ── */
     .opp-table .opp-not-interested td { text-decoration: line-through; opacity: 0.45; }
@@ -535,17 +548,15 @@
         <div class="opp-section-wrap">
           <div class="opp-table-wrap">
             <table class="tracker-table opp-table" id="opp-table">
-              <thead>
-                <tr>
-                  <th style="width:32px;text-align:center;padding:8px 6px;"><input type="checkbox" id="opp-select-all" title="Select all" onchange="toggleSelectAllOpps(this.checked)"></th>
-                  <th style="min-width:220px">Title / Subject</th>
-                  <th style="width:140px">Company</th>
-                  <th style="width:65px">Link</th>
-                  <th style="width:85px">Date Found</th>
-                  <th style="min-width:160px">Notes</th>
-                  <th style="width:140px">Status</th>
-                </tr>
-              </thead>
+              <thead id="opp-thead"><tr>
+                <th style="width:32px;text-align:center;padding:8px 6px;"><input type="checkbox" id="opp-select-all" title="Select all" onchange="toggleSelectAllOpps(this.checked)"></th>
+                <th style="min-width:220px">Title / Subject</th>
+                <th style="width:140px">Company</th>
+                <th style="width:65px">Link</th>
+                <th style="width:85px">Date Found</th>
+                <th style="min-width:160px">Notes</th>
+                <th style="width:140px">Status</th>
+              </tr></thead>
               <tbody id="opp-tbody"></tbody>
             </table>
           </div>
@@ -1577,7 +1588,7 @@ function renderTracker(type) {
         <th class="row-drag-th"></th>
         ${cols.map(c => {
           const w = colWidths[c.id] || COL_DEFAULT_WIDTHS[c.id] || 120;
-          return `<th style="width:${w}px;min-width:${w}px;" data-col-id="${c.id}">${escHtml(c.label)}<span class="col-resize-handle" data-col="${c.id}"></span></th>`;
+          return `<th style="width:${w}px;min-width:${w}px;" data-col-id="${c.id}" draggable="true" title="Drag to reorder">${escHtml(c.label)}<button class="col-del-btn" onclick="event.stopPropagation();deleteCol('${type}','${c.id}')" title="Delete column">✕</button><span class="col-resize-handle" data-col="${c.id}"></span></th>`;
         }).join('')}
         <th class="add-col-th" onclick="openAddCol('${type}')" title="Add column">＋</th>
         <th style="width:32px;min-width:32px;"></th>
@@ -1615,6 +1626,7 @@ function renderTracker(type) {
 
   initColResize(tableEl, type);
   initRowDrag(tableEl, type);
+  initColDrag(tableEl, type);
 }
 
 // ── Heatmap ──
@@ -1752,6 +1764,72 @@ function initColResize(tableEl, type) {
   document.addEventListener('mouseup',   onUp);
 }
 
+// ── Column drag-to-reorder ──
+function initColDrag(tableEl, type) {
+  const theadRow = tableEl.querySelector('thead tr');
+  if (!theadRow) return;
+  let dragSrcId = null;
+
+  theadRow.addEventListener('dragstart', e => {
+    const th = e.target.closest('th[data-col-id]');
+    if (!th) { e.preventDefault(); return; }
+    if (e.target.classList.contains('col-resize-handle') || e.target.classList.contains('col-del-btn')) { e.preventDefault(); return; }
+    dragSrcId = th.dataset.colId;
+    th.classList.add('col-dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', dragSrcId);
+  });
+
+  theadRow.addEventListener('dragover', e => {
+    e.preventDefault();
+    const th = e.target.closest('th[data-col-id]');
+    theadRow.querySelectorAll('th').forEach(t => t.classList.remove('col-drag-over-left','col-drag-over-right'));
+    if (!th || th.dataset.colId === dragSrcId) return;
+    const rect = th.getBoundingClientRect();
+    th.classList.add(e.clientX < rect.left + rect.width / 2 ? 'col-drag-over-left' : 'col-drag-over-right');
+  });
+
+  theadRow.addEventListener('dragleave', e => {
+    if (!theadRow.contains(e.relatedTarget))
+      theadRow.querySelectorAll('th').forEach(t => t.classList.remove('col-drag-over-left','col-drag-over-right'));
+  });
+
+  theadRow.addEventListener('drop', e => {
+    e.preventDefault();
+    theadRow.querySelectorAll('th').forEach(t => t.classList.remove('col-drag-over-left','col-drag-over-right','col-dragging'));
+    const th = e.target.closest('th[data-col-id]');
+    if (!th || !dragSrcId || th.dataset.colId === dragSrcId) return;
+    const cols = state.trackerData[type].columns;
+    const srcIdx = cols.findIndex(c => c.id === dragSrcId);
+    const tgtCol = th.dataset.colId;
+    const rect = th.getBoundingClientRect();
+    const insertAfter = e.clientX >= rect.left + rect.width / 2;
+    const [moved] = cols.splice(srcIdx, 1);
+    const newIdx = cols.findIndex(c => c.id === tgtCol) + (insertAfter ? 1 : 0);
+    cols.splice(Math.max(0, newIdx), 0, moved);
+    dragSrcId = null;
+    renderTracker(type);
+    saveTrackerDataDebounced();
+  });
+
+  theadRow.addEventListener('dragend', () => {
+    theadRow.querySelectorAll('th').forEach(t => t.classList.remove('col-dragging','col-drag-over-left','col-drag-over-right'));
+    dragSrcId = null;
+  });
+}
+
+// ── Delete column ──
+function deleteCol(type, colId) {
+  if (!state.trackerData) return;
+  if (!confirm(`Delete the "${state.trackerData[type].columns.find(c=>c.id===colId)?.label}" column and all its data?`)) return;
+  state.trackerData[type].columns = state.trackerData[type].columns.filter(c => c.id !== colId);
+  state.trackerData[type].rows.forEach(r => delete r[colId]);
+  if (state.trackerData[type].colWidths) delete state.trackerData[type].colWidths[colId];
+  renderTracker(type);
+  saveTrackerDataDebounced();
+  showToast('Column deleted', 'info');
+}
+
 function addRow(type) {
   if (!state.trackerData) return;
   const tracker = state.trackerData[type];
@@ -1887,16 +1965,124 @@ function fixUnknownCompanies() {
 
 let _notesOppId = null;
 
+// Default column definitions for opportunities
+const OPP_COLS_DEFAULT = [
+  { id: 'title',   label: 'Title / Subject', w: 220, fixed: false },
+  { id: 'company', label: 'Company',          w: 140, fixed: false },
+  { id: 'link',    label: 'Link',             w: 65,  fixed: false },
+  { id: 'added',   label: 'Date Found',       w: 85,  fixed: false },
+  { id: 'notes',   label: 'Notes',            w: 160, fixed: false },
+];
+// 'sel' (checkbox) and 'status' are always first/last and never deletable
+
+function getOppCols() {
+  if (!state.oppData.columns) state.oppData.columns = OPP_COLS_DEFAULT.map(c => ({...c}));
+  return state.oppData.columns;
+}
+
+function renderOppHeader() {
+  const cols = getOppCols();
+  const theadRow = document.querySelector('#opp-thead tr');
+  if (!theadRow) return;
+  // Keep first th (checkbox) and last th (status) — replace middle ones
+  theadRow.innerHTML =
+    `<th style="width:32px;text-align:center;padding:8px 6px;flex-shrink:0"><input type="checkbox" id="opp-select-all" title="Select all" onchange="toggleSelectAllOpps(this.checked)"></th>` +
+    cols.map(c =>
+      `<th style="width:${c.w||120}px;min-width:${c.w||120}px;" data-opp-col="${c.id}" draggable="true">${escHtml(c.label)}<button class="col-del-btn" onclick="event.stopPropagation();deleteOppCol('${c.id}')" title="Delete column">✕</button></th>`
+    ).join('') +
+    `<th style="width:160px;min-width:160px;">Status</th>`;
+  initOppColDrag();
+}
+
+function initOppColDrag() {
+  const theadRow = document.querySelector('#opp-thead tr');
+  if (!theadRow || theadRow._oppColDragInit) return;
+  theadRow._oppColDragInit = true;
+  let dragSrcId = null;
+
+  theadRow.addEventListener('dragstart', e => {
+    const th = e.target.closest('th[data-opp-col]');
+    if (!th || e.target.classList.contains('col-del-btn')) { e.preventDefault(); return; }
+    dragSrcId = th.dataset.oppCol;
+    th.classList.add('col-dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', dragSrcId);
+  });
+
+  theadRow.addEventListener('dragover', e => {
+    e.preventDefault();
+    const th = e.target.closest('th[data-opp-col]');
+    theadRow.querySelectorAll('th').forEach(t => t.classList.remove('col-drag-over-left','col-drag-over-right'));
+    if (!th || th.dataset.oppCol === dragSrcId) return;
+    const rect = th.getBoundingClientRect();
+    th.classList.add(e.clientX < rect.left + rect.width / 2 ? 'col-drag-over-left' : 'col-drag-over-right');
+  });
+
+  theadRow.addEventListener('dragleave', e => {
+    if (!theadRow.contains(e.relatedTarget))
+      theadRow.querySelectorAll('th').forEach(t => t.classList.remove('col-drag-over-left','col-drag-over-right'));
+  });
+
+  theadRow.addEventListener('drop', e => {
+    e.preventDefault();
+    theadRow.querySelectorAll('th').forEach(t => t.classList.remove('col-drag-over-left','col-drag-over-right','col-dragging'));
+    const th = e.target.closest('th[data-opp-col]');
+    if (!th || !dragSrcId || th.dataset.oppCol === dragSrcId) return;
+    const cols = getOppCols();
+    const srcIdx = cols.findIndex(c => c.id === dragSrcId);
+    const rect = th.getBoundingClientRect();
+    const insertAfter = e.clientX >= rect.left + rect.width / 2;
+    const [moved] = cols.splice(srcIdx, 1);
+    const newIdx = cols.findIndex(c => c.id === th.dataset.oppCol) + (insertAfter ? 1 : 0);
+    cols.splice(Math.max(0, newIdx), 0, moved);
+    dragSrcId = null;
+    theadRow._oppColDragInit = false; // reset so initOppColDrag re-attaches
+    renderOpportunities();
+    saveOppData();
+  });
+
+  theadRow.addEventListener('dragend', () => {
+    theadRow.querySelectorAll('th').forEach(t => t.classList.remove('col-dragging','col-drag-over-left','col-drag-over-right'));
+    dragSrcId = null;
+  });
+}
+
+function deleteOppCol(colId) {
+  const cols = getOppCols();
+  const col = cols.find(c => c.id === colId);
+  if (!col) return;
+  if (!confirm(`Hide the "${col.label}" column? You can restore it via "+ Add Column".`)) return;
+  state.oppData.columns = cols.filter(c => c.id !== colId);
+  renderOpportunities();
+  saveOppData();
+  showToast(`Column "${col.label}" hidden`, 'info');
+}
+
 function renderOpportunities() {
   if (!state.oppData) return;
   const tbody = document.getElementById('opp-tbody');
   const opps = state.oppData.opportunities || [];
+  const cols = getOppCols();
+
+  // Rebuild header each render (column set may have changed)
+  const theadRow = document.querySelector('#opp-thead tr');
+  if (theadRow) {
+    theadRow._oppColDragInit = false; // allow re-init
+    theadRow.innerHTML =
+      `<th style="width:32px;text-align:center;padding:8px 6px;"><input type="checkbox" id="opp-select-all" title="Select all" onchange="toggleSelectAllOpps(this.checked)"></th>` +
+      cols.map(c =>
+        `<th style="width:${c.w||120}px;min-width:${c.w||120}px;" data-opp-col="${c.id}" draggable="true">${escHtml(c.label)}<button class="col-del-btn" onclick="event.stopPropagation();deleteOppCol('${c.id}')" title="Delete column">✕</button></th>`
+      ).join('') +
+      `<th style="width:160px;min-width:160px;">Status</th>`;
+    initOppColDrag();
+  }
 
   // Auto-fix unknown companies on first render
   fixUnknownCompanies();
 
+  const totalCols = cols.length + 2; // sel + content cols + status
   if (!opps.length) {
-    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="es-icon">🔍</div><p>No opportunities yet.<br>The 6am scan will populate this automatically,<br>or use "+ Add Opportunity" to add one manually.</p></div></td></tr>';
+    tbody.innerHTML = `<tr><td colspan="${totalCols}"><div class="empty-state"><div class="es-icon">🔍</div><p>No opportunities yet.<br>The 6am scan will populate this automatically,<br>or use "+ Add Opportunity" to add one manually.</p></div></td></tr>`;
     return;
   }
 
@@ -1910,17 +2096,25 @@ function renderOpportunities() {
   tbody.innerHTML = sorted.map(opp => {
     const ni = opp.status === 'not_interested' ? 'opp-not-interested' : '';
     const dt = opp.added ? new Date(opp.added).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—';
-    const notePreview = opp.notes ? escHtml(opp.notes.slice(0,60)) + (opp.notes.length>60?'…':'') : '';
     const companyDisplay = (opp.company && opp.company !== 'Unknown')
       ? escHtml(opp.company)
       : `<span class="opp-company-unknown">${escHtml(extractCompanyFromTitle(opp.title||'')) || 'Unknown'}</span>`;
+
+    const colCells = cols.map(c => {
+      if (c.id === 'title')   return `<td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${escHtml(opp.title||'')}">${escHtml(opp.title||'(unknown)')}</td>`;
+      if (c.id === 'company') return `<td>${companyDisplay}</td>`;
+      if (c.id === 'link')    return `<td class="url-cell">${opp.link ? `<a href="${escHtml(opp.link)}" target="_blank">View →</a>` : '—'}</td>`;
+      if (c.id === 'added')   return `<td>${dt}</td>`;
+      if (c.id === 'notes') {
+        const notePreview = opp.notes ? escHtml(opp.notes.slice(0,60)) + (opp.notes.length>60?'…':'') : '';
+        return `<td><span class="opp-notes-preview" title="${escHtml(opp.notes||'')}" onclick="openNotesModal('${opp.id}')">${notePreview}</span></td>`;
+      }
+      return `<td>${escHtml(opp[c.id]||'')}</td>`;
+    }).join('');
+
     return `<tr class="${ni}" id="opp-row-${opp.id}">
       <td style="text-align:center;padding:8px 6px;width:32px;"><input type="checkbox" class="opp-sel-chk" data-id="${opp.id}" onchange="onOppCheckChange()"></td>
-      <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${escHtml(opp.title||'')}">${escHtml(opp.title||'(unknown)')}</td>
-      <td>${companyDisplay}</td>
-      <td class="url-cell">${opp.link ? `<a href="${escHtml(opp.link)}" target="_blank">View →</a>` : '—'}</td>
-      <td>${dt}</td>
-      <td><span class="opp-notes-preview" title="${escHtml(opp.notes||'')}" onclick="openNotesModal('${opp.id}')">${notePreview}</span></td>
+      ${colCells}
       <td>
         <select class="status-select ${opp.status||''}" onchange="handleOppStatus('${opp.id}', this.value, this)">
           <option value="" ${!opp.status?'selected':''}>—</option>
@@ -1938,7 +2132,6 @@ function renderOpportunities() {
   if (lastScan) {
     document.getElementById('opp-scan-time').textContent = 'Last scan: ' + new Date(lastScan).toLocaleString();
   }
-  // Reset select-all checkbox
   const allChk = document.getElementById('opp-select-all');
   if (allChk) allChk.checked = false;
   document.getElementById('opp-del-btn').hidden = true;
@@ -2513,6 +2706,7 @@ function renderTasks() {
                   <td class="row-drag-td" title="Drag to reorder">⠿</td>
                   <td class="task-date-td">${dateCellHtml}</td>
                   <td class="task-entries-td">${renderEntryList(week.id, day.id, 'dailyEntries', day.dailyEntries, 'Add entry…')}</td>
+                  <td style="width:26px;padding:4px 4px;text-align:center;vertical-align:top;"><button class="task-day-del-btn" onclick="deleteDay('${week.id}','${day.id}')" title="Delete this day row">✕</button></td>
                 </tr>`;
               }).join('')}
             </tbody>
@@ -2781,6 +2975,16 @@ function updateWeekEntry(weekId, field, entryId, text) {
   if (!week || !week[field]) return;
   const entry = week[field].find(e => e.id === entryId);
   if (entry) { entry.text = (text || '').trim(); saveTaskDataDebounced(); }
+}
+
+function deleteDay(weekId, dayId) {
+  const week = findWeek(weekId);
+  if (!week || !week.days) return;
+  week.days = week.days.filter(d => d.id !== dayId);
+  saveTaskDataDebounced();
+  // Remove just the row from the DOM instead of full re-render
+  const rowEl = document.getElementById(`day-${dayId}`);
+  if (rowEl) rowEl.remove();
 }
 
 // ════════════════════════════════════════
