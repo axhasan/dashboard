@@ -377,7 +377,10 @@
         "notes": "",
         "next_followup": ""
       }
-    ]
+    ],
+    "colWidths": {
+      "name": 151
+    }
   },
   "applied": []
 }
