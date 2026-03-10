@@ -118,11 +118,10 @@
     #inbox-container { display: flex; gap: 16px; height: calc(100vh - 54px - 88px - 76px); }
     #email-list { width: 300px; flex-shrink: 0; background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); overflow-y: auto; }
     #email-detail { flex: 1; background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
-    .email-item { padding: 12px 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; position: relative; }
     .email-item:hover { background: var(--bg); }
     .email-item.active { background: #eff6ff; border-left: 3px solid var(--primary); }
     .email-item.unread .email-from { font-weight: 700; }
-    .email-from { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 52px; }
+    .email-from { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .email-from-addr { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
     .email-subject { font-size: 12px; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; }
     .email-snippet { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; opacity: 0.8; }
@@ -262,9 +261,19 @@
 
     /* ── APPLIED DASHBOARD ── */
     /* email delete button */
-    .email-del-btn { position: absolute; bottom: 8px; right: 10px; background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 13px; padding: 2px 5px; border-radius: 4px; opacity: 0; transition: opacity 0.15s; }
+    .email-del-btn { background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 13px; padding: 2px 5px; border-radius: 4px; opacity: 0; transition: opacity 0.15s; flex-shrink: 0; }
     .email-item:hover .email-del-btn { opacity: 1; }
     .email-del-btn:hover { color: var(--danger); background: #fee2e2; }
+    /* email toolbar (select-all + bulk delete) */
+    #email-list-toolbar { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-bottom: 1px solid var(--border); background: var(--card); position: sticky; top: 0; z-index: 2; }
+    #email-list-toolbar label { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; }
+    #email-del-selected-btn { margin-left: auto; display: none; padding: 3px 10px; font-size: 12px; }
+    #email-del-selected-btn.visible { display: inline-flex; }
+    /* checkbox inside each email row */
+    .email-chk-wrap { display: flex; align-items: flex-start; padding-top: 2px; flex-shrink: 0; margin-right: 6px; }
+    .email-chk { width: 14px; height: 14px; cursor: pointer; accent-color: var(--primary); }
+    .email-item { display: flex; align-items: flex-start; padding: 10px 10px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; position: relative; }
+    .email-item-body { flex: 1; min-width: 0; }
 
     /* ── MODAL ── */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 5000; }
@@ -425,6 +434,10 @@
         </div>
         <div id="inbox-container">
           <div id="email-list">
+            <div id="email-list-toolbar">
+              <label><input type="checkbox" id="email-select-all" onchange="toggleSelectAllEmails(this.checked)"> Select all</label>
+              <button id="email-del-selected-btn" class="btn btn-sm" style="background:var(--danger);color:#fff;border:none;" onclick="deleteSelectedEmails()">🗑 Delete selected</button>
+            </div>
             <div id="email-list-loading" class="empty-state" style="padding:40px 10px">
               <div class="loading-dots" style="font-size:13px;color:var(--text-muted)">Loading</div>
             </div>
@@ -748,7 +761,7 @@ function initGoogleAuth() {
   if (!cfg('GOOGLE_CLIENT_ID')) return;
   state.tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: cfg('GOOGLE_CLIENT_ID'),
-    scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar.readonly email profile',
+    scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events email profile',
     callback: handleAuthResponse
   });
 }
@@ -879,8 +892,18 @@ function parseFromHeader(raw) {
 
 function renderEmailList(messages) {
   const el = document.getElementById('email-list');
-  if (!messages.length) { el.innerHTML = '<div class="empty-state"><p>No messages</p></div>'; return; }
-  el.innerHTML = messages.map(m => {
+  // Keep the toolbar, replace everything after it
+  const toolbar = document.getElementById('email-list-toolbar');
+  // Remove old rows (keep toolbar)
+  [...el.children].forEach(c => { if (c.id !== 'email-list-toolbar') c.remove(); });
+  if (!messages.length) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.innerHTML = '<p>No messages</p>';
+    el.appendChild(empty);
+    return;
+  }
+  messages.forEach(m => {
     const rawFrom = getHeader(m, 'From');
     const { name: fromName, email: fromEmail } = parseFromHeader(rawFrom);
     const subject = getHeader(m, 'Subject') || '(no subject)';
@@ -888,16 +911,83 @@ function renderEmailList(messages) {
     const snippet = m.snippet ? escHtml(m.snippet) : '';
     const unread = m.labelIds?.includes('UNREAD') ? 'unread' : '';
     const showEmail = fromName !== fromEmail;
-    return `<div class="email-item ${unread}" onclick="openEmail('${m.id}')" id="ei-${m.id}">
-      ${unread ? '<div class="email-unread-dot"></div>' : ''}
-      <div class="email-date">${date}</div>
-      <div class="email-from">${escHtml(fromName)}</div>
-      ${showEmail ? `<div class="email-from-addr">${escHtml(fromEmail)}</div>` : ''}
-      <div class="email-subject">${escHtml(subject)}</div>
-      ${snippet ? `<div class="email-snippet">${snippet}</div>` : ''}
-      <button class="email-del-btn" title="Move to Trash" onclick="event.stopPropagation();deleteEmail('${m.id}')">🗑</button>
-    </div>`;
-  }).join('');
+    const div = document.createElement('div');
+    div.className = `email-item ${unread}`;
+    div.id = `ei-${m.id}`;
+    div.innerHTML = `
+      <div class="email-chk-wrap" onclick="event.stopPropagation()">
+        <input type="checkbox" class="email-chk" data-id="${m.id}" onchange="onEmailCheckChange()">
+      </div>
+      <div class="email-item-body" onclick="openEmail('${m.id}')">
+        ${unread ? '<div class="email-unread-dot"></div>' : ''}
+        <div class="email-date">${date}</div>
+        <div class="email-from">${escHtml(fromName)}</div>
+        ${showEmail ? `<div class="email-from-addr">${escHtml(fromEmail)}</div>` : ''}
+        <div class="email-subject">${escHtml(subject)}</div>
+        ${snippet ? `<div class="email-snippet">${snippet}</div>` : ''}
+      </div>
+      <button class="email-del-btn" title="Move to Trash" onclick="event.stopPropagation();deleteEmail('${m.id}')">🗑</button>`;
+    el.appendChild(div);
+  });
+  // Reset toolbar state
+  const sa = document.getElementById('email-select-all');
+  if (sa) sa.checked = false;
+  const btn = document.getElementById('email-del-selected-btn');
+  if (btn) btn.classList.remove('visible');
+}
+
+function onEmailCheckChange() {
+  const all = document.querySelectorAll('.email-chk');
+  const checked = document.querySelectorAll('.email-chk:checked');
+  const sa = document.getElementById('email-select-all');
+  if (sa) sa.checked = all.length > 0 && checked.length === all.length;
+  const btn = document.getElementById('email-del-selected-btn');
+  if (btn) btn.classList.toggle('visible', checked.length > 0);
+}
+
+function toggleSelectAllEmails(checked) {
+  document.querySelectorAll('.email-chk').forEach(c => c.checked = checked);
+  const btn = document.getElementById('email-del-selected-btn');
+  if (btn) btn.classList.toggle('visible', checked && document.querySelectorAll('.email-chk').length > 0);
+}
+
+async function deleteSelectedEmails() {
+  const ids = Array.from(document.querySelectorAll('.email-chk:checked')).map(c => c.dataset.id);
+  if (!ids.length) return;
+  if (!confirm(`Move ${ids.length} email(s) to Trash?`)) return;
+  // Dim all selected items
+  ids.forEach(id => {
+    const el = document.getElementById(`ei-${id}`);
+    if (el) { el.style.opacity = '0.4'; el.style.pointerEvents = 'none'; }
+  });
+  let successCount = 0;
+  for (const msgId of ids) {
+    try {
+      const r = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msgId}/trash`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${state.accessToken}` }
+      });
+      if (!r.ok) throw new Error(`Gmail ${r.status}`);
+      const el = document.getElementById(`ei-${msgId}`);
+      if (el) el.remove();
+      if (state.currentEmailId === msgId) {
+        state.currentEmailId = null;
+        document.getElementById('email-detail-empty').hidden = false;
+        document.getElementById('email-content').hidden = true;
+        document.getElementById('reply-section').hidden = true;
+      }
+      successCount++;
+    } catch(e) {
+      const el = document.getElementById(`ei-${msgId}`);
+      if (el) { el.style.opacity = ''; el.style.pointerEvents = ''; }
+    }
+  }
+  showToast(`Moved ${successCount} email(s) to Trash`, 'info');
+  // Reset toolbar
+  const sa = document.getElementById('email-select-all');
+  if (sa) sa.checked = false;
+  const btn = document.getElementById('email-del-selected-btn');
+  if (btn) btn.classList.remove('visible');
 }
 
 async function deleteEmail(msgId) {
@@ -910,7 +1000,6 @@ async function deleteEmail(msgId) {
     });
     if (!r.ok) throw new Error(`Gmail ${r.status}`);
     if (item) item.remove();
-    // Clear detail pane if this was the open email
     if (state.currentEmailId === msgId) {
       state.currentEmailId = null;
       document.getElementById('email-detail-empty').hidden = false;
