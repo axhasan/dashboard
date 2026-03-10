@@ -19,20 +19,6 @@
               "text": "",
               "done": false
             }
-          ],
-          "weeklyGoals": [
-            {
-              "id": "e_1773122257412_ggq",
-              "text": "Start the reach out process. Touch everyone in the list at least once",
-              "done": false
-            }
-          ],
-          "weeklyOutcomes": [
-            {
-              "id": "e_1773122257412_w1w",
-              "text": "",
-              "done": false
-            }
           ]
         },
         {
@@ -56,7 +42,7 @@
             },
             {
               "id": "e_1773132706352_ze5",
-              "text": "Find EQNX jobs for Liana.",
+              "text": "Apply to \"warm\" opps in Opps dashboard (5)",
               "done": false
             },
             {
@@ -69,20 +55,6 @@
               "text": "",
               "done": false
             }
-          ],
-          "weeklyGoals": [
-            {
-              "id": "e_1773122257412_2fn",
-              "text": "",
-              "done": false
-            }
-          ],
-          "weeklyOutcomes": [
-            {
-              "id": "e_1773122257412_f0q",
-              "text": "",
-              "done": false
-            }
           ]
         },
         {
@@ -91,21 +63,12 @@
           "dailyEntries": [
             {
               "id": "e_1773122257412_4dm",
-              "text": "",
+              "text": "Find EQNX jobs for Liana",
               "done": false
-            }
-          ],
-          "weeklyGoals": [
+            },
             {
-              "id": "e_1773122257412_4jc",
-              "text": "",
-              "done": false
-            }
-          ],
-          "weeklyOutcomes": [
-            {
-              "id": "e_1773122257412_uf0",
-              "text": "",
+              "id": "e_1773135585486_19k",
+              "text": "Apply to all the cold opps in the opps dashboard.",
               "done": false
             }
           ]
@@ -116,20 +79,6 @@
           "dailyEntries": [
             {
               "id": "e_1773122257412_v8p",
-              "text": "",
-              "done": false
-            }
-          ],
-          "weeklyGoals": [
-            {
-              "id": "e_1773122257412_p7i",
-              "text": "",
-              "done": false
-            }
-          ],
-          "weeklyOutcomes": [
-            {
-              "id": "e_1773122257412_uov",
               "text": "",
               "done": false
             }
@@ -144,20 +93,6 @@
               "text": "",
               "done": false
             }
-          ],
-          "weeklyGoals": [
-            {
-              "id": "e_1773122257412_ilo",
-              "text": "",
-              "done": false
-            }
-          ],
-          "weeklyOutcomes": [
-            {
-              "id": "e_1773122257412_unz",
-              "text": "",
-              "done": false
-            }
           ]
         },
         {
@@ -166,20 +101,6 @@
           "dailyEntries": [
             {
               "id": "e_1773122257412_y3o",
-              "text": "",
-              "done": false
-            }
-          ],
-          "weeklyGoals": [
-            {
-              "id": "e_1773122257412_d6a",
-              "text": "",
-              "done": false
-            }
-          ],
-          "weeklyOutcomes": [
-            {
-              "id": "e_1773122257412_9uo",
               "text": "",
               "done": false
             }
@@ -194,21 +115,26 @@
               "text": "",
               "done": false
             }
-          ],
-          "weeklyGoals": [
-            {
-              "id": "e_1773122257412_mkd",
-              "text": "",
-              "done": false
-            }
-          ],
-          "weeklyOutcomes": [
-            {
-              "id": "e_1773122257412_gcl",
-              "text": "",
-              "done": false
-            }
           ]
+        }
+      ],
+      "weeklyGoals": [
+        {
+          "id": "e_1773122257412_ggq",
+          "text": "Start the reach out process. Touch everyone in the list at least once",
+          "done": false
+        },
+        {
+          "id": "e_1773135504959_m7z",
+          "text": "Apply to all the opps in \"Apply\" in the opportunities dashboard- At least 10 applications.",
+          "done": false
+        }
+      ],
+      "weeklyOutcomes": [
+        {
+          "id": "e_1773134160057_u9z",
+          "text": "",
+          "done": false
         }
       ]
     }

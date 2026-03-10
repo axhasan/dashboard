@@ -18,16 +18,16 @@
         "label": "Status"
       },
       {
-        "id": "url",
-        "label": "Job URL"
-      },
-      {
         "id": "notes",
         "label": "Notes"
       },
       {
         "id": "col_next_steps_1773126858633",
         "label": "Next Steps"
+      },
+      {
+        "id": "url",
+        "label": "Job URL"
       }
     ],
     "rows": [
@@ -151,6 +151,11 @@
         "label": "Tech"
       },
       {
+        "id": "heatmap",
+        "label": "Heatmap",
+        "type": "heatmap"
+      },
+      {
         "id": "linkedin",
         "label": "LinkedIn"
       },
@@ -176,11 +181,6 @@
         "id": "next_followup",
         "label": "Next Follow Up",
         "type": "date"
-      },
-      {
-        "id": "heatmap",
-        "label": "Heatmap",
-        "type": "heatmap"
       },
       {
         "id": "notes",
@@ -526,7 +526,13 @@
         "heatmap": "Green",
         "notes": "Follow up with specific job posting. Mention Strategic pRusits and GTM."
       }
-    ]
+    ],
+    "colWidths": {
+      "title": 246,
+      "company": 158,
+      "tech": 235,
+      "last_contact": 310
+    }
   },
   "applied": []
 }

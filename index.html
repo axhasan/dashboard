@@ -344,6 +344,42 @@
     .text-muted { color: var(--text-muted); font-size: 12px; }
     [hidden] { display: none !important; }
     .spin { animation: spin 0.7s linear infinite; }
+
+    /* ─── SECTION PANELS (Tasks-inspired design for all sections) ─── */
+    .section-panel { background: var(--card); border-radius: var(--radius); border: 1px solid #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; }
+    .section-panel > .section-header { background: #1e293b; border-bottom: 1px solid #334155; padding: 10px 16px; margin-bottom: 0; }
+    .section-panel > .section-header h2 { color: #f1f5f9; font-size: 15px; font-weight: 700; }
+    .section-panel > .section-header .btn-outline { border-color: #475569; color: #94a3b8; background: transparent; }
+    .section-panel > .section-header .btn-outline:hover { background: rgba(255,255,255,0.08); color: #e2e8f0; border-color: #64748b; }
+    .section-panel > .section-header .btn-blue { background: #1d4ed8; border-color: #1d4ed8; }
+    .section-panel > .section-header .btn-blue:hover { background: #1e40af; }
+    /* Danger buttons in dark panel header */
+    .section-panel > .section-header .btn-outline[style*="danger"] { border-color: #7f1d1d !important; color: #fca5a5 !important; }
+    .section-panel > .section-header .btn-outline[style*="danger"]:hover { background: rgba(239,68,68,0.12) !important; }
+    /* Strip double card from inner content wrappers */
+    .section-panel > .tracker-wrap { border: none; border-radius: 0; box-shadow: none; max-height: calc(100vh - 54px - 88px - 72px); }
+    .section-panel > .opp-section-wrap { overflow: auto; max-height: calc(100vh - 54px - 88px - 72px); }
+    .section-panel .opp-table-wrap { border: none; border-radius: 0; }
+    /* Per-section table header colors — Applications (amber) */
+    #section-applications .tracker-table th:not(.row-drag-th) { background: #fffbeb; color: #92400e; border-bottom-color: #fcd34d; }
+    #section-applications .tracker-table th.add-col-th { color: #d97706; }
+    #section-applications .tracker-table th.add-col-th:hover { background: #fef3c7; }
+    /* Contacts (emerald) */
+    #section-contacts .tracker-table th:not(.row-drag-th) { background: #ecfdf5; color: #065f46; border-bottom-color: #6ee7b7; }
+    #section-contacts .tracker-table th.add-col-th { color: #059669; }
+    #section-contacts .tracker-table th.add-col-th:hover { background: #d1fae5; }
+    /* Opportunities (violet) */
+    #section-opportunities .tracker-table th { background: #f5f3ff; color: #4c1d95; border-bottom-color: #c4b5fd; }
+    #section-opportunities .tracker-table th.add-col-th { color: #7c3aed; }
+    #section-opportunities .tracker-table th.add-col-th:hover { background: #ede9fe; }
+    /* Inbox inside panel */
+    .section-panel > #inbox-container { height: calc(100vh - 54px - 88px - 94px); padding: 10px; box-sizing: border-box; }
+    /* Calendar inside panel */
+    .section-panel > #cal-grid-wrap { border: none; border-radius: 0; }
+    .section-panel #cal-days-header { background: #eef2ff; border-bottom-color: #c7d2fe; }
+    .section-panel #cal-days-header > div { color: #4338ca; }
+    .section-panel #cal-days-header > div.today-col { color: #4f46e5; font-weight: 700; }
+    .section-panel #cal-body { max-height: calc(100vh - 54px - 88px - 132px); }
   </style>
 </head>
 <body>
@@ -453,6 +489,7 @@
 
       <!-- ── INBOX ── -->
       <div id="section-inbox" class="section active">
+        <div class="section-panel">
         <div class="section-header">
           <h2>📧 Inbox</h2>
           <button class="btn btn-outline btn-sm" onclick="loadInbox()">↻ Refresh</button>
@@ -489,10 +526,12 @@
             </div>
           </div>
         </div>
+        </div><!-- /section-panel -->
       </div>
 
       <!-- ── CALENDAR ── -->
       <div id="section-calendar" class="section">
+        <div class="section-panel">
         <div class="section-header">
           <h2>📅 Calendar</h2>
           <div style="display:flex;align-items:center;gap:10px;">
@@ -510,10 +549,12 @@
           <div class="all-day-row" id="cal-all-day"></div>
           <div id="cal-body"></div>
         </div>
+        </div><!-- /section-panel -->
       </div>
 
       <!-- ── APPLICATIONS TRACKER ── -->
       <div id="section-applications" class="section">
+        <div class="section-panel">
         <div class="section-header">
           <h2>💼 Application Tracker</h2>
           <button class="btn btn-blue btn-sm" onclick="addRow('applications')">+ Add Application</button>
@@ -521,10 +562,12 @@
         <div class="tracker-wrap">
           <table class="tracker-table" id="apps-table"></table>
         </div>
+        </div><!-- /section-panel -->
       </div>
 
       <!-- ── CONTACTS TRACKER ── -->
       <div id="section-contacts" class="section">
+        <div class="section-panel">
         <div class="section-header">
           <h2>👥 Contact Reachout Tracker</h2>
           <button class="btn btn-blue btn-sm" onclick="addRow('contacts')">+ Add Contact</button>
@@ -532,10 +575,12 @@
         <div class="tracker-wrap">
           <table class="tracker-table" id="contacts-table"></table>
         </div>
+        </div><!-- /section-panel -->
       </div>
 
       <!-- ── OPPORTUNITIES ── -->
       <div id="section-opportunities" class="section">
+        <div class="section-panel">
         <div class="section-header">
           <h2>🔗 LinkedIn Opportunities</h2>
           <div class="flex gap-8" style="align-items:center;">
@@ -561,6 +606,7 @@
             </table>
           </div>
         </div>
+        </div><!-- /section-panel -->
       </div>
 
       <!-- ── EDIT NOTES MODAL ── -->
@@ -1311,18 +1357,22 @@ async function renderCalendar() {
 
   // Fetch events
   try {
-    const r = await fetch(
-      `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${weekStart.toISOString()}&timeMax=${weekEnd.toISOString()}&singleEvents=true&orderBy=startTime&maxResults=100`,
-      { headers: { Authorization: `Bearer ${state.accessToken}` } }
-    );
-    const data = await r.json();
-    const events = data.items || [];
+    // Load ICS feed in parallel with Google Calendar
+    const [gcalResp] = await Promise.all([
+      fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${weekStart.toISOString()}&timeMax=${weekEnd.toISOString()}&singleEvents=true&orderBy=startTime&maxResults=100`,
+        { headers: { Authorization: `Bearer ${state.accessToken}` } }
+      ),
+      loadIcsFeed()
+    ]);
+    const data = await gcalResp.json();
+    const gcalEvents = data.items || [];
+    const icsWeekEvents = getIcsEventsForWeek(weekStart, weekEnd);
 
     // Render all-day events
     const allDayHtml = ['<div style="padding:2px;font-size:10px;color:var(--text-muted);text-align:right">All day</div>', ...days.map(() => '<div class="all-day-cell"></div>')];
-    const allDayCells = [null, ...days.map((_,i) => i)];
 
-    events.filter(ev => ev.start?.date).forEach(ev => {
+    gcalEvents.filter(ev => ev.start?.date).forEach(ev => {
       const evStart = new Date(ev.start.date);
       days.forEach((d, di) => {
         if (evStart.toDateString() === d.toDateString()) {
@@ -1330,14 +1380,18 @@ async function renderCalendar() {
         }
       });
     });
+    // ICS all-day events (rose/pink to distinguish from gcal blue)
+    icsWeekEvents.filter(ev => ev.allDay).forEach(ev => {
+      days.forEach((d, di) => {
+        if (ev.start.toDateString() === d.toDateString()) {
+          allDayHtml[di+1] = `<div class="all-day-cell"><div class="all-day-event" style="background:#fce7f3;color:#9d174d;border-left:2px solid #f472b6;" title="${escHtml(ev.location||'')}">📅 ${escHtml(ev.summary||'Event')}</div></div>`;
+        }
+      });
+    });
     allDayRow.innerHTML = allDayHtml.join('');
 
-    // Render timed events
-    const colors = ['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#ec4899'];
-    events.filter(ev => ev.start?.dateTime).forEach((ev, idx) => {
-      const evStart = new Date(ev.start.dateTime);
-      const evEnd = new Date(ev.end.dateTime);
-      const dayIdx = days.findIndex(d => d.toDateString() === new Date(evStart).setHours(0,0,0,0) && true);
+    // Helper to render a timed event block into the grid
+    function placeCalEvent(evStart, evEnd, summary, color, isIcs) {
       const matchDay = days.findIndex(d => {
         const ds = new Date(d); ds.setHours(0,0,0,0);
         const es = new Date(evStart); es.setHours(0,0,0,0);
@@ -1351,12 +1405,25 @@ async function renderCalendar() {
       const duration = Math.max((evEnd - evStart)/60000, 30);
       const height = Math.round(duration / 60 * 48);
       const top = Math.round(evStart.getMinutes() / 60 * 48);
-      const color = colors[idx % colors.length];
       const timeStr = evStart.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      const prefix = isIcs ? '📅 ' : '';
       cell.style.position = 'relative';
-      cell.innerHTML += `<div class="cal-event" title="${escHtml(ev.summary||'')}\n${timeStr}" style="top:${top}px;height:${height}px;background:${color}20;color:${color};border-left:3px solid ${color}">
-        <span>${escHtml(ev.summary||'Event')}</span>
+      cell.innerHTML += `<div class="cal-event" title="${escHtml(summary||'')}\n${timeStr}" style="top:${top}px;height:${height}px;background:${color}20;color:${color};border-left:3px solid ${color}">
+        <span>${prefix}${escHtml(summary||'Event')}</span>
       </div>`;
+    }
+
+    // Render Google Calendar timed events
+    const gcalColors = ['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#ec4899'];
+    gcalEvents.filter(ev => ev.start?.dateTime).forEach((ev, idx) => {
+      placeCalEvent(new Date(ev.start.dateTime), new Date(ev.end.dateTime), ev.summary, gcalColors[idx % gcalColors.length], false);
+    });
+
+    // Render ICS timed events (rose/pink palette)
+    const icsColors = ['#f43f5e','#e11d48','#be185d','#9d174d','#db2777'];
+    icsWeekEvents.filter(ev => !ev.allDay).forEach((ev, idx) => {
+      const end = ev.end || new Date(ev.start.getTime() + 3600000);
+      placeCalEvent(ev.start, end, ev.summary, icsColors[idx % icsColors.length], true);
     });
   } catch(e) {
     console.error('Calendar error', e);
@@ -1366,6 +1433,75 @@ async function renderCalendar() {
 function calNav(dir) {
   state.calWeekOffset = dir === 0 ? 0 : state.calWeekOffset + dir;
   renderCalendar();
+}
+
+// ── ICS CALENDAR FEED ──
+const ICS_FEED_URL = 'https://stanfordonline.global-alumni.com/feeds/calendars/user_xQTRliRqjXSCkKa0B4pQFmBMhG67SS4fZ2mYHaep.ics';
+const ICS_PROXY = 'https://api.allorigins.win/raw?url=';
+let icsEvents = [];
+let icsFetchedAt = 0;
+
+async function loadIcsFeed() {
+  const now = Date.now();
+  if (icsEvents.length && now - icsFetchedAt < 15 * 60 * 1000) return; // cache 15 min
+  try {
+    const resp = await fetch(ICS_PROXY + encodeURIComponent(ICS_FEED_URL));
+    if (!resp.ok) throw new Error('ICS fetch failed: ' + resp.status);
+    const text = await resp.text();
+    icsEvents = parseIcs(text);
+    icsFetchedAt = now;
+    console.log(`[ICS] Loaded ${icsEvents.length} events`);
+  } catch(e) {
+    console.warn('[ICS] Could not load feed:', e.message);
+  }
+}
+
+function parseIcs(text) {
+  const events = [];
+  // Unfold continuation lines (RFC 5545 line folding)
+  const unfolded = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n[ \t]/g, '');
+  const lines = unfolded.split('\n');
+  let ev = null;
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (line === 'BEGIN:VEVENT') { ev = {}; continue; }
+    if (line === 'END:VEVENT') { if (ev && ev.start && ev.summary) events.push(ev); ev = null; continue; }
+    if (!ev) continue;
+    const colon = line.indexOf(':');
+    if (colon < 0) continue;
+    const keyFull = line.slice(0, colon);
+    const val = line.slice(colon + 1);
+    const key = keyFull.split(';')[0].toUpperCase();
+    if (key === 'SUMMARY') ev.summary = val.replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';');
+    else if (key === 'DESCRIPTION') ev.description = val.replace(/\\n/g,'\n').replace(/\\,/g,',');
+    else if (key === 'LOCATION') ev.location = val.replace(/\\,/g,',');
+    else if (key === 'UID') ev.uid = val;
+    else if (key === 'DTSTART') { ev.start = parseIcsDate(val, keyFull); ev.allDay = !val.includes('T'); }
+    else if (key === 'DTEND')   { ev.end   = parseIcsDate(val, keyFull); }
+    else if (key === 'RRULE')   { ev.rrule = val; }
+  }
+  return events;
+}
+
+function parseIcsDate(val, keyFull) {
+  const v = val.trim();
+  // All-day: YYYYMMDD
+  if (/^\d{8}$/.test(v)) {
+    return new Date(+v.slice(0,4), +v.slice(4,6)-1, +v.slice(6,8));
+  }
+  // DateTime: YYYYMMDDTHHMMSS[Z]
+  const y=+v.slice(0,4), mo=+v.slice(4,6)-1, d=+v.slice(6,8);
+  const h=+v.slice(9,11), m=+v.slice(11,13), s=+v.slice(13,15)||0;
+  if (v.endsWith('Z')) return new Date(Date.UTC(y,mo,d,h,m,s));
+  return new Date(y, mo, d, h, m, s);
+}
+
+function getIcsEventsForWeek(weekStart, weekEnd) {
+  return icsEvents.filter(ev => {
+    if (!ev.start) return false;
+    const s = ev.start, e = ev.end || new Date(s.getTime() + 3600000);
+    return s < weekEnd && e > weekStart;
+  });
 }
 
 function openNewEventModal() {
