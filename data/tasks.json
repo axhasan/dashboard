@@ -41,6 +41,11 @@
           "dailyEntries": [
             {
               "id": "e_1773122257412_6zo",
+              "text": "Send Email to Amit Katz",
+              "done": false
+            },
+            {
+              "id": "e_1773122903934_hiq",
               "text": "",
               "done": false
             }
