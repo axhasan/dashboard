@@ -5,62 +5,55 @@
       "id": "week_1773109354590_tvqo",
       "label": "Week of Mar 9, 2026",
       "startDate": "2026-03-09",
-      "tasks": [
+      "days": [
         {
           "id": "task_1773109354589_r3hd",
           "date": "2026-03-09",
-          "daily": "",
-          "goal": "",
-          "outcome": "",
-          "done": false
+          "dailyEntries":   [{"id": "e_1773109354589_d1", "text": "", "done": false}],
+          "weeklyGoals":    [{"id": "e_1773109354589_g1", "text": "", "done": false}],
+          "weeklyOutcomes": [{"id": "e_1773109354589_o1", "text": "", "done": false}]
         },
         {
           "id": "task_1773109354591_prou",
           "date": "2026-03-10",
-          "daily": "",
-          "goal": "",
-          "outcome": "",
-          "done": false
+          "dailyEntries":   [{"id": "e_1773109354591_d1", "text": "", "done": false}],
+          "weeklyGoals":    [{"id": "e_1773109354591_g1", "text": "", "done": false}],
+          "weeklyOutcomes": [{"id": "e_1773109354591_o1", "text": "", "done": false}]
         },
         {
           "id": "task_1773109354592_4q2j",
           "date": "2026-03-11",
-          "daily": "",
-          "goal": "",
-          "outcome": "",
-          "done": false
+          "dailyEntries":   [{"id": "e_1773109354592_d1", "text": "", "done": false}],
+          "weeklyGoals":    [{"id": "e_1773109354592_g1", "text": "", "done": false}],
+          "weeklyOutcomes": [{"id": "e_1773109354592_o1", "text": "", "done": false}]
         },
         {
           "id": "task_1773109354593_ihtp",
           "date": "2026-03-12",
-          "daily": "",
-          "goal": "",
-          "outcome": "",
-          "done": false
+          "dailyEntries":   [{"id": "e_1773109354593_d1", "text": "", "done": false}],
+          "weeklyGoals":    [{"id": "e_1773109354593_g1", "text": "", "done": false}],
+          "weeklyOutcomes": [{"id": "e_1773109354593_o1", "text": "", "done": false}]
         },
         {
           "id": "task_1773109354594_2i14",
           "date": "2026-03-13",
-          "daily": "",
-          "goal": "",
-          "outcome": "",
-          "done": false
+          "dailyEntries":   [{"id": "e_1773109354594_d1", "text": "", "done": false}],
+          "weeklyGoals":    [{"id": "e_1773109354594_g1", "text": "", "done": false}],
+          "weeklyOutcomes": [{"id": "e_1773109354594_o1", "text": "", "done": false}]
         },
         {
           "id": "task_1773109354595_3ndf",
           "date": "2026-03-14",
-          "daily": "",
-          "goal": "",
-          "outcome": "",
-          "done": false
+          "dailyEntries":   [{"id": "e_1773109354595_d1", "text": "", "done": false}],
+          "weeklyGoals":    [{"id": "e_1773109354595_g1", "text": "", "done": false}],
+          "weeklyOutcomes": [{"id": "e_1773109354595_o1", "text": "", "done": false}]
         },
         {
           "id": "task_1773109354596_qwaf",
           "date": "2026-03-15",
-          "daily": "",
-          "goal": "",
-          "outcome": "",
-          "done": false
+          "dailyEntries":   [{"id": "e_1773109354596_d1", "text": "", "done": false}],
+          "weeklyGoals":    [{"id": "e_1773109354596_g1", "text": "", "done": false}],
+          "weeklyOutcomes": [{"id": "e_1773109354596_o1", "text": "", "done": false}]
         }
       ]
     }
