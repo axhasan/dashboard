@@ -9,14 +9,14 @@
         {
           "id": "task_1773109354589_r3hd",
           "date": "2026-03-09",
-          "dailyEntries":   [{"id": "e_1773109354589_d1", "text": "", "done": false}],
+          "dailyEntries":   [{"id": "e_1773109354589_d1", "text": "test entry", "done": true}],
           "weeklyGoals":    [{"id": "e_1773109354589_g1", "text": "", "done": false}],
           "weeklyOutcomes": [{"id": "e_1773109354589_o1", "text": "", "done": false}]
         },
         {
           "id": "task_1773109354591_prou",
           "date": "2026-03-10",
-          "dailyEntries":   [{"id": "e_1773109354591_d1", "text": "", "done": false}],
+          "dailyEntries":   [{"id": "e_1773109354591_d1", "text": "Send resume to Ali Saeed- Establish contact", "done": false}],
           "weeklyGoals":    [{"id": "e_1773109354591_g1", "text": "", "done": false}],
           "weeklyOutcomes": [{"id": "e_1773109354591_o1", "text": "", "done": false}]
         },
