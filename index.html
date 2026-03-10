@@ -261,13 +261,10 @@
     .task-add-entry-btn:hover { opacity: 1; background: #eff6ff; }
 
     /* ── APPLIED DASHBOARD ── */
-    .applied-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
-    .applied-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 16px; }
-    .applied-card .applied-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-    .applied-card .applied-company { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
-    .applied-card .applied-link { color: var(--primary); font-size: 12px; text-decoration: none; }
-    .applied-card .applied-link:hover { text-decoration: underline; }
-    .applied-card .applied-date { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+    /* email delete button */
+    .email-del-btn { position: absolute; bottom: 8px; right: 10px; background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 13px; padding: 2px 5px; border-radius: 4px; opacity: 0; transition: opacity 0.15s; }
+    .email-item:hover .email-del-btn { opacity: 1; }
+    .email-del-btn:hover { color: var(--danger); background: #fee2e2; }
 
     /* ── MODAL ── */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 5000; }
@@ -407,9 +404,6 @@
         <span class="nav-icon">🔗</span> Opportunities
         <span class="nav-badge" id="opp-badge" hidden>0</span>
       </div>
-      <div class="nav-item" onclick="showSection('applied')" data-section="applied">
-        <span class="nav-icon">✅</span> Applied
-      </div>
       <div style="height:8px"></div>
       <div class="nav-section">Planning</div>
       <div class="nav-item" onclick="showSection('tasks')" data-section="tasks">
@@ -463,11 +457,14 @@
       <div id="section-calendar" class="section">
         <div class="section-header">
           <h2>📅 Calendar</h2>
-          <div id="calendar-nav">
-            <button class="btn btn-outline btn-sm" onclick="calNav(-1)">‹</button>
-            <span id="cal-range-label"></span>
-            <button class="btn btn-outline btn-sm" onclick="calNav(1)">›</button>
-            <button class="btn btn-outline btn-sm" onclick="calNav(0)">Today</button>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div id="calendar-nav">
+              <button class="btn btn-outline btn-sm" onclick="calNav(-1)">‹</button>
+              <span id="cal-range-label"></span>
+              <button class="btn btn-outline btn-sm" onclick="calNav(1)">›</button>
+              <button class="btn btn-outline btn-sm" onclick="calNav(0)">Today</button>
+            </div>
+            <button class="btn btn-blue btn-sm" onclick="openNewEventModal()">+ New Event</button>
           </div>
         </div>
         <div id="cal-grid-wrap">
@@ -590,16 +587,51 @@
         </div>
       </div>
 
-      <!-- ── APPLIED DASHBOARD ── -->
-      <div id="section-applied" class="section">
-        <div class="section-header">
-          <h2>✅ Applied Dashboard</h2>
-          <span class="text-muted" id="applied-count"></span>
-        </div>
-        <div class="applied-grid" id="applied-grid"></div>
-      </div>
-
     </div><!-- /main -->
+
+      <!-- ── NEW CALENDAR EVENT MODAL ── -->
+      <div id="new-event-modal" class="modal-overlay" hidden onclick="if(event.target===this)closeNewEventModal()">
+        <div class="modal-box" style="max-width:460px">
+          <div class="modal-header">
+            <h3>New Calendar Event</h3>
+            <button class="modal-close" onclick="closeNewEventModal()">✕</button>
+          </div>
+          <div class="modal-body" style="display:flex;flex-direction:column;gap:12px;">
+            <div>
+              <label class="field-label">Title <span style="color:#ef4444">*</span></label>
+              <input id="evt-title" class="field-input" type="text" placeholder="e.g. Interview at Acme">
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                <input type="checkbox" id="evt-allday" onchange="toggleAllDay(this.checked)"> All-day event
+              </label>
+            </div>
+            <div id="evt-date-row">
+              <label class="field-label">Date</label>
+              <input id="evt-date" class="field-input" type="date">
+            </div>
+            <div id="evt-time-row" style="display:flex;gap:10px;">
+              <div style="flex:1;">
+                <label class="field-label">Start time</label>
+                <input id="evt-start" class="field-input" type="time" value="09:00">
+              </div>
+              <div style="flex:1;">
+                <label class="field-label">End time</label>
+                <input id="evt-end" class="field-input" type="time" value="10:00">
+              </div>
+            </div>
+            <div>
+              <label class="field-label">Description (optional)</label>
+              <textarea id="evt-desc" class="field-input" rows="2" placeholder="Details, location, notes…" style="resize:vertical;font-family:inherit;font-size:13px;"></textarea>
+            </div>
+            <div id="evt-error" style="font-size:12px;color:var(--danger);display:none;"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline btn-sm" onclick="closeNewEventModal()">Cancel</button>
+            <button class="btn btn-blue btn-sm" id="evt-save-btn" onclick="saveNewEvent()">Create Event</button>
+          </div>
+        </div>
+      </div>
   </div><!-- /body -->
 
   <!-- Bottom Bar -->
@@ -786,14 +818,13 @@ function showSection(name) {
   document.getElementById('header-title').textContent = {
     inbox:'Inbox', calendar:'Calendar', applications:'Application Tracker',
     contacts:'Contact Reachout Tracker', opportunities:'LinkedIn Opportunities',
-    applied:'Applied Dashboard', tasks:'Tasks'
+    tasks:'Tasks'
   }[name] || '';
   state.currentSection = name;
   if (name === 'calendar') renderCalendar();
   if (name === 'applications') renderTracker('applications');
   if (name === 'contacts') renderTracker('contacts');
   if (name === 'opportunities') renderOpportunities();
-  if (name === 'applied') renderApplied();
   if (name === 'tasks') renderTasks();
 }
 
@@ -856,7 +887,7 @@ function renderEmailList(messages) {
     const date = formatEmailDate(getHeader(m, 'Date'));
     const snippet = m.snippet ? escHtml(m.snippet) : '';
     const unread = m.labelIds?.includes('UNREAD') ? 'unread' : '';
-    const showEmail = fromName !== fromEmail; // only show addr separately if name differs
+    const showEmail = fromName !== fromEmail;
     return `<div class="email-item ${unread}" onclick="openEmail('${m.id}')" id="ei-${m.id}">
       ${unread ? '<div class="email-unread-dot"></div>' : ''}
       <div class="email-date">${date}</div>
@@ -864,8 +895,33 @@ function renderEmailList(messages) {
       ${showEmail ? `<div class="email-from-addr">${escHtml(fromEmail)}</div>` : ''}
       <div class="email-subject">${escHtml(subject)}</div>
       ${snippet ? `<div class="email-snippet">${snippet}</div>` : ''}
+      <button class="email-del-btn" title="Move to Trash" onclick="event.stopPropagation();deleteEmail('${m.id}')">🗑</button>
     </div>`;
   }).join('');
+}
+
+async function deleteEmail(msgId) {
+  const item = document.getElementById(`ei-${msgId}`);
+  if (item) { item.style.opacity = '0.4'; item.style.pointerEvents = 'none'; }
+  try {
+    const r = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msgId}/trash`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${state.accessToken}` }
+    });
+    if (!r.ok) throw new Error(`Gmail ${r.status}`);
+    if (item) item.remove();
+    // Clear detail pane if this was the open email
+    if (state.currentEmailId === msgId) {
+      state.currentEmailId = null;
+      document.getElementById('email-detail-empty').hidden = false;
+      document.getElementById('email-content').hidden = true;
+      document.getElementById('reply-section').hidden = true;
+    }
+    showToast('Moved to Trash', 'info');
+  } catch(e) {
+    if (item) { item.style.opacity = ''; item.style.pointerEvents = ''; }
+    showToast('Could not delete: ' + e.message, 'error');
+  }
 }
 
 async function openEmail(msgId) {
@@ -1081,6 +1137,87 @@ async function renderCalendar() {
 function calNav(dir) {
   state.calWeekOffset = dir === 0 ? 0 : state.calWeekOffset + dir;
   renderCalendar();
+}
+
+function openNewEventModal() {
+  // Pre-fill date to today (in local timezone)
+  const today = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const dateStr = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+  document.getElementById('evt-title').value = '';
+  document.getElementById('evt-date').value = dateStr;
+  document.getElementById('evt-start').value = '09:00';
+  document.getElementById('evt-end').value = '10:00';
+  document.getElementById('evt-desc').value = '';
+  document.getElementById('evt-allday').checked = false;
+  document.getElementById('evt-time-row').style.display = 'flex';
+  document.getElementById('evt-error').style.display = 'none';
+  document.getElementById('evt-save-btn').disabled = false;
+  document.getElementById('new-event-modal').hidden = false;
+  setTimeout(() => document.getElementById('evt-title').focus(), 50);
+}
+
+function closeNewEventModal() {
+  document.getElementById('new-event-modal').hidden = true;
+}
+
+function toggleAllDay(checked) {
+  document.getElementById('evt-time-row').style.display = checked ? 'none' : 'flex';
+}
+
+async function saveNewEvent() {
+  const title = document.getElementById('evt-title').value.trim();
+  const date  = document.getElementById('evt-date').value;
+  const startT = document.getElementById('evt-start').value;
+  const endT   = document.getElementById('evt-end').value;
+  const desc   = document.getElementById('evt-desc').value.trim();
+  const allDay = document.getElementById('evt-allday').checked;
+  const errEl  = document.getElementById('evt-error');
+
+  if (!title) { errEl.textContent = 'Title is required.'; errEl.style.display='block'; return; }
+  if (!date)  { errEl.textContent = 'Date is required.';  errEl.style.display='block'; return; }
+  if (!allDay && startT >= endT) { errEl.textContent = 'End time must be after start time.'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+
+  const btn = document.getElementById('evt-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  try {
+    let eventBody;
+    if (allDay) {
+      // All-day: use date strings, end = next day
+      const endDate = new Date(date + 'T00:00:00');
+      endDate.setDate(endDate.getDate() + 1);
+      const endStr = endDate.toISOString().slice(0,10);
+      eventBody = { summary: title, description: desc || undefined, start: { date }, end: { date: endStr } };
+    } else {
+      // Timed event
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      eventBody = {
+        summary: title,
+        description: desc || undefined,
+        start: { dateTime: `${date}T${startT}:00`, timeZone: tz },
+        end:   { dateTime: `${date}T${endT}:00`,   timeZone: tz }
+      };
+    }
+
+    const r = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${state.accessToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(eventBody)
+    });
+    if (!r.ok) { const e = await r.json(); throw new Error(e.error?.message || `API error ${r.status}`); }
+
+    closeNewEventModal();
+    showToast(`Event "${title}" created`, 'success');
+    renderCalendar(); // refresh calendar to show new event
+  } catch(e) {
+    errEl.textContent = 'Could not create event: ' + e.message;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Create Event';
+  }
 }
 
 // ════════════════════════════════════════
@@ -1493,7 +1630,6 @@ async function loadOpportunities() {
       await saveOppData();
     }
     renderOpportunities();
-    renderApplied();
     updateOppBadge();
   } catch(e) {
     if (!state.oppData) state.oppData = JSON.parse(JSON.stringify(DEFAULT_OPP_DATA));
@@ -1704,14 +1840,31 @@ function handleOppStatus(oppId, newStatus, selectEl) {
   opp.status = newStatus;
 
   if (newStatus === 'applied') {
-    // Move to applied, remove from opportunities
-    opp.appliedDate = new Date().toISOString();
-    state.oppData.applied = state.oppData.applied || [];
-    state.oppData.applied.push({...opp});
+    // Remove from opportunities list
     state.oppData.opportunities = state.oppData.opportunities.filter(o => o.id !== oppId);
-    showToast(`Moved "${opp.title}" to Applied Dashboard`, 'success');
+    // Add a row to the Applications tracker
+    if (state.trackerData?.applications) {
+      const today = new Date().toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'});
+      const company = (opp.company && opp.company !== 'Unknown')
+        ? opp.company : (extractCompanyFromTitle(opp.title||'') || '');
+      const appRow = {
+        id: `row_${Date.now()}`,
+        company,
+        role: opp.title || '',
+        date: today,
+        status: 'Applied',
+        url: opp.link || '',
+        notes: opp.notes || ''
+      };
+      // fill any extra columns with empty strings
+      state.trackerData.applications.columns.forEach(c => { if (!(c.id in appRow)) appRow[c.id] = ''; });
+      state.trackerData.applications.rows.unshift(appRow);
+      saveTrackerDataDebounced();
+    }
+    showToast(`Moved "${opp.title?.slice(0,40)}" to Applications`, 'success');
     renderOpportunities();
-    renderApplied();
+    // Navigate to Applications tab so user sees it
+    setTimeout(() => showSection('applications'), 800);
   } else if (newStatus === 'not_interested') {
     if (!opp.notInterestedDate) opp.notInterestedDate = new Date().toISOString();
     const row = document.getElementById(`opp-row-${oppId}`);
@@ -1730,26 +1883,6 @@ function updateOppBadge() {
   else badge.hidden = true;
 }
 
-function renderApplied() {
-  if (!state.oppData) return;
-  const applied = state.oppData.applied || [];
-  const grid = document.getElementById('applied-grid');
-  document.getElementById('applied-count').textContent = applied.length ? `${applied.length} application${applied.length>1?'s':''}` : '';
-
-  if (!applied.length) {
-    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">✅</div><p>No applications moved here yet.<br>Mark a LinkedIn opportunity as "Applied" to add it here.</p></div>';
-    return;
-  }
-  grid.innerHTML = applied.map(a => {
-    const d = a.appliedDate ? new Date(a.appliedDate).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '—';
-    return `<div class="applied-card">
-      <div class="applied-title">${escHtml(a.title||'Position')}</div>
-      <div class="applied-company">${escHtml(a.company||'Unknown Company')}</div>
-      ${a.link ? `<a href="${escHtml(a.link)}" target="_blank" class="applied-link">View Job Posting →</a>` : ''}
-      <div class="applied-date">Applied: ${d}</div>
-    </div>`;
-  }).join('');
-}
 
 // ════════════════════════════════════════
 //  WEATHER
