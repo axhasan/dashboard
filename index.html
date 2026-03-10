@@ -176,6 +176,22 @@
     .col-resize-handle { position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; z-index: 1; }
     .col-resize-handle:hover, .col-resize-handle.col-resizing { background: var(--primary); opacity: 0.5; }
     .tracker-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; min-width: 60px; }
+    /* Row drag handle */
+    .row-drag-th  { width: 24px; min-width: 24px; padding: 0 !important; border-bottom: 1px solid var(--border); background: var(--bg); }
+    .row-drag-td  { width: 24px; min-width: 24px; padding: 0 6px !important; text-align: center; cursor: grab; color: #cbd5e1; font-size: 15px; user-select: none; }
+    .row-drag-td:hover { color: #94a3b8; }
+    .row-drag-td:active { cursor: grabbing; }
+    tr.row-dragging { opacity: 0.35; background: #eff6ff; }
+    tr.row-drag-over-top td    { border-top: 2px solid var(--primary) !important; }
+    tr.row-drag-over-bottom td { border-bottom: 2px solid var(--primary) !important; }
+    /* Heatmap cell */
+    .tracker-heatmap { padding: 3px 7px; border-radius: 5px; font-size: 12px; font-family: inherit; cursor: pointer; outline: none; border: 1px solid transparent; font-weight: 600; width: 100%; }
+    td.heatmap-green  { background: #dcfce7 !important; }
+    td.heatmap-yellow { background: #fef9c3 !important; }
+    td.heatmap-red    { background: #fee2e2 !important; }
+    .tracker-heatmap.heatmap-green  { background: #dcfce7; color: #15803d; border-color: #86efac; }
+    .tracker-heatmap.heatmap-yellow { background: #fef9c3; color: #854d0e; border-color: #fde047; }
+    .tracker-heatmap.heatmap-red    { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
     /* Date picker input */
     .tracker-date { padding: 3px 7px; border: 1px solid var(--border); border-radius: 5px; font-size: 12px; font-family: inherit; background: var(--bg); color: var(--text); cursor: pointer; outline: none; width: 130px; }
     .tracker-date:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
@@ -198,6 +214,7 @@
     .status-select.consider { background: #fef9c3; border-color: #fde047; color: #854d0e; }
     .status-select.hold { background: #ede9fe; border-color: #c4b5fd; color: #6d28d9; }
     .status-select.not_interested { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
+    .status-select.apply { background: #fff7ed; border-color: #fb923c; color: #ea580c; font-weight: 600; }
     /* Opp layout */
     .opp-section-wrap { display: flex; flex-direction: column; height: calc(100vh - 54px - 88px - 72px); }
     .opp-table-wrap { background: var(--card); border-radius: var(--radius) var(--radius) 0 0; border: 1px solid var(--border); border-bottom: none; overflow: auto; flex: 1; min-height: 80px; }
@@ -259,6 +276,42 @@
     .opp-company-unknown { color: #94a3b8; font-style: italic; font-size: 12px; }
     .opp-notes-preview { font-size: 11px; color: var(--text-muted); font-style: italic; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
     .opp-notes-preview:empty::before { content: 'Add note...'; color: #cbd5e1; }
+
+    /* ── AI MATCH PANEL ── */
+    .opp-match-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #f8fafc; min-width: 0; }
+    .opp-match-header { padding: 8px 14px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .opp-match-body { flex: 1; overflow-y: auto; padding: 14px 18px; }
+    .opp-match-score-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .opp-match-stars { font-size: 18px; color: #f59e0b; letter-spacing: 2px; }
+    .opp-match-level { padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+    .opp-match-level.low { background: #fee2e2; color: #dc2626; }
+    .opp-match-level.medium { background: #fef9c3; color: #854d0e; }
+    .opp-match-level.high { background: #dcfce7; color: #15803d; }
+    .opp-match-summary { font-size: 12px; color: var(--text); line-height: 1.55; margin-bottom: 12px; padding: 8px 12px; background: white; border-radius: 7px; border-left: 3px solid var(--primary); }
+    .opp-match-section { margin-bottom: 12px; }
+    .opp-match-section h4 { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 6px; }
+    .opp-match-section ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+    .opp-match-section li { font-size: 12px; line-height: 1.5; display: flex; gap: 6px; align-items: flex-start; }
+    .opp-match-strengths li::before { content: '✓'; color: var(--success); flex-shrink: 0; font-weight: 700; margin-top: 1px; }
+    .opp-match-gaps li::before { content: '△'; color: var(--warning); flex-shrink: 0; font-weight: 700; margin-top: 1px; }
+
+    /* ── TASKS DASHBOARD ── */
+    .tasks-week { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 16px; overflow: hidden; }
+    .tasks-week-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--bg); border-bottom: 1px solid var(--border); }
+    .tasks-week-label { font-size: 14px; font-weight: 700; flex: 1; outline: none; color: var(--text); border: none; background: transparent; border-bottom: 2px solid transparent; font-family: inherit; }
+    .tasks-week-label:focus { border-bottom-color: var(--primary); }
+    .tasks-table { width: 100%; border-collapse: collapse; }
+    .tasks-table th { padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); background: #fafafa; white-space: nowrap; }
+    .tasks-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+    .tasks-table tr:last-child td { border-bottom: none; }
+    .tasks-table tr:hover td { background: #fafafa; }
+    .task-checkbox { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); flex-shrink: 0; }
+    tr.task-done td:not(:first-child):not(:last-child) { text-decoration: line-through; color: var(--text-muted); }
+    .task-cell { outline: none; min-height: 18px; display: block; }
+    .task-cell:empty::before { content: attr(data-placeholder); color: #cbd5e1; font-style: italic; pointer-events: none; }
+    .task-cell:focus { background: #eff6ff; border-radius: 4px; box-shadow: inset 0 0 0 2px var(--primary); padding: 2px 4px; }
+    .tasks-add-row { padding: 8px 12px; background: #fafafa; border-top: 1px solid var(--border); }
+    #section-tasks .tracker-wrap { max-height: calc(100vh - 54px - 88px - 100px); overflow-y: auto; }
 
     /* ── APPLIED DASHBOARD ── */
     .applied-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
@@ -410,6 +463,11 @@
       <div class="nav-item" onclick="showSection('applied')" data-section="applied">
         <span class="nav-icon">✅</span> Applied
       </div>
+      <div style="height:8px"></div>
+      <div class="nav-section">Planning</div>
+      <div class="nav-item" onclick="showSection('tasks')" data-section="tasks">
+        <span class="nav-icon">📋</span> Tasks
+      </div>
       <div id="sidebar-footer">
         <div style="font-size:11px; color:#475569; text-align:center;" id="last-sync-label"></div>
       </div>
@@ -537,21 +595,17 @@
                   <textarea id="opp-preview-notes-ta" placeholder="Add notes about this opportunity…" oninput="debouncedSaveOppNotes()"></textarea>
                 </div>
               </div>
-              <!-- Right: fetched content viewer -->
-              <div class="opp-preview-iframe-wrap" id="opp-iframe-wrap">
-                <!-- Scrollable article content -->
-                <div class="opp-preview-body" id="opp-preview-body"></div>
-                <!-- Overlay: loading / error -->
-                <div class="opp-iframe-overlay" id="opp-iframe-overlay">
-                  <div class="opp-iframe-spin" id="opp-iframe-spin"></div>
-                  <span id="opp-iframe-status">Fetching preview…</span>
-                  <span class="opp-iframe-blocked-msg" id="opp-iframe-blocked-msg"></span>
+              <!-- Right: AI job match analysis -->
+              <div class="opp-match-panel" id="opp-match-panel">
+                <div class="opp-match-header">
+                  <span>✦ AI Job Match Analysis</span>
+                  <button class="btn btn-outline btn-sm" style="font-size:11px;padding:3px 9px;text-transform:none;letter-spacing:0;" onclick="analyzeJobMatch(_selectedOppId)">↻ Re-analyze</button>
                 </div>
-                <!-- Bottom bar: direct link -->
-                <div class="opp-iframe-bar" id="opp-iframe-bar" style="display:none;">
-                  <span>🔗</span>
-                  <a id="opp-iframe-direct-link" href="#" target="_blank">Open in new tab →</a>
-                  <span style="margin-left:auto;font-size:10px;color:#94a3b8;">via allorigins proxy + Readability</span>
+                <div class="opp-match-body" id="opp-match-body">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:40px;color:var(--text-muted);font-size:13px;">
+                    <span style="font-size:28px;">✦</span>
+                    <span>Select an opportunity to see AI match analysis</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -588,6 +642,17 @@
             <button class="btn btn-outline btn-sm" onclick="closeAddOppModal()">Cancel</button>
             <button class="btn btn-blue btn-sm" onclick="submitAddOpp()">Add Opportunity</button>
           </div>
+        </div>
+      </div>
+
+      <!-- ── TASKS DASHBOARD ── -->
+      <div id="section-tasks" class="section">
+        <div class="section-header">
+          <h2>📋 Tasks</h2>
+          <button class="btn btn-blue btn-sm" onclick="addWeek()">+ Add Week</button>
+        </div>
+        <div id="tasks-container">
+          <div style="text-align:center;padding:40px;color:var(--text-muted);font-size:13px;">Loading tasks…</div>
         </div>
       </div>
 
@@ -705,7 +770,9 @@ const state = {
   oppData: null,
   oppSha: null,
   pendingColTracker: null,
-  saveTimer: null
+  saveTimer: null,
+  tasksData: null,
+  tasksSha: null
 };
 
 // ════════════════════════════════════════
@@ -764,6 +831,7 @@ async function bootDashboard() {
 
   // Load everything in parallel
   await loadTrackerData();
+  loadTaskData();
   loadInbox();
   loadCalendar();
   loadOpportunities();
@@ -783,7 +851,8 @@ function showSection(name) {
   document.querySelector(`[data-section="${name}"]`).classList.add('active');
   document.getElementById('header-title').textContent = {
     inbox:'Inbox', calendar:'Calendar', applications:'Application Tracker',
-    contacts:'Contact Reachout Tracker', opportunities:'LinkedIn Opportunities', applied:'Applied Dashboard'
+    contacts:'Contact Reachout Tracker', opportunities:'LinkedIn Opportunities',
+    applied:'Applied Dashboard', tasks:'Tasks'
   }[name] || '';
   state.currentSection = name;
   if (name === 'calendar') renderCalendar();
@@ -791,6 +860,7 @@ function showSection(name) {
   if (name === 'contacts') renderTracker('contacts');
   if (name === 'opportunities') renderOpportunities();
   if (name === 'applied') renderApplied();
+  if (name === 'tasks') renderTasks();
 }
 
 // ════════════════════════════════════════
@@ -1179,9 +1249,15 @@ async function saveTrackerData() {
 // Default column widths (px) keyed by column id
 const COL_DEFAULT_WIDTHS = {
   name: 140, company: 120, title: 160, tech: 130, linkedin: 80,
-  last_contact: 145, next_followup: 145, contact_method: 130, notes: 220,
+  last_contact: 145, next_followup: 145, contact_method: 130, heatmap: 110, notes: 220,
   // applications
   role: 160, date: 120, status: 120, url: 80,
+};
+
+const HEATMAP_STYLES = {
+  Green:  { td: 'heatmap-green',  sel: 'heatmap-green'  },
+  Yellow: { td: 'heatmap-yellow', sel: 'heatmap-yellow' },
+  Red:    { td: 'heatmap-red',    sel: 'heatmap-red'    },
 };
 
 function toDateInput(val) {
@@ -1209,6 +1285,7 @@ function renderTracker(type) {
   tableEl.innerHTML = `
     <thead>
       <tr>
+        <th class="row-drag-th"></th>
         ${cols.map(c => {
           const w = colWidths[c.id] || COL_DEFAULT_WIDTHS[c.id] || 120;
           return `<th style="width:${w}px;min-width:${w}px;" data-col-id="${c.id}">${escHtml(c.label)}<span class="col-resize-handle" data-col="${c.id}"></span></th>`;
@@ -1219,7 +1296,8 @@ function renderTracker(type) {
     </thead>
     <tbody>
       ${rows.map(row => `
-        <tr>
+        <tr draggable="true" data-row-id="${row.id}">
+          <td class="row-drag-td" title="Drag to reorder">⠿</td>
           ${cols.map(c => {
             const val = row[c.id] || '';
             if (c.id === 'url' || c.id === 'linkedin') {
@@ -1233,6 +1311,12 @@ function renderTracker(type) {
               const iso = toDateInput(val);
               return `<td><input type="date" class="tracker-date" value="${escHtml(iso)}" onchange="updateCell('${type}','${row.id}','${c.id}',this.value)"></td>`;
             }
+            if (c.type === 'heatmap') {
+              const hs = HEATMAP_STYLES[val] || {};
+              const opts = ['','Green','Yellow','Red'].map(o =>
+                `<option value="${o}" ${val===o?'selected':''}>${o||'—'}</option>`).join('');
+              return `<td class="${hs.td||''}"><select class="tracker-heatmap ${hs.sel||''}" onchange="applyHeatmap('${type}','${row.id}','${c.id}',this)">${opts}</select></td>`;
+            }
             return `<td contenteditable="true" onblur="updateCell('${type}','${row.id}','${c.id}',this.innerText)" data-col="${c.id}">${escHtml(val)}</td>`;
           }).join('')}
           <td></td>
@@ -1241,6 +1325,90 @@ function renderTracker(type) {
     </tbody>`;
 
   initColResize(tableEl, type);
+  initRowDrag(tableEl, type);
+}
+
+// ── Heatmap ──
+function applyHeatmap(type, rowId, colId, selectEl) {
+  const val = selectEl.value;
+  updateCell(type, rowId, colId, val);
+  const td = selectEl.closest('td');
+  // Clear old classes
+  td.classList.remove('heatmap-green','heatmap-yellow','heatmap-red');
+  selectEl.classList.remove('heatmap-green','heatmap-yellow','heatmap-red');
+  const hs = HEATMAP_STYLES[val];
+  if (hs) { td.classList.add(hs.td); selectEl.classList.add(hs.sel); }
+}
+
+// ── Row drag-to-reorder ──
+function initRowDrag(tableEl, type) {
+  const tbody = tableEl.querySelector('tbody');
+  if (!tbody) return;
+
+  // Clean up old listeners
+  if (tbody._dragClone) { tbody._dragClone = null; }
+
+  let dragSrcId = null;
+
+  tbody.addEventListener('dragstart', e => {
+    const tr = e.target.closest('tr[data-row-id]');
+    if (!tr) return;
+    dragSrcId = tr.dataset.rowId;
+    tr.classList.add('row-dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', dragSrcId);
+  });
+
+  tbody.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const tr = e.target.closest('tr[data-row-id]');
+    tbody.querySelectorAll('tr').forEach(r => {
+      r.classList.remove('row-drag-over-top','row-drag-over-bottom');
+    });
+    if (!tr || tr.dataset.rowId === dragSrcId) return;
+    // Drop above or below based on mouse position within row
+    const rect = tr.getBoundingClientRect();
+    const mid  = rect.top + rect.height / 2;
+    tr.classList.add(e.clientY < mid ? 'row-drag-over-top' : 'row-drag-over-bottom');
+  });
+
+  tbody.addEventListener('dragleave', e => {
+    if (!tbody.contains(e.relatedTarget)) {
+      tbody.querySelectorAll('tr').forEach(r =>
+        r.classList.remove('row-drag-over-top','row-drag-over-bottom'));
+    }
+  });
+
+  tbody.addEventListener('drop', e => {
+    e.preventDefault();
+    tbody.querySelectorAll('tr').forEach(r =>
+      r.classList.remove('row-drag-over-top','row-drag-over-bottom','row-dragging'));
+
+    const tr = e.target.closest('tr[data-row-id]');
+    if (!tr || !dragSrcId || tr.dataset.rowId === dragSrcId) return;
+
+    const rows = state.trackerData[type].rows;
+    const srcIdx = rows.findIndex(r => r.id === dragSrcId);
+    const tgtIdx = rows.findIndex(r => r.id === tr.dataset.rowId);
+    if (srcIdx === -1 || tgtIdx === -1) return;
+
+    const rect = tr.getBoundingClientRect();
+    const insertAfter = e.clientY >= rect.top + rect.height / 2;
+    const [removed] = rows.splice(srcIdx, 1);
+    const insertAt = rows.findIndex(r => r.id === tr.dataset.rowId) + (insertAfter ? 1 : 0);
+    rows.splice(insertAt, 0, removed);
+
+    dragSrcId = null;
+    renderTracker(type);
+    saveTrackerDataDebounced();
+  });
+
+  tbody.addEventListener('dragend', () => {
+    tbody.querySelectorAll('tr').forEach(r =>
+      r.classList.remove('row-dragging','row-drag-over-top','row-drag-over-bottom'));
+    dragSrcId = null;
+  });
 }
 
 // ── Column resize ──
@@ -1438,10 +1606,12 @@ function renderOpportunities() {
       <td>${dt}</td>
       <td><span class="opp-notes-preview" title="${escHtml(opp.notes||'')}">${notePreview}</span></td>
       <td>
-        <select class="status-select ${opp.status||'consider'}" onchange="handleOppStatus('${opp.id}', this.value, this)" onclick="event.stopPropagation()">
+        <select class="status-select ${opp.status||''}" onchange="handleOppStatus('${opp.id}', this.value, this)" onclick="event.stopPropagation()">
+          <option value="" ${!opp.status?'selected':''}>—</option>
           <option value="consider" ${opp.status==='consider'?'selected':''}>Consider</option>
+          <option value="apply" ${opp.status==='apply'?'selected':''}>Apply 📩</option>
           <option value="hold" ${opp.status==='hold'?'selected':''}>Hold – Deciding</option>
-          <option value="applied" ${opp.status==='applied'?'selected':''}>Applied</option>
+          <option value="applied" ${opp.status==='applied'?'selected':''}>Applied ✅</option>
           <option value="not_interested" ${opp.status==='not_interested'?'selected':''}>Not Interested</option>
         </select>
       </td>
@@ -1475,8 +1645,6 @@ function selectOppRow(oppId) {
   showOppPreview(oppId);
 }
 
-let _iframeBlockedTimer = null;
-
 function showOppPreview(oppId) {
   const opp = state.oppData?.opportunities?.find(o => o.id === oppId);
   if (!opp) return;
@@ -1492,133 +1660,223 @@ function showOppPreview(oppId) {
   document.getElementById('opp-preview-meta').innerHTML =
     `<span>🏢 ${escHtml(company)}</span>` +
     `<span>📅 ${dt}</span>` +
-    `<span>🏷 ${escHtml(opp.source||'manual')}</span>`;
+    `<span>🏷 ${escHtml(opp.source||'manual')}</span>` +
+    (opp.link ? `<span><a href="${escHtml(opp.link)}" target="_blank">Open job posting ↗</a></span>` : '');
 
   const ta = document.getElementById('opp-preview-notes-ta');
   ta.value = opp.notes || '';
   ta.dataset.oppId = oppId;
 
-  // ── Fetch + Readability content loader ──
-  const iframeWrap = document.getElementById('opp-iframe-wrap');
-  const overlay = document.getElementById('opp-iframe-overlay');
-  const bar = document.getElementById('opp-iframe-bar');
-  const directLink = document.getElementById('opp-iframe-direct-link');
-  const statusEl = document.getElementById('opp-iframe-status');
-  const spinEl = document.getElementById('opp-iframe-spin');
-  const blockedMsg = document.getElementById('opp-iframe-blocked-msg');
-  const body = document.getElementById('opp-preview-body');
+  // Trigger AI job match analysis
+  analyzeJobMatch(oppId);
+}
 
-  clearTimeout(_iframeBlockedTimer);
+// ── Resume text (used for AI job match analysis) ──
+const RESUME_TEXT = `Alley Hasan | Pleasanton, CA | ahasan@gmail.com
 
-  if (!opp.link) {
-    iframeWrap.style.display = 'none';
-  } else {
-    iframeWrap.style.display = 'flex';
-    bar.style.display = 'flex';
-    try { directLink.textContent = new URL(opp.link).hostname.replace(/^www\./, '') + ' ↗'; } catch(e) { directLink.textContent = 'Open in new tab →'; }
-    directLink.href = opp.link;
-    blockedMsg.textContent = '';
-    body.innerHTML = '';
-    overlay.classList.remove('hidden');
-    spinEl.style.display = 'block';
-    statusEl.textContent = 'Fetching preview…';
-    fetchOppPreview(opp.link, opp.id);
+SUMMARY
+Product and GTM leader with a vision-to-execution track record across portfolio strategy, strategic pursuits, and sales enablement. Scaled new categories and grew established platforms by aligning roadmap, pricing/packaging, partners, and field execution to drive sustained adoption and growth.
+
+FOCUS AREAS
+Portfolio Strategy, Roadmap-to-Revenue Execution | Strategic Pursuits, Executive Customer Engagement, Competitive Plays | Global Sales Enablement, Operating Cadence (QBRs, pipeline inspection, KPIs) | Partner/Ecosystem GTM, Co-sell Motions, Market Expansion
+
+HIGHLIGHTS
+- Scaled AWS networking services via ecosystem-led GTM and global enablement, delivering sustained 35% YoY growth on a $1B+ portfolio.
+- Built AWS Cloud WAN from lighthouse wins to global enterprise adoption, generating 8-figure net-new revenue and driving 88% YoY growth / 110% plan.
+- Expanded Dell Networking Emerging Technologies from $210M to $515M and incubated Dell Enterprise SONiC to $150M+ incremental revenue.
+- Industry Leadership: Chairman of Open Switch (OPX) Board at Linux Foundation; Speaker at OpenStack conferences; OCP Summit.
+
+EXPERIENCE
+Amazon Web Services, Santa Clara, CA — 2022–Present
+WW Head, Portfolio Strategy & GTM — AWS Networking
+- Lead portfolio strategy and outbound GTM across a billion-dollar AWS Networking portfolio (Cloud WAN, Transit Gateway, Direct Connect) with 35% YoY revenue growth.
+- Built and scaled AWS Cloud WAN from lighthouse wins to global adoption; drove 8-figure net-new revenue, 88% YoY growth / 110% plan.
+- Quarterback 7–8 figure strategic pursuits with Fortune 100 customers: exec buyer mapping, competitive displacement, commercial strategy, close plans.
+- Drove product and portfolio strategy by converting customer/field signal into investment cases, feature sequencing, and launch readiness.
+- Built global sales enablement operating system (plays, competitive assets, pipeline inspection/QBR cadence).
+- Scaled partner/GSI/ISV co-sell motions and customer proof points.
+
+Dell Technologies, Santa Clara, CA — 2016–2022
+Senior Director, Product Management, Emerging Technologies
+- Ran a $500M+ global business, scaling revenue from $210M to $515M in 3 years through portfolio strategy, focused GTM, and operating rigor.
+- Built and commercialized Enterprise SONiC using an internal startup model, creating a $150M+ incremental revenue stream.
+- Established strategic partnerships (Microsoft Azure for SONiC; Broadcom for platform expansion).
+- Led the shift from hardware-led to software-led networking strategy, expanding TAM.
+
+Dell EMC, London, UK — 2015–2016
+Director, Business Development for Cloud – EMEA
+- Launched regional cloud and open networking initiatives, growing revenue from $0 to $30M in one year.
+
+Dell Force10, Irvine, CA — 2013–2015
+Director Enterprise Sales, Global Accounts
+- Grew the business by 15% YoY on a $35M annual run-rate business.
+- Managed a 40-person sales and pre-sales organization across global accounts.
+
+EARLY CAREER: Cisco Systems, Force10, MegaPath, Consiliant Technologies
+
+EDUCATION
+MBA, Cornell University, Johnson School of Business
+B.S. Mechanical Engineering, Wichita State University
+Certifications: CCIE Routing & Switching (#9561 – Expired)`;
+
+// ── AI Job Match Analysis ──
+let _analyzeToken = null;
+
+async function analyzeJobMatch(oppId) {
+  if (!oppId) return;
+  const opp = state.oppData?.opportunities?.find(o => o.id === oppId);
+  if (!opp) return;
+
+  const matchBody = document.getElementById('opp-match-body');
+  if (!matchBody) return;
+
+  const token = Date.now();
+  _analyzeToken = token;
+
+  // Show loading state
+  matchBody.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:40px;color:var(--text-muted);font-size:13px;">
+    <div class="opp-iframe-spin"></div>
+    <span>Analyzing job match with resume…</span>
+  </div>`;
+
+  const key = cfg('CLAUDE_KEY');
+  if (!key) {
+    matchBody.innerHTML = `<div class="opp-fetch-error"><span>⚙️</span><span>Claude API key not configured.<br>Add it in ⚙ Settings to enable AI match analysis.</span></div>`;
+    return;
+  }
+
+  // Try to fetch job description (best-effort, won't block if it fails)
+  let jobDesc = '';
+  if (opp.link) {
+    try {
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(opp.link)}`;
+      const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+      if (resp.ok && _analyzeToken === token) {
+        const html = await resp.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const bodyText = (doc.body?.innerText || '').toLowerCase();
+        const loginPhrases = ['signing you in','sign in to','log in to','please sign in'];
+        const isLoginWall = loginPhrases.some(p => bodyText.slice(0, 2000).includes(p));
+        if (!isLoginWall) {
+          if (typeof Readability !== 'undefined') {
+            try {
+              const article = new Readability(doc, { charThreshold: 50 }).parse();
+              if (article?.textContent) jobDesc = article.textContent.slice(0, 3000);
+            } catch(e) {}
+          }
+          if (!jobDesc) jobDesc = (doc.body?.innerText || '').slice(0, 3000);
+        }
+      }
+    } catch(e) {} // silently ignore fetch errors
+  }
+
+  if (_analyzeToken !== token) return; // user clicked away
+
+  const company = (opp.company && opp.company !== 'Unknown') ? opp.company : (extractCompanyFromTitle(opp.title||'') || 'Unknown');
+  const jobInfo = `Title: ${opp.title || 'Unknown'}\nCompany: ${company}${jobDesc ? '\n\nJob Description (excerpt):\n' + jobDesc : ''}`;
+
+  const prompt = `You are an expert career coach and recruiter. Analyze how well this candidate's background matches the job opportunity.
+
+CANDIDATE RESUME:
+${RESUME_TEXT}
+
+JOB OPPORTUNITY:
+${jobInfo}
+
+Respond ONLY in this exact format (no other text):
+SCORE: [1-5]
+LEVEL: [Low or Medium or High]
+STRENGTHS:
+- [key strength 1]
+- [key strength 2]
+- [key strength 3]
+GAPS:
+- [potential gap 1]
+- [potential gap 2]
+SUMMARY: [1-2 sentence overall assessment]`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 700,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (_analyzeToken !== token) return;
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData.error?.message || `API error ${resp.status}`);
+    }
+    const data = await resp.json();
+    if (_analyzeToken !== token) return;
+    const text = data.content?.[0]?.text || '';
+    renderMatchResult(matchBody, text, opp);
+
+  } catch(e) {
+    if (_analyzeToken !== token) return;
+    matchBody.innerHTML = `<div class="opp-fetch-error" style="padding:20px;text-align:center;gap:8px;display:flex;flex-direction:column;align-items:center;">
+      <span style="font-size:20px;">⚠️</span>
+      <span style="font-size:13px;">Analysis failed: ${escHtml(e.message)}</span>
+      <button class="btn btn-outline btn-sm" onclick="analyzeJobMatch('${escHtml(oppId)}')">↻ Retry</button>
+    </div>`;
   }
 }
 
-async function fetchOppPreview(url, oppId) {
-  const overlay = document.getElementById('opp-iframe-overlay');
-  const statusEl = document.getElementById('opp-iframe-status');
-  const spinEl = document.getElementById('opp-iframe-spin');
-  const blockedMsg = document.getElementById('opp-iframe-blocked-msg');
-  const body = document.getElementById('opp-preview-body');
+function renderMatchResult(matchBody, text, opp) {
+  const scoreMatch  = text.match(/SCORE:\s*([1-5])/i);
+  const levelMatch  = text.match(/LEVEL:\s*(Low|Medium|High)/i);
+  const strengthsMatch = text.match(/STRENGTHS:\s*([\s\S]*?)(?=GAPS:|SUMMARY:|$)/i);
+  const gapsMatch   = text.match(/GAPS:\s*([\s\S]*?)(?=SUMMARY:|STRENGTHS:|$)/i);
+  const summaryMatch = text.match(/SUMMARY:\s*([\s\S]*?)$/i);
 
-  // Abort if the user clicked a different row while loading
-  const _fetchToken = Date.now();
-  fetchOppPreview._token = _fetchToken;
+  const score = scoreMatch ? parseInt(scoreMatch[1]) : 0;
+  const level = levelMatch ? levelMatch[1] : '';
+  const strengths = (strengthsMatch ? strengthsMatch[1] : '').trim().split('\n')
+    .filter(l => l.trim().match(/^[-•]/)).map(l => l.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
+  const gaps = (gapsMatch ? gapsMatch[1] : '').trim().split('\n')
+    .filter(l => l.trim().match(/^[-•]/)).map(l => l.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
+  const summary = summaryMatch ? summaryMatch[1].trim() : '';
 
-  try {
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-    const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(15000) });
-    if (fetchOppPreview._token !== _fetchToken) return; // stale
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const html = await resp.text();
-    if (fetchOppPreview._token !== _fetchToken) return;
+  const stars = score > 0 ? ('★'.repeat(score) + '☆'.repeat(5 - score)) : '☆☆☆☆☆';
+  const levelClass = level.toLowerCase() || 'medium';
 
-    // Parse HTML
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-
-    // ── Auth/login wall detection ──
-    const bodyText = (doc.body?.innerText || '').toLowerCase();
-    const titleText = (doc.title || '').toLowerCase();
-    const metaDesc = doc.querySelector('meta[name="description"],meta[property="og:description"]')?.content || '';
-    const ogTitle  = doc.querySelector('meta[property="og:title"]')?.content || '';
-    const ogImage  = doc.querySelector('meta[property="og:image"]')?.content || '';
-
-    const loginPhrases = ['signing you in','sign in to','log in to','create an account','join now to','please log in','please sign in','verify you are human'];
-    const isLoginWall = loginPhrases.some(p => bodyText.slice(0, 2000).includes(p)) ||
-                        loginPhrases.some(p => titleText.includes(p));
-
-    if (isLoginWall) {
-      overlay.classList.add('hidden');
-      // Show a helpful auth-wall card using whatever metadata we got
-      const snippet = metaDesc || ogTitle || '';
-      body.innerHTML = `<div class="opp-auth-wall">
-        <div class="opp-auth-icon">🔒</div>
-        <div class="opp-auth-title">Login required to preview</div>
-        <div class="opp-auth-sub">This site requires you to be signed in to view the full job posting.</div>
-        ${snippet ? `<div class="opp-auth-snippet">${escHtml(snippet)}</div>` : ''}
-        ${ogImage ? `<img class="opp-auth-img" src="${escHtml(ogImage)}" alt="">` : ''}
-        <a class="opp-auth-btn" href="${escHtml(url)}" target="_blank">Open job posting ↗</a>
-      </div>`;
-      return;
-    }
-
-    // Fix relative URLs
-    const base = doc.createElement('base');
-    base.href = url;
-    doc.head.prepend(base);
-
-    // Remove cruft before Readability
-    doc.querySelectorAll('script,style,noscript,nav,footer,header,[class*="cookie"],[class*="banner"],[id*="cookie"]').forEach(el => el.remove());
-
-    let content = '';
-    if (typeof Readability !== 'undefined') {
-      try {
-        const article = new Readability(doc, { charThreshold: 100 }).parse();
-        if (article?.content) content = article.content;
-      } catch(e) {}
-    }
-
-    // Fallback: grab largest text block if Readability returned nothing
-    if (!content) {
-      const candidates = [...doc.querySelectorAll('article, main, [class*="description"], [class*="content"], [class*="posting"], [id*="description"], [id*="content"]')];
-      const best = candidates.sort((a,b) => b.textContent.length - a.textContent.length)[0];
-      content = best ? best.innerHTML : `<p>${escHtml(doc.body?.innerText?.slice(0,4000) || 'No content found.')}</p>`;
-    }
-
-    overlay.classList.add('hidden');
-    body.innerHTML = `<div class="opp-article">${content}</div>`;
-    // Strip any remaining script tags from injected content
-    body.querySelectorAll('script').forEach(s => s.remove());
-
-  } catch(e) {
-    if (fetchOppPreview._token !== _fetchToken) return;
-    spinEl.style.display = 'none';
-    statusEl.textContent = 'Could not fetch preview.';
-    blockedMsg.textContent = e.name === 'TimeoutError' ? 'Request timed out.' : 'Network error — try opening directly.';
-  }
+  matchBody.innerHTML = `
+    <div class="opp-match-score-row">
+      <span class="opp-match-stars">${stars}</span>
+      ${level ? `<span class="opp-match-level ${levelClass}">${level} Match</span>` : ''}
+      ${score ? `<span style="font-size:12px;color:var(--text-muted);">${score}/5</span>` : ''}
+    </div>
+    ${summary ? `<div class="opp-match-summary">${escHtml(summary)}</div>` : ''}
+    ${strengths.length ? `
+    <div class="opp-match-section opp-match-strengths">
+      <h4>✅ Strengths</h4>
+      <ul>${strengths.map(s => `<li>${escHtml(s)}</li>`).join('')}</ul>
+    </div>` : ''}
+    ${gaps.length ? `
+    <div class="opp-match-section opp-match-gaps">
+      <h4>△ Potential Gaps</h4>
+      <ul>${gaps.map(g => `<li>${escHtml(g)}</li>`).join('')}</ul>
+    </div>` : ''}
+    <div style="font-size:10px;color:#94a3b8;margin-top:14px;padding-top:10px;border-top:1px solid var(--border);text-align:right;">✦ Powered by Claude AI · Based on resume as of Feb 2026</div>
+  `;
 }
 
 function hideOppPreview() {
   document.getElementById('opp-preview-empty').style.display = '';
   const content = document.getElementById('opp-preview-content');
   content.style.display = 'none';
-  clearTimeout(_iframeBlockedTimer);
-  // Invalidate any in-flight fetch
-  fetchOppPreview._token = null;
-  const body = document.getElementById('opp-preview-body');
-  if (body) body.innerHTML = '';
+  _analyzeToken = null; // cancel in-flight analysis
+  const matchBody = document.getElementById('opp-match-body');
+  if (matchBody) matchBody.innerHTML = '';
 }
 
 // ── Drag-to-resize preview panel ──
@@ -1896,6 +2154,184 @@ function updateMarketTime() {
   const nyHour = parseInt(Intl.DateTimeFormat('en-US', {timeZone:'America/New_York', hour:'numeric', hour12:false}).format(now));
   const marketOpen = isWeekday && nyHour >= 9 && nyHour < 16;
   el.innerHTML = `🕒 ${nyTime} ET &nbsp;${marketOpen ? '<span style="color:var(--success)">● Market Open</span>' : '<span style="color:var(--danger)">● Market Closed</span>'}`;
+}
+
+// ════════════════════════════════════════
+//  TASKS DASHBOARD
+// ════════════════════════════════════════
+
+async function loadTaskData() {
+  try {
+    const result = await ghLoad('data/tasks.json');
+    if (result) {
+      state.tasksData = result.data;
+      state.tasksSha = result.sha;
+    } else {
+      state.tasksData = { weeks: [createNewWeek()] };
+      state.tasksSha = null;
+      await saveTaskData();
+    }
+  } catch(e) {
+    state.tasksData = { weeks: [] };
+  }
+}
+
+async function saveTaskData() {
+  try {
+    const newSha = await ghSave('data/tasks.json', state.tasksData, state.tasksSha);
+    state.tasksSha = newSha;
+    setSaveIndicator('saved');
+  } catch(e) {
+    setSaveIndicator('');
+    showToast('Task save failed: ' + e.message, 'error');
+  }
+}
+
+function saveTaskDataDebounced() {
+  clearTimeout(state.saveTimer);
+  setSaveIndicator('saving');
+  state.saveTimer = setTimeout(saveTaskData, 1200);
+}
+
+function createNewWeek() {
+  const now = new Date();
+  // Find Monday of current week
+  const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon...
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+  const label = 'Week of ' + monday.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return { id: `week_${Date.now()}`, label, tasks: [createNewTask()] };
+}
+
+function createNewTask() {
+  return { id: `task_${Date.now()}_${Math.random().toString(36).slice(2,6)}`, daily: '', goal: '', outcome: '', done: false };
+}
+
+function renderTasks() {
+  if (!state.tasksData) return;
+  const container = document.getElementById('tasks-container');
+  if (!container) return;
+  const weeks = state.tasksData.weeks || [];
+
+  if (!weeks.length) {
+    container.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--text-muted);font-size:13px;">
+      <div style="font-size:36px;margin-bottom:10px;">📋</div>
+      <p>No tasks yet. Click <strong>+ Add Week</strong> to get started.</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = weeks.map(week => `
+    <div class="tasks-week" id="week-${week.id}">
+      <div class="tasks-week-header">
+        <input type="text" class="tasks-week-label" value="${escHtml(week.label)}"
+          onblur="updateWeekLabel('${week.id}',this.value)"
+          onkeydown="if(event.key==='Enter')this.blur()">
+        <button class="btn btn-blue btn-sm" style="font-size:11px;padding:4px 10px;" onclick="addTask('${week.id}')">+ Task</button>
+        <button class="btn btn-outline btn-sm" style="font-size:11px;padding:4px 10px;color:var(--danger);border-color:var(--danger);" onclick="deleteWeek('${week.id}')">✕ Week</button>
+      </div>
+      <table class="tasks-table">
+        <thead>
+          <tr>
+            <th style="width:36px;text-align:center;">✓</th>
+            <th style="min-width:220px;">Daily Entry</th>
+            <th style="min-width:180px;">Weekly Goals</th>
+            <th style="min-width:180px;">Weekly Outcomes</th>
+            <th style="width:36px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${(week.tasks || []).map(task => `
+            <tr class="${task.done ? 'task-done' : ''}" id="task-${task.id}">
+              <td style="text-align:center;vertical-align:middle;">
+                <input type="checkbox" class="task-checkbox" ${task.done ? 'checked' : ''}
+                  onchange="toggleTask('${week.id}','${task.id}',this.checked)">
+              </td>
+              <td>
+                <div contenteditable="true" class="task-cell" data-placeholder="Add daily task…"
+                  onblur="updateTaskField('${week.id}','${task.id}','daily',this.innerText)">${escHtml(task.daily || '')}</div>
+              </td>
+              <td>
+                <div contenteditable="true" class="task-cell" data-placeholder="Weekly goal…"
+                  onblur="updateTaskField('${week.id}','${task.id}','goal',this.innerText)">${escHtml(task.goal || '')}</div>
+              </td>
+              <td>
+                <div contenteditable="true" class="task-cell" data-placeholder="Outcome…"
+                  onblur="updateTaskField('${week.id}','${task.id}','outcome',this.innerText)">${escHtml(task.outcome || '')}</div>
+              </td>
+              <td><button class="del-row-btn" onclick="deleteTask('${week.id}','${task.id}')" title="Delete task">✕</button></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  `).join('');
+}
+
+function addWeek() {
+  if (!state.tasksData) return;
+  state.tasksData.weeks.unshift(createNewWeek());
+  renderTasks();
+  saveTaskDataDebounced();
+  // Focus the new week label
+  setTimeout(() => document.querySelector('.tasks-week-label')?.select(), 50);
+}
+
+function deleteWeek(weekId) {
+  if (!state.tasksData) return;
+  if (!confirm('Delete this entire week and all its tasks?')) return;
+  state.tasksData.weeks = state.tasksData.weeks.filter(w => w.id !== weekId);
+  renderTasks();
+  saveTaskDataDebounced();
+}
+
+function updateWeekLabel(weekId, label) {
+  if (!state.tasksData) return;
+  const week = state.tasksData.weeks.find(w => w.id === weekId);
+  if (week) { week.label = (label || '').trim(); saveTaskDataDebounced(); }
+}
+
+function addTask(weekId) {
+  if (!state.tasksData) return;
+  const week = state.tasksData.weeks.find(w => w.id === weekId);
+  if (!week) return;
+  week.tasks.push(createNewTask());
+  renderTasks();
+  saveTaskDataDebounced();
+  // Focus first cell of the new row
+  setTimeout(() => {
+    const weekEl = document.getElementById(`week-${weekId}`);
+    const lastRow = weekEl?.querySelector('tbody tr:last-child');
+    lastRow?.querySelector('.task-cell')?.focus();
+  }, 50);
+}
+
+function deleteTask(weekId, taskId) {
+  if (!state.tasksData) return;
+  const week = state.tasksData.weeks.find(w => w.id === weekId);
+  if (!week) return;
+  week.tasks = week.tasks.filter(t => t.id !== taskId);
+  renderTasks();
+  saveTaskDataDebounced();
+}
+
+function toggleTask(weekId, taskId, done) {
+  if (!state.tasksData) return;
+  const week = state.tasksData.weeks.find(w => w.id === weekId);
+  if (!week) return;
+  const task = week.tasks.find(t => t.id === taskId);
+  if (!task) return;
+  task.done = done;
+  const row = document.getElementById(`task-${taskId}`);
+  if (row) row.classList.toggle('task-done', done);
+  saveTaskDataDebounced();
+}
+
+function updateTaskField(weekId, taskId, field, value) {
+  if (!state.tasksData) return;
+  const week = state.tasksData.weeks.find(w => w.id === weekId);
+  if (!week) return;
+  const task = week.tasks.find(t => t.id === taskId);
+  if (task) { task[field] = (value || '').trim(); saveTaskDataDebounced(); }
 }
 
 // ════════════════════════════════════════

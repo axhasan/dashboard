@@ -84,6 +84,11 @@
         "type": "date"
       },
       {
+        "id": "heatmap",
+        "label": "Heatmap",
+        "type": "heatmap"
+      },
+      {
         "id": "notes",
         "label": "Notes / Status"
       }
@@ -99,7 +104,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_6b86c0d4dc71",
@@ -111,7 +117,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_75bc32740b35",
@@ -123,7 +130,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_46d56e54f8af",
@@ -135,7 +143,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_5bd762a0072f",
@@ -147,7 +156,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_5d8829993652",
@@ -159,7 +169,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_501d29f7df8a",
@@ -171,7 +182,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_43000385c0f9",
@@ -183,7 +195,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_6c98c9feb17b",
@@ -195,7 +208,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_520ab84d47de",
@@ -207,7 +221,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_68f83ddabf87",
@@ -219,7 +234,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_7d1fb641830c",
@@ -231,7 +247,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_518a7c63b072",
@@ -243,7 +260,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_4b254c156460",
@@ -255,7 +273,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_792c169679ff",
@@ -267,7 +286,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_4017af9648fe",
@@ -279,7 +299,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_160c9f2fe2c7",
@@ -291,7 +312,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_5a23ab60a64a",
@@ -303,7 +325,8 @@
         "last_contact": "2026-01-22",
         "contact_method": "Call",
         "notes": "Helen has put me in a pipeline. Dir/Sr.Dr. opp",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_4f6cd11ae654",
@@ -315,7 +338,8 @@
         "last_contact": "2026-01-31",
         "contact_method": "Call",
         "notes": "Asked to send opps so he can submit internally",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_66f0d82b077b",
@@ -327,7 +351,8 @@
         "last_contact": "2026-01-31",
         "contact_method": "Text",
         "notes": "Amir is setting up a 1 on 1 with Cheri",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_2c2a6651b31e",
@@ -339,7 +364,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_7932152e7423",
@@ -351,7 +377,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_3d0c4fe8aabb",
@@ -363,7 +390,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       },
       {
         "id": "row_4ab42beb969a",
@@ -375,7 +403,8 @@
         "last_contact": "",
         "contact_method": "",
         "notes": "",
-        "next_followup": ""
+        "next_followup": "",
+        "heatmap": ""
       }
     ]
   },
