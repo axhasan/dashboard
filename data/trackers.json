@@ -48,7 +48,8 @@
     ],
     "colWidths": {
       "role": 228,
-      "company": 99
+      "company": 99,
+      "status": 90
     }
   },
   "contacts": {
