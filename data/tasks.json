@@ -1,5 +1,7 @@
 {
-  "colWidths": {},
+  "colWidths": {
+    "date": 172
+  },
   "weeks": [
     {
       "id": "week_1773122257413",
