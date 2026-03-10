@@ -42,34 +42,312 @@
     "columns": [
       {
         "id": "name",
-        "label": "Name"
+        "label": "Contact"
       },
       {
         "id": "company",
         "label": "Company"
       },
       {
+        "id": "title",
+        "label": "Title / Discipline"
+      },
+      {
+        "id": "tech",
+        "label": "Tech"
+      },
+      {
         "id": "linkedin",
         "label": "LinkedIn"
       },
       {
-        "id": "email",
-        "label": "Email"
-      },
-      {
         "id": "last_contact",
-        "label": "Last Contact"
+        "label": "Date of Last Contact"
       },
       {
-        "id": "next_followup",
-        "label": "Next Follow-up"
+        "id": "contact_method",
+        "label": "Contact Method",
+        "type": "dropdown",
+        "options": [
+          "",
+          "Email",
+          "Call",
+          "Text",
+          "LinkedIn",
+          "In Person"
+        ]
       },
       {
         "id": "notes",
-        "label": "Notes"
+        "label": "Notes / Status"
       }
     ],
-    "rows": []
+    "rows": [
+      {
+        "id": "row_3a58397147cc",
+        "name": "Adnan Bhu",
+        "company": "HPE",
+        "title": "Sales",
+        "tech": "Storage/Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_6b86c0d4dc71",
+        "name": "Amir Ch.",
+        "company": "HPE",
+        "title": "SE",
+        "tech": "Storage/Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_75bc32740b35",
+        "name": "Pere Monc",
+        "company": "Cisco",
+        "title": "Product/CTO",
+        "tech": "NW/Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_46d56e54f8af",
+        "name": "Annanda",
+        "company": "Rajgopala",
+        "title": "Product",
+        "tech": "NW/Cloud/Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_5bd762a0072f",
+        "name": "Moody",
+        "company": "DDN",
+        "title": "Product",
+        "tech": "Storage/Infra/AI",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_5d8829993652",
+        "name": "Hasan Sira",
+        "company": "Broadcom",
+        "title": "Product/GM",
+        "tech": "ASIC",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_501d29f7df8a",
+        "name": "Ihab Tarazi",
+        "company": "Dell",
+        "title": "Product/CTO",
+        "tech": "Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_43000385c0f9",
+        "name": "Sundip Aur",
+        "company": "Celestica",
+        "title": "Sales",
+        "tech": "NW/Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_6c98c9feb17b",
+        "name": "Sabrina",
+        "company": "Schaffer",
+        "title": "CEO",
+        "tech": "",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_520ab84d47de",
+        "name": "Tom Burns",
+        "company": "",
+        "title": "GM",
+        "tech": "",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_68f83ddabf87",
+        "name": "Kevin W",
+        "company": "Cisco",
+        "title": "GM",
+        "tech": "NW/Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_7d1fb641830c",
+        "name": "Hassan Sh",
+        "company": "Google",
+        "title": "Product/IT",
+        "tech": "NW/Connectivity",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_518a7c63b072",
+        "name": "Nikhil Kh",
+        "company": "Google",
+        "title": "Product",
+        "tech": "NW/Cloud/Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_4b254c156460",
+        "name": "Vipul Shah",
+        "company": "Cisco",
+        "title": "Product",
+        "tech": "NW/Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_792c169679ff",
+        "name": "Gavin Catc",
+        "company": "Celestica",
+        "title": "Engineering",
+        "tech": "NW/Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_4017af9648fe",
+        "name": "Amit Thakk",
+        "company": "Celestica",
+        "title": "Product",
+        "tech": "NW/Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_160c9f2fe2c7",
+        "name": "Saleem M.",
+        "company": "AWS",
+        "title": "Product",
+        "tech": "Cloud/Security",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_5a23ab60a64a",
+        "name": "Helen Sca",
+        "company": "Celestica",
+        "title": "Vp. Sales Enterprise",
+        "tech": "NW/Infra",
+        "linkedin": "",
+        "last_contact": "1/22/2026",
+        "contact_method": "Call",
+        "notes": "Helen has put me in a pipeline. Dir/Sr.Dr. opp"
+      },
+      {
+        "id": "row_4f6cd11ae654",
+        "name": "Tim Isaacs",
+        "company": "Google",
+        "title": "",
+        "tech": "",
+        "linkedin": "",
+        "last_contact": "1/31/2026",
+        "contact_method": "Call",
+        "notes": "Asked to send opps so he can submit internally"
+      },
+      {
+        "id": "row_66f0d82b077b",
+        "name": "Cheri Willi",
+        "company": "HPE",
+        "title": "SVP Private Cloud",
+        "tech": "HCI",
+        "linkedin": "",
+        "last_contact": "1/31/2026",
+        "contact_method": "Text",
+        "notes": "Amir is setting up a 1 on 1 with Cheri"
+      },
+      {
+        "id": "row_2c2a6651b31e",
+        "name": "Boyd McG",
+        "company": "Digital Ocean",
+        "title": "",
+        "tech": "",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_7932152e7423",
+        "name": "Adeel Ahmed",
+        "company": "",
+        "title": "",
+        "tech": "",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_3d0c4fe8aabb",
+        "name": "Zaheer Aziz",
+        "company": "",
+        "title": "",
+        "tech": "",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      },
+      {
+        "id": "row_4ab42beb969a",
+        "name": "Hassan Sh",
+        "company": "Google",
+        "title": "",
+        "tech": "",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": ""
+      }
+    ]
   },
   "applied": []
 }

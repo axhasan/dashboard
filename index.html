@@ -98,6 +98,13 @@
     .stock-change.pos { color: var(--success); }
     .stock-change.neg { color: var(--danger); }
     .stock-cached { font-size: 9px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1px; }
+    .tracker-dropdown { padding: 3px 6px; border: 1px solid var(--border); border-radius: 5px; font-size: 12px; font-family: inherit; background: var(--bg); color: var(--text); cursor: pointer; outline: none; }
+    .tracker-dropdown:focus { border-color: var(--primary); }
+    .tracker-dropdown option[value="Call"]      { background: #eff6ff; }
+    .tracker-dropdown option[value="Text"]      { background: #f0fdf4; }
+    .tracker-dropdown option[value="Email"]     { background: #fefce8; }
+    .tracker-dropdown option[value="LinkedIn"]  { background: #f0f9ff; }
+    .tracker-dropdown option[value="In Person"] { background: #fdf4ff; }
     .loading-dots::after { content: '...'; animation: dots 1.2s infinite; }
     @keyframes dots { 0%,100%{content:'.'} 33%{content:'..'} 66%{content:'...'} }
 
@@ -1113,10 +1120,14 @@ const DEFAULT_TRACKER_DATA = {
   },
   contacts: {
     columns: [
-      {id:'name', label:'Name'}, {id:'company', label:'Company'},
-      {id:'linkedin', label:'LinkedIn'}, {id:'email', label:'Email'},
-      {id:'last_contact', label:'Last Contact'}, {id:'next_followup', label:'Next Follow-up'},
-      {id:'notes', label:'Notes'}
+      {id:'name',           label:'Contact'},
+      {id:'company',        label:'Company'},
+      {id:'title',          label:'Title / Discipline'},
+      {id:'tech',           label:'Tech'},
+      {id:'linkedin',       label:'LinkedIn'},
+      {id:'last_contact',   label:'Date of Last Contact'},
+      {id:'contact_method', label:'Contact Method', type:'dropdown', options:['','Email','Call','Text','LinkedIn','In Person']},
+      {id:'notes',          label:'Notes / Status'}
     ],
     rows: []
   },
@@ -1179,6 +1190,10 @@ function renderTracker(type) {
             const val = row[c.id] || '';
             if (c.id === 'url' || c.id === 'linkedin') {
               return `<td class="url-cell" contenteditable="true" onblur="updateCell('${type}','${row.id}','${c.id}',this.innerText)" data-col="${c.id}">${val ? `<a href="${escHtml(val)}" target="_blank">${escHtml(val)}</a>` : ''}</td>`;
+            }
+            if (c.type === 'dropdown' && c.options) {
+              const opts = c.options.map(o => `<option value="${escHtml(o)}" ${val===o?'selected':''}>${escHtml(o)||'—'}</option>`).join('');
+              return `<td><select class="tracker-dropdown" onchange="updateCell('${type}','${row.id}','${c.id}',this.value)">${opts}</select></td>`;
             }
             return `<td contenteditable="true" onblur="updateCell('${type}','${row.id}','${c.id}',this.innerText)" data-col="${c.id}">${escHtml(val)}</td>`;
           }).join('')}
