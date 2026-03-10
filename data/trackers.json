@@ -526,7 +526,10 @@
         "heatmap": "Green",
         "notes": "Follow up with specific job posting. Mention Strategic pRusits and GTM."
       }
-    ]
+    ],
+    "colWidths": {
+      "title": 241
+    }
   },
   "applied": []
 }
