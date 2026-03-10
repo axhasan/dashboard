@@ -169,10 +169,17 @@
     /* ── TRACKER TABLES ── */
     .tracker-wrap { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); overflow: auto; max-height: calc(100vh - 54px - 88px - 120px); }
     .tracker-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-    .tracker-table th { background: var(--bg); padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    .tracker-table th { background: var(--bg); padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); white-space: nowrap; position: relative; overflow: hidden; }
     .tracker-table th.add-col-th { width: 40px; cursor: pointer; color: var(--primary); text-align: center; font-size: 16px; }
     .tracker-table th.add-col-th:hover { background: #eff6ff; }
-    .tracker-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; min-width: 80px; }
+    /* Column resize handle */
+    .col-resize-handle { position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; z-index: 1; }
+    .col-resize-handle:hover, .col-resize-handle.col-resizing { background: var(--primary); opacity: 0.5; }
+    .tracker-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; min-width: 60px; }
+    /* Date picker input */
+    .tracker-date { padding: 3px 7px; border: 1px solid var(--border); border-radius: 5px; font-size: 12px; font-family: inherit; background: var(--bg); color: var(--text); cursor: pointer; outline: none; width: 130px; }
+    .tracker-date:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+    .tracker-date::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
     .tracker-table td[contenteditable=true] { outline: none; cursor: text; }
     .tracker-table td[contenteditable=true]:focus { background: #eff6ff; border-radius: 4px; box-shadow: inset 0 0 0 2px var(--primary); }
     .tracker-table tr:hover td { background: #fafafa; }
@@ -1125,8 +1132,9 @@ const DEFAULT_TRACKER_DATA = {
       {id:'title',          label:'Title / Discipline'},
       {id:'tech',           label:'Tech'},
       {id:'linkedin',       label:'LinkedIn'},
-      {id:'last_contact',   label:'Date of Last Contact'},
+      {id:'last_contact',   label:'Date of Last Contact', type:'date'},
       {id:'contact_method', label:'Contact Method', type:'dropdown', options:['','Email','Call','Text','LinkedIn','In Person']},
+      {id:'next_followup',  label:'Next Follow Up', type:'date'},
       {id:'notes',          label:'Notes / Status'}
     ],
     rows: []
@@ -1168,19 +1176,45 @@ async function saveTrackerData() {
   }
 }
 
+// Default column widths (px) keyed by column id
+const COL_DEFAULT_WIDTHS = {
+  name: 140, company: 120, title: 160, tech: 130, linkedin: 80,
+  last_contact: 145, next_followup: 145, contact_method: 130, notes: 220,
+  // applications
+  role: 160, date: 120, status: 120, url: 80,
+};
+
+function toDateInput(val) {
+  // Convert M/D/YYYY or M-D-YYYY → YYYY-MM-DD for <input type="date">
+  if (!val) return '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val; // already ISO
+  const m = val.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (m) return `${m[3]}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`;
+  return '';
+}
+
+function fromDateInput(isoVal) {
+  // YYYY-MM-DD → M/D/YYYY display (keep ISO internally for sorting)
+  return isoVal || '';
+}
+
 function renderTracker(type) {
   if (!state.trackerData) return;
   const tracker = state.trackerData[type];
   const tableEl = document.getElementById(`${type === 'applications' ? 'apps' : 'contacts'}-table`);
   const cols = tracker.columns;
   const rows = tracker.rows;
+  const colWidths = tracker.colWidths || {};
 
   tableEl.innerHTML = `
     <thead>
       <tr>
-        ${cols.map(c => `<th>${escHtml(c.label)}</th>`).join('')}
+        ${cols.map(c => {
+          const w = colWidths[c.id] || COL_DEFAULT_WIDTHS[c.id] || 120;
+          return `<th style="width:${w}px;min-width:${w}px;" data-col-id="${c.id}">${escHtml(c.label)}<span class="col-resize-handle" data-col="${c.id}"></span></th>`;
+        }).join('')}
         <th class="add-col-th" onclick="openAddCol('${type}')" title="Add column">＋</th>
-        <th style="width:30px"></th>
+        <th style="width:32px;min-width:32px;"></th>
       </tr>
     </thead>
     <tbody>
@@ -1195,12 +1229,70 @@ function renderTracker(type) {
               const opts = c.options.map(o => `<option value="${escHtml(o)}" ${val===o?'selected':''}>${escHtml(o)||'—'}</option>`).join('');
               return `<td><select class="tracker-dropdown" onchange="updateCell('${type}','${row.id}','${c.id}',this.value)">${opts}</select></td>`;
             }
+            if (c.type === 'date') {
+              const iso = toDateInput(val);
+              return `<td><input type="date" class="tracker-date" value="${escHtml(iso)}" onchange="updateCell('${type}','${row.id}','${c.id}',this.value)"></td>`;
+            }
             return `<td contenteditable="true" onblur="updateCell('${type}','${row.id}','${c.id}',this.innerText)" data-col="${c.id}">${escHtml(val)}</td>`;
           }).join('')}
           <td></td>
           <td><button class="del-row-btn" onclick="deleteRow('${type}','${row.id}')" title="Delete row">✕</button></td>
         </tr>`).join('')}
     </tbody>`;
+
+  initColResize(tableEl, type);
+}
+
+// ── Column resize ──
+function initColResize(tableEl, type) {
+  let dragging = false, activeHandle = null, startX = 0, startW = 0, activeTh = null;
+
+  tableEl.querySelectorAll('th .col-resize-handle').forEach(handle => {
+    handle.addEventListener('mousedown', e => {
+      activeTh = handle.closest('th');
+      activeHandle = handle;
+      startX = e.clientX;
+      startW = activeTh.offsetWidth;
+      dragging = true;
+      handle.classList.add('col-resizing');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  });
+
+  const onMove = e => {
+    if (!dragging || !activeTh) return;
+    const newW = Math.max(55, startW + (e.clientX - startX));
+    activeTh.style.width = newW + 'px';
+    activeTh.style.minWidth = newW + 'px';
+  };
+
+  const onUp = e => {
+    if (!dragging) return;
+    dragging = false;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    activeHandle?.classList.remove('col-resizing');
+    if (activeTh && type) {
+      const colId = activeTh.dataset.colId;
+      if (colId) {
+        if (!state.trackerData[type].colWidths) state.trackerData[type].colWidths = {};
+        state.trackerData[type].colWidths[colId] = activeTh.offsetWidth;
+        saveTrackerDataDebounced();
+      }
+    }
+    activeTh = null; activeHandle = null;
+  };
+
+  // Use document-level listeners; store refs so we can clean up on re-render
+  if (tableEl._resizeMoveListener) document.removeEventListener('mousemove', tableEl._resizeMoveListener);
+  if (tableEl._resizeUpListener)   document.removeEventListener('mouseup',   tableEl._resizeUpListener);
+  tableEl._resizeMoveListener = onMove;
+  tableEl._resizeUpListener   = onUp;
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup',   onUp);
 }
 
 function addRow(type) {

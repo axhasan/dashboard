@@ -62,7 +62,8 @@
       },
       {
         "id": "last_contact",
-        "label": "Date of Last Contact"
+        "label": "Date of Last Contact",
+        "type": "date"
       },
       {
         "id": "contact_method",
@@ -76,6 +77,11 @@
           "LinkedIn",
           "In Person"
         ]
+      },
+      {
+        "id": "next_followup",
+        "label": "Next Follow Up",
+        "type": "date"
       },
       {
         "id": "notes",
@@ -92,7 +98,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_6b86c0d4dc71",
@@ -103,7 +110,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_75bc32740b35",
@@ -114,7 +122,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_46d56e54f8af",
@@ -125,7 +134,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_5bd762a0072f",
@@ -136,7 +146,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_5d8829993652",
@@ -147,7 +158,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_501d29f7df8a",
@@ -158,7 +170,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_43000385c0f9",
@@ -169,7 +182,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_6c98c9feb17b",
@@ -180,7 +194,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_520ab84d47de",
@@ -191,7 +206,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_68f83ddabf87",
@@ -202,7 +218,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_7d1fb641830c",
@@ -213,7 +230,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_518a7c63b072",
@@ -224,7 +242,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_4b254c156460",
@@ -235,7 +254,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_792c169679ff",
@@ -246,7 +266,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_4017af9648fe",
@@ -257,7 +278,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_160c9f2fe2c7",
@@ -268,7 +290,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_5a23ab60a64a",
@@ -277,9 +300,10 @@
         "title": "Vp. Sales Enterprise",
         "tech": "NW/Infra",
         "linkedin": "",
-        "last_contact": "1/22/2026",
+        "last_contact": "2026-01-22",
         "contact_method": "Call",
-        "notes": "Helen has put me in a pipeline. Dir/Sr.Dr. opp"
+        "notes": "Helen has put me in a pipeline. Dir/Sr.Dr. opp",
+        "next_followup": ""
       },
       {
         "id": "row_4f6cd11ae654",
@@ -288,9 +312,10 @@
         "title": "",
         "tech": "",
         "linkedin": "",
-        "last_contact": "1/31/2026",
+        "last_contact": "2026-01-31",
         "contact_method": "Call",
-        "notes": "Asked to send opps so he can submit internally"
+        "notes": "Asked to send opps so he can submit internally",
+        "next_followup": ""
       },
       {
         "id": "row_66f0d82b077b",
@@ -299,9 +324,10 @@
         "title": "SVP Private Cloud",
         "tech": "HCI",
         "linkedin": "",
-        "last_contact": "1/31/2026",
+        "last_contact": "2026-01-31",
         "contact_method": "Text",
-        "notes": "Amir is setting up a 1 on 1 with Cheri"
+        "notes": "Amir is setting up a 1 on 1 with Cheri",
+        "next_followup": ""
       },
       {
         "id": "row_2c2a6651b31e",
@@ -312,7 +338,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_7932152e7423",
@@ -323,7 +350,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_3d0c4fe8aabb",
@@ -334,7 +362,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       },
       {
         "id": "row_4ab42beb969a",
@@ -345,7 +374,8 @@
         "linkedin": "",
         "last_contact": "",
         "contact_method": "",
-        "notes": ""
+        "notes": "",
+        "next_followup": ""
       }
     ]
   },
