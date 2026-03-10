@@ -216,84 +216,13 @@
     .status-select.not_interested { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
     .status-select.apply { background: #fff7ed; border-color: #fb923c; color: #ea580c; font-weight: 600; }
     /* Opp layout */
-    .opp-section-wrap { display: flex; flex-direction: column; height: calc(100vh - 54px - 88px - 72px); }
-    .opp-table-wrap { background: var(--card); border-radius: var(--radius) var(--radius) 0 0; border: 1px solid var(--border); border-bottom: none; overflow: auto; flex: 1; min-height: 80px; }
-    /* Drag handle between table and preview */
-    .opp-resize-handle { height: 6px; background: var(--border); cursor: ns-resize; flex-shrink: 0; border-left: 1px solid var(--border); border-right: 1px solid var(--border); display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
-    .opp-resize-handle:hover, .opp-resize-handle.dragging { background: var(--primary); }
-    .opp-resize-handle::after { content: '⋯'; font-size: 14px; color: #94a3b8; line-height: 1; margin-top: -2px; }
-    .opp-resize-handle:hover::after, .opp-resize-handle.dragging::after { color: white; }
-    /* Preview panel */
-    .opp-preview-panel { background: var(--card); border: 1px solid var(--border); border-top: 2px solid var(--primary); border-radius: 0 0 var(--radius) var(--radius); flex-shrink: 0; display: flex; flex-direction: row; overflow: hidden; }
-    .opp-preview-empty { display: flex; align-items: center; justify-content: center; width: 100%; color: var(--text-muted); font-size: 12px; gap: 6px; }
-    /* Left column: job details + notes */
-    .opp-preview-left { width: 300px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 14px 16px 12px; gap: 8px; overflow: auto; }
-    .opp-preview-title { font-size: 14px; font-weight: 700; line-height: 1.35; }
-    .opp-preview-meta { font-size: 12px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; }
-    .opp-preview-meta span { display: flex; align-items: center; gap: 5px; }
-    .opp-preview-meta a { color: var(--primary); text-decoration: none; font-size: 12px; }
-    .opp-preview-meta a:hover { text-decoration: underline; }
-    .opp-preview-notes { flex: 1; display: flex; flex-direction: column; gap: 3px; min-height: 60px; }
-    .opp-preview-notes label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
-    .opp-preview-notes textarea { flex: 1; width: 100%; min-height: 50px; font-size: 12px; font-family: inherit; border: 1px solid var(--border); border-radius: 6px; padding: 5px 9px; resize: none; outline: none; line-height: 1.5; color: var(--text); background: var(--bg); box-sizing: border-box; }
-    .opp-preview-notes textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
-    /* Right column: iframe viewer */
-    .opp-preview-iframe-wrap { flex: 1; position: relative; background: #f8fafc; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
-    .opp-preview-body { flex: 1; overflow-y: auto; padding: 16px 20px; font-size: 13px; line-height: 1.65; color: var(--text); background: #f8fafc; }
-    .opp-preview-body:empty { display: none; }
-    /* Article content styles */
-    .opp-article h1, .opp-article h2 { font-size: 15px; font-weight: 700; margin: 14px 0 6px; }
-    .opp-article h3, .opp-article h4 { font-size: 13px; font-weight: 700; margin: 10px 0 4px; }
-    .opp-article p { margin: 0 0 8px; }
-    .opp-article ul, .opp-article ol { padding-left: 18px; margin: 0 0 8px; }
-    .opp-article li { margin-bottom: 3px; }
-    .opp-article strong, .opp-article b { font-weight: 700; }
-    .opp-article a { color: var(--primary); text-decoration: none; }
-    .opp-article a:hover { text-decoration: underline; }
-    .opp-article img { max-width: 100%; height: auto; display: block; }
-    .opp-fetch-error { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; height: 100%; color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px; }
-    .opp-fetch-error a { color: var(--primary); text-decoration: none; font-weight: 600; }
-    .opp-auth-wall { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 28px 24px; max-width: 360px; margin: 0 auto; }
-    .opp-auth-icon { font-size: 32px; }
-    .opp-auth-title { font-size: 14px; font-weight: 700; color: var(--text); }
-    .opp-auth-sub { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
-    .opp-auth-snippet { font-size: 12px; color: var(--text); background: var(--hover); border-radius: 8px; padding: 10px 14px; line-height: 1.5; max-width: 100%; text-align: left; border-left: 3px solid var(--primary); }
-    .opp-auth-img { max-width: 180px; max-height: 60px; object-fit: contain; border-radius: 6px; opacity: 0.85; }
-    .opp-auth-btn { display: inline-block; margin-top: 6px; padding: 8px 18px; background: var(--primary); color: white; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; }
-    .opp-auth-btn:hover { opacity: 0.88; }
-    .opp-iframe-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: #f8fafc; color: var(--text-muted); font-size: 13px; text-align: center; transition: opacity 0.2s; }
-    .opp-iframe-overlay.hidden { opacity: 0; pointer-events: none; }
-    .opp-iframe-spin { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .opp-iframe-bar { width: 100%; padding: 5px 10px; background: #f1f5f9; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 6px; flex-shrink: 0; font-size: 11px; color: var(--text-muted); }
-    .opp-iframe-bar a { color: var(--primary); text-decoration: none; font-weight: 600; }
-    .opp-iframe-bar a:hover { text-decoration: underline; }
-    .opp-iframe-blocked-msg { color: #f59e0b; font-size: 11px; }
-    .opp-row-selected td { background: #eff6ff !important; }
-    .opp-row-selected:hover td { background: #eff6ff !important; }
-    .opp-company-cell[contenteditable] { outline: none; cursor: text; min-width: 60px; }
-    .opp-company-cell[contenteditable]:focus { background: #eff6ff; border-radius: 4px; box-shadow: inset 0 0 0 2px var(--primary); padding: 1px 4px; }
+    .opp-section-wrap { display: flex; flex-direction: column; max-height: calc(100vh - 54px - 88px - 72px); }
+    .opp-table-wrap { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); overflow: auto; flex: 1; }
     .opp-company-unknown { color: #94a3b8; font-style: italic; font-size: 12px; }
     .opp-notes-preview { font-size: 11px; color: var(--text-muted); font-style: italic; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
     .opp-notes-preview:empty::before { content: 'Add note...'; color: #cbd5e1; }
-
-    /* ── AI MATCH PANEL ── */
-    .opp-match-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #f8fafc; min-width: 0; }
-    .opp-match-header { padding: 8px 14px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-    .opp-match-body { flex: 1; overflow-y: auto; padding: 14px 18px; }
-    .opp-match-score-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-    .opp-match-stars { font-size: 18px; color: #f59e0b; letter-spacing: 2px; }
-    .opp-match-level { padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
-    .opp-match-level.low { background: #fee2e2; color: #dc2626; }
-    .opp-match-level.medium { background: #fef9c3; color: #854d0e; }
-    .opp-match-level.high { background: #dcfce7; color: #15803d; }
-    .opp-match-summary { font-size: 12px; color: var(--text); line-height: 1.55; margin-bottom: 12px; padding: 8px 12px; background: white; border-radius: 7px; border-left: 3px solid var(--primary); }
-    .opp-match-section { margin-bottom: 12px; }
-    .opp-match-section h4 { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 6px; }
-    .opp-match-section ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
-    .opp-match-section li { font-size: 12px; line-height: 1.5; display: flex; gap: 6px; align-items: flex-start; }
-    .opp-match-strengths li::before { content: '✓'; color: var(--success); flex-shrink: 0; font-weight: 700; margin-top: 1px; }
-    .opp-match-gaps li::before { content: '△'; color: var(--warning); flex-shrink: 0; font-weight: 700; margin-top: 1px; }
+    .opp-del-selected-btn { display: none; }
+    .opp-del-selected-btn.visible { display: inline-flex; }
 
     /* ── TASKS DASHBOARD ── */
     #tasks-container { max-height: calc(100vh - 54px - 88px - 80px); overflow-y: auto; padding-bottom: 8px; }
@@ -576,6 +505,7 @@
           <h2>🔗 LinkedIn Opportunities</h2>
           <div class="flex gap-8" style="align-items:center;">
             <span class="text-muted" style="align-self:center;font-size:12px;" id="opp-scan-time"></span>
+            <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);gap:5px;" id="opp-del-btn" onclick="deleteSelectedOpps()" hidden>🗑 Delete Selected</button>
             <button class="btn btn-outline btn-sm" onclick="loadOpportunities()">↻ Refresh</button>
             <button class="btn btn-blue btn-sm" onclick="openAddOppModal()">+ Add Opportunity</button>
           </div>
@@ -585,6 +515,7 @@
             <table class="tracker-table opp-table" id="opp-table">
               <thead>
                 <tr>
+                  <th style="width:32px;text-align:center;padding:8px 6px;"><input type="checkbox" id="opp-select-all" title="Select all" onchange="toggleSelectAllOpps(this.checked)"></th>
                   <th style="min-width:220px">Title / Subject</th>
                   <th style="width:140px">Company</th>
                   <th style="width:65px">Link</th>
@@ -596,37 +527,22 @@
               <tbody id="opp-tbody"></tbody>
             </table>
           </div>
-          <div class="opp-resize-handle" id="opp-resize-handle"></div>
-          <div class="opp-preview-panel" id="opp-preview-panel" style="height:400px;">
-            <!-- Empty state -->
-            <div class="opp-preview-empty" id="opp-preview-empty">
-              <span>👆</span><span>Click a row to preview the opportunity</span>
-            </div>
-            <!-- Loaded content -->
-            <div id="opp-preview-content" style="display:none;width:100%;height:100%;flex-direction:row;">
-              <!-- Left: details + notes -->
-              <div class="opp-preview-left">
-                <div class="opp-preview-title" id="opp-preview-title"></div>
-                <div class="opp-preview-meta" id="opp-preview-meta"></div>
-                <div class="opp-preview-notes">
-                  <label>Notes</label>
-                  <textarea id="opp-preview-notes-ta" placeholder="Add notes about this opportunity…" oninput="debouncedSaveOppNotes()"></textarea>
-                </div>
-              </div>
-              <!-- Right: AI job match analysis -->
-              <div class="opp-match-panel" id="opp-match-panel">
-                <div class="opp-match-header">
-                  <span>✦ AI Job Match Analysis</span>
-                  <button class="btn btn-outline btn-sm" style="font-size:11px;padding:3px 9px;text-transform:none;letter-spacing:0;" onclick="analyzeJobMatch(_selectedOppId)">↻ Re-analyze</button>
-                </div>
-                <div class="opp-match-body" id="opp-match-body">
-                  <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:40px;color:var(--text-muted);font-size:13px;">
-                    <span style="font-size:28px;">✦</span>
-                    <span>Select an opportunity to see AI match analysis</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+        </div>
+      </div>
+
+      <!-- ── EDIT NOTES MODAL ── -->
+      <div id="edit-notes-modal" class="modal-overlay" hidden onclick="if(event.target===this)closeNotesModal()">
+        <div class="modal-box" style="max-width:420px">
+          <div class="modal-header">
+            <h3>Edit Notes</h3>
+            <button class="modal-close" onclick="closeNotesModal()">✕</button>
+          </div>
+          <div class="modal-body">
+            <textarea id="edit-notes-ta" class="field-input" rows="5" placeholder="Notes about this opportunity…" style="resize:vertical;font-family:inherit;font-size:13px;width:100%;box-sizing:border-box;"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline btn-sm" onclick="closeNotesModal()">Cancel</button>
+            <button class="btn btn-blue btn-sm" onclick="saveNotesModal()">Save</button>
           </div>
         </div>
       </div>
@@ -1540,9 +1456,37 @@ async function loadOpportunities() {
   try {
     const result = await ghLoad('data/opportunities.json');
     if (result) {
-      state.oppData = result.data;
       state.oppSha = result.sha;
-      if (!state.oppData.applied) state.oppData.applied = [];
+      const fresh = result.data;
+      if (!state.oppData) {
+        // First load — use data as-is
+        state.oppData = fresh;
+        if (!state.oppData.applied) state.oppData.applied = [];
+      } else {
+        // Subsequent loads (refresh) — ADD new entries only, never delete existing
+        if (!state.oppData.applied) state.oppData.applied = [];
+        const existingIds = new Set((state.oppData.opportunities||[]).map(o => o.id));
+        for (const opp of (fresh.opportunities || [])) {
+          if (!existingIds.has(opp.id)) {
+            state.oppData.opportunities.push(opp);
+          }
+        }
+        // Merge applied list too
+        const existingAppliedIds = new Set((state.oppData.applied||[]).map(o => o.id));
+        for (const opp of (fresh.applied || [])) {
+          if (!existingAppliedIds.has(opp.id)) {
+            state.oppData.applied.push(opp);
+          }
+        }
+        if (fresh.lastScan) state.oppData.lastScan = fresh.lastScan;
+      }
+      // Auto-purge Not Interested items older than 4 days
+      const cutoff = Date.now() - 4 * 24 * 60 * 60 * 1000;
+      state.oppData.opportunities = (state.oppData.opportunities || []).filter(o => {
+        if (o.status !== 'not_interested') return true;
+        if (!o.notInterestedDate) return true; // no timestamp, keep
+        return new Date(o.notInterestedDate).getTime() > cutoff;
+      });
     } else {
       state.oppData = JSON.parse(JSON.stringify(DEFAULT_OPP_DATA));
       state.oppSha = null;
@@ -1552,7 +1496,8 @@ async function loadOpportunities() {
     renderApplied();
     updateOppBadge();
   } catch(e) {
-    state.oppData = JSON.parse(JSON.stringify(DEFAULT_OPP_DATA));
+    if (!state.oppData) state.oppData = JSON.parse(JSON.stringify(DEFAULT_OPP_DATA));
+    showToast('Could not load opportunities: ' + e.message, 'error');
   }
 }
 
@@ -1586,8 +1531,7 @@ function fixUnknownCompanies() {
   return fixed;
 }
 
-let _selectedOppId = null;
-let _notesSaveTimer = null;
+let _notesOppId = null;
 
 function renderOpportunities() {
   if (!state.oppData) return;
@@ -1598,7 +1542,7 @@ function renderOpportunities() {
   fixUnknownCompanies();
 
   if (!opps.length) {
-    tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="es-icon">🔍</div><p>No opportunities yet.<br>The 6am scan will populate this automatically,<br>or use "+ Add Opportunity" to add one manually.</p></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="es-icon">🔍</div><p>No opportunities yet.<br>The 6am scan will populate this automatically,<br>or use "+ Add Opportunity" to add one manually.</p></div></td></tr>';
     return;
   }
 
@@ -1611,20 +1555,20 @@ function renderOpportunities() {
 
   tbody.innerHTML = sorted.map(opp => {
     const ni = opp.status === 'not_interested' ? 'opp-not-interested' : '';
-    const sel = opp.id === _selectedOppId ? 'opp-row-selected' : '';
     const dt = opp.added ? new Date(opp.added).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—';
     const notePreview = opp.notes ? escHtml(opp.notes.slice(0,60)) + (opp.notes.length>60?'…':'') : '';
     const companyDisplay = (opp.company && opp.company !== 'Unknown')
       ? escHtml(opp.company)
       : `<span class="opp-company-unknown">${escHtml(extractCompanyFromTitle(opp.title||'')) || 'Unknown'}</span>`;
-    return `<tr class="${ni} ${sel}" id="opp-row-${opp.id}" onclick="selectOppRow('${opp.id}')" style="cursor:pointer;">
+    return `<tr class="${ni}" id="opp-row-${opp.id}">
+      <td style="text-align:center;padding:8px 6px;width:32px;"><input type="checkbox" class="opp-sel-chk" data-id="${opp.id}" onchange="onOppCheckChange()"></td>
       <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${escHtml(opp.title||'')}">${escHtml(opp.title||'(unknown)')}</td>
       <td>${companyDisplay}</td>
-      <td class="url-cell">${opp.link ? `<a href="${escHtml(opp.link)}" target="_blank" onclick="event.stopPropagation()">View →</a>` : '—'}</td>
+      <td class="url-cell">${opp.link ? `<a href="${escHtml(opp.link)}" target="_blank">View →</a>` : '—'}</td>
       <td>${dt}</td>
-      <td><span class="opp-notes-preview" title="${escHtml(opp.notes||'')}">${notePreview}</span></td>
+      <td><span class="opp-notes-preview" title="${escHtml(opp.notes||'')}" onclick="openNotesModal('${opp.id}')">${notePreview}</span></td>
       <td>
-        <select class="status-select ${opp.status||''}" onchange="handleOppStatus('${opp.id}', this.value, this)" onclick="event.stopPropagation()">
+        <select class="status-select ${opp.status||''}" onchange="handleOppStatus('${opp.id}', this.value, this)">
           <option value="" ${!opp.status?'selected':''}>—</option>
           <option value="consider" ${opp.status==='consider'?'selected':''}>Consider</option>
           <option value="apply" ${opp.status==='apply'?'selected':''}>Apply 📩</option>
@@ -1640,315 +1584,75 @@ function renderOpportunities() {
   if (lastScan) {
     document.getElementById('opp-scan-time').textContent = 'Last scan: ' + new Date(lastScan).toLocaleString();
   }
-
-  // Re-show preview if a row was selected
-  if (_selectedOppId) showOppPreview(_selectedOppId);
+  // Reset select-all checkbox
+  const allChk = document.getElementById('opp-select-all');
+  if (allChk) allChk.checked = false;
+  document.getElementById('opp-del-btn').hidden = true;
 }
 
-function selectOppRow(oppId) {
-  // Deselect previous
-  if (_selectedOppId) {
-    const prev = document.getElementById('opp-row-' + _selectedOppId);
-    if (prev) prev.classList.remove('opp-row-selected');
-  }
-  // If clicking same row again, deselect
-  if (_selectedOppId === oppId) {
-    _selectedOppId = null;
-    hideOppPreview();
-    return;
-  }
-  _selectedOppId = oppId;
-  const row = document.getElementById('opp-row-' + oppId);
-  if (row) row.classList.add('opp-row-selected');
-  showOppPreview(oppId);
-}
-
-function showOppPreview(oppId) {
+// ── Notes inline edit modal ──
+function openNotesModal(oppId) {
+  _notesOppId = oppId;
   const opp = state.oppData?.opportunities?.find(o => o.id === oppId);
   if (!opp) return;
-  document.getElementById('opp-preview-empty').style.display = 'none';
-  const content = document.getElementById('opp-preview-content');
-  content.style.display = 'flex';
-
-  const company = (opp.company && opp.company !== 'Unknown')
-    ? opp.company : (extractCompanyFromTitle(opp.title||'') || 'Unknown');
-  const dt = opp.added ? new Date(opp.added).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '—';
-
-  document.getElementById('opp-preview-title').textContent = opp.title || '(no title)';
-  document.getElementById('opp-preview-meta').innerHTML =
-    `<span>🏢 ${escHtml(company)}</span>` +
-    `<span>📅 ${dt}</span>` +
-    `<span>🏷 ${escHtml(opp.source||'manual')}</span>` +
-    (opp.link ? `<span><a href="${escHtml(opp.link)}" target="_blank">Open job posting ↗</a></span>` : '');
-
-  const ta = document.getElementById('opp-preview-notes-ta');
-  ta.value = opp.notes || '';
-  ta.dataset.oppId = oppId;
-
-  // Trigger AI job match analysis
-  analyzeJobMatch(oppId);
+  document.getElementById('edit-notes-ta').value = opp.notes || '';
+  document.getElementById('edit-notes-modal').hidden = false;
+  setTimeout(() => document.getElementById('edit-notes-ta').focus(), 50);
 }
 
-// ── Resume text (used for AI job match analysis) ──
-const RESUME_TEXT = `Alley Hasan | Pleasanton, CA | ahasan@gmail.com
+function closeNotesModal() {
+  document.getElementById('edit-notes-modal').hidden = true;
+  _notesOppId = null;
+}
 
-SUMMARY
-Product and GTM leader with a vision-to-execution track record across portfolio strategy, strategic pursuits, and sales enablement. Scaled new categories and grew established platforms by aligning roadmap, pricing/packaging, partners, and field execution to drive sustained adoption and growth.
-
-FOCUS AREAS
-Portfolio Strategy, Roadmap-to-Revenue Execution | Strategic Pursuits, Executive Customer Engagement, Competitive Plays | Global Sales Enablement, Operating Cadence (QBRs, pipeline inspection, KPIs) | Partner/Ecosystem GTM, Co-sell Motions, Market Expansion
-
-HIGHLIGHTS
-- Scaled AWS networking services via ecosystem-led GTM and global enablement, delivering sustained 35% YoY growth on a $1B+ portfolio.
-- Built AWS Cloud WAN from lighthouse wins to global enterprise adoption, generating 8-figure net-new revenue and driving 88% YoY growth / 110% plan.
-- Expanded Dell Networking Emerging Technologies from $210M to $515M and incubated Dell Enterprise SONiC to $150M+ incremental revenue.
-- Industry Leadership: Chairman of Open Switch (OPX) Board at Linux Foundation; Speaker at OpenStack conferences; OCP Summit.
-
-EXPERIENCE
-Amazon Web Services, Santa Clara, CA — 2022–Present
-WW Head, Portfolio Strategy & GTM — AWS Networking
-- Lead portfolio strategy and outbound GTM across a billion-dollar AWS Networking portfolio (Cloud WAN, Transit Gateway, Direct Connect) with 35% YoY revenue growth.
-- Built and scaled AWS Cloud WAN from lighthouse wins to global adoption; drove 8-figure net-new revenue, 88% YoY growth / 110% plan.
-- Quarterback 7–8 figure strategic pursuits with Fortune 100 customers: exec buyer mapping, competitive displacement, commercial strategy, close plans.
-- Drove product and portfolio strategy by converting customer/field signal into investment cases, feature sequencing, and launch readiness.
-- Built global sales enablement operating system (plays, competitive assets, pipeline inspection/QBR cadence).
-- Scaled partner/GSI/ISV co-sell motions and customer proof points.
-
-Dell Technologies, Santa Clara, CA — 2016–2022
-Senior Director, Product Management, Emerging Technologies
-- Ran a $500M+ global business, scaling revenue from $210M to $515M in 3 years through portfolio strategy, focused GTM, and operating rigor.
-- Built and commercialized Enterprise SONiC using an internal startup model, creating a $150M+ incremental revenue stream.
-- Established strategic partnerships (Microsoft Azure for SONiC; Broadcom for platform expansion).
-- Led the shift from hardware-led to software-led networking strategy, expanding TAM.
-
-Dell EMC, London, UK — 2015–2016
-Director, Business Development for Cloud – EMEA
-- Launched regional cloud and open networking initiatives, growing revenue from $0 to $30M in one year.
-
-Dell Force10, Irvine, CA — 2013–2015
-Director Enterprise Sales, Global Accounts
-- Grew the business by 15% YoY on a $35M annual run-rate business.
-- Managed a 40-person sales and pre-sales organization across global accounts.
-
-EARLY CAREER: Cisco Systems, Force10, MegaPath, Consiliant Technologies
-
-EDUCATION
-MBA, Cornell University, Johnson School of Business
-B.S. Mechanical Engineering, Wichita State University
-Certifications: CCIE Routing & Switching (#9561 – Expired)`;
-
-// ── AI Job Match Analysis ──
-let _analyzeToken = null;
-
-async function analyzeJobMatch(oppId) {
-  if (!oppId) return;
-  const opp = state.oppData?.opportunities?.find(o => o.id === oppId);
+function saveNotesModal() {
+  if (!_notesOppId) return;
+  const opp = state.oppData?.opportunities?.find(o => o.id === _notesOppId);
   if (!opp) return;
-
-  const matchBody = document.getElementById('opp-match-body');
-  if (!matchBody) return;
-
-  const token = Date.now();
-  _analyzeToken = token;
-
-  // Show loading state
-  matchBody.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:40px;color:var(--text-muted);font-size:13px;">
-    <div class="opp-iframe-spin"></div>
-    <span>Analyzing job match with resume…</span>
-  </div>`;
-
-  const key = cfg('CLAUDE_KEY');
-  if (!key) {
-    matchBody.innerHTML = `<div class="opp-fetch-error"><span>⚙️</span><span>Claude API key not configured.<br>Add it in ⚙ Settings to enable AI match analysis.</span></div>`;
-    return;
-  }
-
-  // Try to fetch job description (best-effort, won't block if it fails)
-  let jobDesc = '';
-  if (opp.link) {
-    try {
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(opp.link)}`;
-      const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
-      if (resp.ok && _analyzeToken === token) {
-        const html = await resp.text();
-        const doc = new DOMParser().parseFromString(html, 'text/html');
-        const bodyText = (doc.body?.innerText || '').toLowerCase();
-        const loginPhrases = ['signing you in','sign in to','log in to','please sign in'];
-        const isLoginWall = loginPhrases.some(p => bodyText.slice(0, 2000).includes(p));
-        if (!isLoginWall) {
-          if (typeof Readability !== 'undefined') {
-            try {
-              const article = new Readability(doc, { charThreshold: 50 }).parse();
-              if (article?.textContent) jobDesc = article.textContent.slice(0, 3000);
-            } catch(e) {}
-          }
-          if (!jobDesc) jobDesc = (doc.body?.innerText || '').slice(0, 3000);
-        }
-      }
-    } catch(e) {} // silently ignore fetch errors
-  }
-
-  if (_analyzeToken !== token) return; // user clicked away
-
-  const company = (opp.company && opp.company !== 'Unknown') ? opp.company : (extractCompanyFromTitle(opp.title||'') || 'Unknown');
-  const jobInfo = `Title: ${opp.title || 'Unknown'}\nCompany: ${company}${jobDesc ? '\n\nJob Description (excerpt):\n' + jobDesc : ''}`;
-
-  const prompt = `You are an expert career coach and recruiter. Analyze how well this candidate's background matches the job opportunity.
-
-CANDIDATE RESUME:
-${RESUME_TEXT}
-
-JOB OPPORTUNITY:
-${jobInfo}
-
-Respond ONLY in this exact format (no other text):
-SCORE: [1-5]
-LEVEL: [Low or Medium or High]
-STRENGTHS:
-- [key strength 1]
-- [key strength 2]
-- [key strength 3]
-GAPS:
-- [potential gap 1]
-- [potential gap 2]
-SUMMARY: [1-2 sentence overall assessment]`;
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 700,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    if (_analyzeToken !== token) return;
-    if (!resp.ok) {
-      const errData = await resp.json().catch(() => ({}));
-      throw new Error(errData.error?.message || `API error ${resp.status}`);
+  opp.notes = document.getElementById('edit-notes-ta').value.trim();
+  // Update notes preview cell
+  const row = document.getElementById('opp-row-' + _notesOppId);
+  if (row) {
+    const cell = row.querySelector('.opp-notes-preview');
+    if (cell) {
+      const preview = opp.notes.slice(0,60) + (opp.notes.length>60?'…':'');
+      cell.textContent = preview;
+      cell.title = opp.notes;
     }
-    const data = await resp.json();
-    if (_analyzeToken !== token) return;
-    const text = data.content?.[0]?.text || '';
-    renderMatchResult(matchBody, text, opp);
-
-  } catch(e) {
-    if (_analyzeToken !== token) return;
-    matchBody.innerHTML = `<div class="opp-fetch-error" style="padding:20px;text-align:center;gap:8px;display:flex;flex-direction:column;align-items:center;">
-      <span style="font-size:20px;">⚠️</span>
-      <span style="font-size:13px;">Analysis failed: ${escHtml(e.message)}</span>
-      <button class="btn btn-outline btn-sm" onclick="analyzeJobMatch('${escHtml(oppId)}')">↻ Retry</button>
-    </div>`;
   }
+  closeNotesModal();
+  saveOppData();
 }
 
-function renderMatchResult(matchBody, text, opp) {
-  const scoreMatch  = text.match(/SCORE:\s*([1-5])/i);
-  const levelMatch  = text.match(/LEVEL:\s*(Low|Medium|High)/i);
-  const strengthsMatch = text.match(/STRENGTHS:\s*([\s\S]*?)(?=GAPS:|SUMMARY:|$)/i);
-  const gapsMatch   = text.match(/GAPS:\s*([\s\S]*?)(?=SUMMARY:|STRENGTHS:|$)/i);
-  const summaryMatch = text.match(/SUMMARY:\s*([\s\S]*?)$/i);
-
-  const score = scoreMatch ? parseInt(scoreMatch[1]) : 0;
-  const level = levelMatch ? levelMatch[1] : '';
-  const strengths = (strengthsMatch ? strengthsMatch[1] : '').trim().split('\n')
-    .filter(l => l.trim().match(/^[-•]/)).map(l => l.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
-  const gaps = (gapsMatch ? gapsMatch[1] : '').trim().split('\n')
-    .filter(l => l.trim().match(/^[-•]/)).map(l => l.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
-  const summary = summaryMatch ? summaryMatch[1].trim() : '';
-
-  const stars = score > 0 ? ('★'.repeat(score) + '☆'.repeat(5 - score)) : '☆☆☆☆☆';
-  const levelClass = level.toLowerCase() || 'medium';
-
-  matchBody.innerHTML = `
-    <div class="opp-match-score-row">
-      <span class="opp-match-stars">${stars}</span>
-      ${level ? `<span class="opp-match-level ${levelClass}">${level} Match</span>` : ''}
-      ${score ? `<span style="font-size:12px;color:var(--text-muted);">${score}/5</span>` : ''}
-    </div>
-    ${summary ? `<div class="opp-match-summary">${escHtml(summary)}</div>` : ''}
-    ${strengths.length ? `
-    <div class="opp-match-section opp-match-strengths">
-      <h4>✅ Strengths</h4>
-      <ul>${strengths.map(s => `<li>${escHtml(s)}</li>`).join('')}</ul>
-    </div>` : ''}
-    ${gaps.length ? `
-    <div class="opp-match-section opp-match-gaps">
-      <h4>△ Potential Gaps</h4>
-      <ul>${gaps.map(g => `<li>${escHtml(g)}</li>`).join('')}</ul>
-    </div>` : ''}
-    <div style="font-size:10px;color:#94a3b8;margin-top:14px;padding-top:10px;border-top:1px solid var(--border);text-align:right;">✦ Powered by Claude AI · Based on resume as of Feb 2026</div>
-  `;
+// ── Opportunity checkbox + bulk delete ──
+function onOppCheckChange() {
+  const checked = document.querySelectorAll('.opp-sel-chk:checked').length;
+  const total   = document.querySelectorAll('.opp-sel-chk').length;
+  const allChk  = document.getElementById('opp-select-all');
+  if (allChk) {
+    allChk.checked       = checked === total && total > 0;
+    allChk.indeterminate = checked > 0 && checked < total;
+  }
+  document.getElementById('opp-del-btn').hidden = checked === 0;
 }
 
-function hideOppPreview() {
-  document.getElementById('opp-preview-empty').style.display = '';
-  const content = document.getElementById('opp-preview-content');
-  content.style.display = 'none';
-  _analyzeToken = null; // cancel in-flight analysis
-  const matchBody = document.getElementById('opp-match-body');
-  if (matchBody) matchBody.innerHTML = '';
+function toggleSelectAllOpps(checked) {
+  document.querySelectorAll('.opp-sel-chk').forEach(c => c.checked = checked);
+  document.getElementById('opp-del-btn').hidden = !checked || document.querySelectorAll('.opp-sel-chk').length === 0;
 }
 
-// ── Drag-to-resize preview panel ──
-(function() {
-  let dragging = false, startY = 0, startH = 0;
-  document.addEventListener('DOMContentLoaded', () => {
-    const handle = document.getElementById('opp-resize-handle');
-    const panel = document.getElementById('opp-preview-panel');
-    if (!handle || !panel) return;
-    handle.addEventListener('mousedown', e => {
-      dragging = true;
-      startY = e.clientY;
-      startH = panel.offsetHeight;
-      handle.classList.add('dragging');
-      document.body.style.userSelect = 'none';
-      document.body.style.cursor = 'ns-resize';
-    });
-    document.addEventListener('mousemove', e => {
-      if (!dragging) return;
-      const delta = startY - e.clientY; // drag up = bigger panel
-      const newH = Math.max(120, Math.min(startH + delta, window.innerHeight * 0.75));
-      panel.style.height = newH + 'px';
-    });
-    document.addEventListener('mouseup', () => {
-      if (!dragging) return;
-      dragging = false;
-      handle.classList.remove('dragging');
-      document.body.style.userSelect = '';
-      document.body.style.cursor = '';
-    });
-  });
-})();
-
-function debouncedSaveOppNotes() {
-  clearTimeout(_notesSaveTimer);
-  _notesSaveTimer = setTimeout(() => {
-    const ta = document.getElementById('opp-preview-notes-ta');
-    if (!ta || !ta.dataset.oppId) return;
-    const opp = state.oppData?.opportunities?.find(o => o.id === ta.dataset.oppId);
-    if (!opp) return;
-    opp.notes = ta.value;
-    // Update the notes preview cell in the row
-    const row = document.getElementById('opp-row-' + opp.id);
-    if (row) {
-      const noteCell = row.querySelector('.opp-notes-preview');
-      if (noteCell) {
-        const preview = opp.notes.slice(0,60) + (opp.notes.length>60?'…':'');
-        noteCell.textContent = preview;
-        noteCell.title = opp.notes;
-      }
-    }
-    saveOppData();
-  }, 800);
+function deleteSelectedOpps() {
+  const ids = Array.from(document.querySelectorAll('.opp-sel-chk:checked')).map(c => c.dataset.id);
+  if (!ids.length) return;
+  if (!confirm(`Delete ${ids.length} selected opportunit${ids.length>1?'ies':'y'}? This cannot be undone.`)) return;
+  state.oppData.opportunities = (state.oppData.opportunities||[]).filter(o => !ids.includes(o.id));
+  renderOpportunities();
+  updateOppBadge();
+  saveOppData();
+  showToast(`Deleted ${ids.length} opportunit${ids.length>1?'ies':'y'}`, 'info');
 }
+
+// ── (AI analysis removed — re-enable when credits are restored) ──
 
 function openAddOppModal() {
   document.getElementById('add-opp-title').value = '';
@@ -2009,9 +1713,10 @@ function handleOppStatus(oppId, newStatus, selectEl) {
     renderOpportunities();
     renderApplied();
   } else if (newStatus === 'not_interested') {
+    if (!opp.notInterestedDate) opp.notInterestedDate = new Date().toISOString();
     const row = document.getElementById(`opp-row-${oppId}`);
-    if (row) row.className = 'opp-not-interested' + (oppId === _selectedOppId ? ' opp-row-selected' : '');
-    showToast('Marked as Not Interested', 'info');
+    if (row) row.className = 'opp-not-interested';
+    showToast('Marked as Not Interested — will auto-remove after 4 days', 'info');
   }
   saveOppData();
   updateOppBadge();
