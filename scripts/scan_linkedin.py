@@ -124,9 +124,31 @@ def parse_title_company(subject, body):
     return subject[:80], company
 
 
+def get_linkedin_job_id(link):
+    """Extract the stable numeric job ID from a LinkedIn jobs URL.
+
+    LinkedIn URLs look like:
+      https://www.linkedin.com/jobs/view/4341966752/?trackingId=abc&...
+      https://www.linkedin.com/comm/jobs/view/4341966752/?trackingId=xyz&...
+    The numeric ID is invariant; trackingId changes with every email.
+    """
+    m = re.search(r"/jobs/view/(\d+)", link or "")
+    return m.group(1) if m else None
+
+
 def dedup_id(title, company, link):
-    """Generate a stable ID for deduplication."""
-    key = f"{title.lower().strip()}|{company.lower().strip()}|{link}"
+    """Generate a stable ID for deduplication.
+
+    Uses the LinkedIn numeric job ID when available (stripping tracking params),
+    falling back to a title+company hash so emails without a job link are
+    also deduplicated across re-sends.
+    """
+    job_id = get_linkedin_job_id(link)
+    if job_id:
+        return f"li_{job_id}"
+    # Fallback: hash on title + company only (NOT the full link) so that
+    # minor URL variations don't create spurious duplicates.
+    key = f"{title.lower().strip()}|{company.lower().strip()}"
     return hashlib.md5(key.encode()).hexdigest()[:12]
 
 
@@ -153,8 +175,17 @@ def main():
     except (FileNotFoundError, json.JSONDecodeError):
         data = {"opportunities": [], "applied": [], "lastScan": None}
 
-    existing_ids = {opp.get("id") for opp in data.get("opportunities", [])}
-    existing_ids |= {opp.get("id") for opp in data.get("applied", [])}
+    all_existing = data.get("opportunities", []) + data.get("applied", [])
+    # Primary dedup set: stored IDs (may be old MD5 hashes or new li_XXXXX keys)
+    existing_ids = {opp.get("id") for opp in all_existing}
+    # Secondary dedup set: LinkedIn numeric job IDs extracted from stored links.
+    # This catches duplicates where the same job was stored under an old MD5 hash
+    # but now would generate a new li_XXXXX key.
+    existing_li_ids = {
+        get_linkedin_job_id(opp.get("link", ""))
+        for opp in all_existing
+        if get_linkedin_job_id(opp.get("link", ""))
+    }
 
     new_opps = []
 
@@ -186,8 +217,10 @@ def main():
                 dt = datetime.now(timezone.utc).isoformat()
 
             opp_id = dedup_id(title, company, link)
+            li_id = get_linkedin_job_id(link)
 
-            if opp_id in existing_ids:
+            # Skip if seen before — check both stored IDs and extracted job IDs
+            if opp_id in existing_ids or (li_id and li_id in existing_li_ids):
                 print(f"  Skipping duplicate: {title[:50]}")
                 continue
 
@@ -204,6 +237,8 @@ def main():
 
             new_opps.append(opp)
             existing_ids.add(opp_id)
+            if li_id:
+                existing_li_ids.add(li_id)
             print(f"  + New opportunity: {title[:50]} @ {company[:30]}")
 
         except Exception as e:
