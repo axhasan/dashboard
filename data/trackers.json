@@ -24,19 +24,93 @@
       {
         "id": "notes",
         "label": "Notes"
+      },
+      {
+        "id": "col_next_steps_1773126858633",
+        "label": "Next Steps"
       }
     ],
     "rows": [
       {
         "id": "row_1773093949487",
-        "company": "",
+        "company": "HPE",
+        "role": "Sr.Dr PCBE Poduct Mgmt",
+        "date": "02/05",
+        "status": "Closed",
+        "url": "",
+        "notes": "Had a chat with recruiter. Submitted app but never got a chance to interview. Amir Ch. referral.",
+        "col_next_steps_1773126858633": "Send Text to Sherri"
+      },
+      {
+        "id": "row_1773125328699",
+        "company": "SFDC",
+        "role": "VP, Growth, Commerce Cloud",
+        "date": "02/26",
+        "status": "On-Going",
+        "url": "https://salesforce.wd12.myworkdayjobs.com/en-US/External_Career_Site/userHome",
+        "notes": "Cold apply off the web. Linked in to SFDC jobs page.",
+        "col_next_steps_1773126858633": "Wait"
+      },
+      {
+        "id": "row_1773125467567",
+        "company": "OpenAI",
+        "role": "2 roles in GTM",
+        "date": "02/10",
+        "status": "No response",
+        "url": "",
+        "notes": "",
+        "col_next_steps_1773126858633": "Find a way in, maybe Sundip knows"
+      },
+      {
+        "id": "row_1773126486821",
+        "company": "Google",
+        "role": "Director, Technical Program Management, Global Networking Technology",
+        "date": "03/10",
+        "status": "Sent to Hassan Shaikh",
+        "url": "https://www.linkedin.com/jobs/view/4377986342/?trk=flagship3_job_home_savedjobs&refId=d005ce8a-dc53-4420-a077-faaa072ce4fe&trackingId=fjuuUBg9ROGOz7nZljtzUw%3D%3D",
+        "notes": "",
+        "col_next_steps_1773126858633": "Follow up with Hassan that it is submitted"
+      },
+      {
+        "id": "row_1773126674817",
+        "company": "Google",
+        "role": "Managing Director, Global Strategic Initiatives, Americas",
+        "date": "03/10",
+        "status": "Sent to Hassan Shaikh",
+        "url": "https://www.google.com/about/careers/applications/jobs/results/108849208877818566-managing-director-global-strategic-initiatives-americas",
+        "notes": "",
+        "col_next_steps_1773126858633": "Follow up with Hassan that it is submitted"
+      },
+      {
+        "id": "row_1773127235760",
+        "company": "ServiceNow",
         "role": "",
         "date": "",
         "status": "",
-        "url": "",
-        "notes": ""
+        "url": "https://www.linkedin.com/jobs/view/4377506635/",
+        "notes": "",
+        "col_next_steps_1773126858633": ""
+      },
+      {
+        "id": "row_1773130496595",
+        "company": "Klaviyo",
+        "role": "VP GTM",
+        "date": "03/09",
+        "status": "Cold apply",
+        "url": "https://www.klaviyo.com/careers/jobs/6749688003?gh_jid=6749688003&gh_src=1284ec8c3us",
+        "notes": "",
+        "col_next_steps_1773126858633": "Wait"
       }
-    ]
+    ],
+    "colWidths": {
+      "role": 228,
+      "company": 99,
+      "status": 112,
+      "date": 108,
+      "notes": 353,
+      "url": 783,
+      "col_next_steps_1773126858633": 288
+    }
   },
   "contacts": {
     "columns": [
@@ -102,10 +176,10 @@
         "tech": "Storage/Infra",
         "linkedin": "",
         "last_contact": "",
-        "contact_method": "",
+        "contact_method": "In Person",
         "notes": "",
         "next_followup": "",
-        "heatmap": ""
+        "heatmap": "Green"
       },
       {
         "id": "row_6b86c0d4dc71",
@@ -115,10 +189,10 @@
         "tech": "Storage/Infra",
         "linkedin": "",
         "last_contact": "",
-        "contact_method": "",
+        "contact_method": "In Person",
         "notes": "",
         "next_followup": "",
-        "heatmap": ""
+        "heatmap": "Green"
       },
       {
         "id": "row_75bc32740b35",
@@ -166,24 +240,11 @@
         "title": "Product/GM",
         "tech": "ASIC",
         "linkedin": "",
-        "last_contact": "",
-        "contact_method": "",
+        "last_contact": "2026-02-09",
+        "contact_method": "In Person",
         "notes": "",
-        "next_followup": "",
-        "heatmap": ""
-      },
-      {
-        "id": "row_501d29f7df8a",
-        "name": "Ihab Tarazi",
-        "company": "Dell",
-        "title": "Product/CTO",
-        "tech": "Infra",
-        "linkedin": "",
-        "last_contact": "",
-        "contact_method": "",
-        "notes": "",
-        "next_followup": "",
-        "heatmap": ""
+        "next_followup": "2026-03-10",
+        "heatmap": "Green"
       },
       {
         "id": "row_43000385c0f9",
@@ -192,11 +253,11 @@
         "title": "Sales",
         "tech": "NW/Infra",
         "linkedin": "",
-        "last_contact": "",
-        "contact_method": "",
+        "last_contact": "2026-03-05",
+        "contact_method": "Text",
         "notes": "",
-        "next_followup": "",
-        "heatmap": ""
+        "next_followup": "2026-03-10",
+        "heatmap": "Green"
       },
       {
         "id": "row_6c98c9feb17b",
@@ -205,11 +266,11 @@
         "title": "CEO",
         "tech": "",
         "linkedin": "",
-        "last_contact": "",
-        "contact_method": "",
+        "last_contact": "2026-03-06",
+        "contact_method": "Call",
         "notes": "",
-        "next_followup": "",
-        "heatmap": ""
+        "next_followup": "2026-03-27",
+        "heatmap": "Green"
       },
       {
         "id": "row_520ab84d47de",
@@ -239,16 +300,16 @@
       },
       {
         "id": "row_7d1fb641830c",
-        "name": "Hassan Sh",
+        "name": "Hassan Shaikh",
         "company": "Google",
         "title": "Product/IT",
         "tech": "NW/Connectivity",
         "linkedin": "",
         "last_contact": "",
-        "contact_method": "",
+        "contact_method": "In Person",
         "notes": "",
-        "next_followup": "",
-        "heatmap": ""
+        "next_followup": "2026-03-09",
+        "heatmap": "Green"
       },
       {
         "id": "row_518a7c63b072",
@@ -287,7 +348,7 @@
         "contact_method": "",
         "notes": "",
         "next_followup": "",
-        "heatmap": ""
+        "heatmap": "Red"
       },
       {
         "id": "row_4017af9648fe",
@@ -296,11 +357,11 @@
         "title": "Product",
         "tech": "NW/Infra",
         "linkedin": "",
-        "last_contact": "",
-        "contact_method": "",
+        "last_contact": "2026-02-11",
+        "contact_method": "Call",
         "notes": "",
-        "next_followup": "",
-        "heatmap": ""
+        "next_followup": "2026-03-12",
+        "heatmap": "Yellow"
       },
       {
         "id": "row_160c9f2fe2c7",
@@ -309,24 +370,24 @@
         "title": "Product",
         "tech": "Cloud/Security",
         "linkedin": "",
-        "last_contact": "",
-        "contact_method": "",
+        "last_contact": "2026-03-09",
+        "contact_method": "Call",
         "notes": "",
-        "next_followup": "",
-        "heatmap": ""
+        "next_followup": "2026-03-16",
+        "heatmap": "Green"
       },
       {
         "id": "row_5a23ab60a64a",
-        "name": "Helen Sca",
+        "name": "Helen Scandalis",
         "company": "Celestica",
         "title": "Vp. Sales Enterprise",
         "tech": "NW/Infra",
         "linkedin": "",
-        "last_contact": "2026-01-22",
-        "contact_method": "Call",
+        "last_contact": "2026-03-06",
+        "contact_method": "Email",
         "notes": "Helen has put me in a pipeline. Dir/Sr.Dr. opp",
-        "next_followup": "",
-        "heatmap": ""
+        "next_followup": "2026-03-11",
+        "heatmap": "Yellow"
       },
       {
         "id": "row_4f6cd11ae654",
@@ -338,12 +399,12 @@
         "last_contact": "2026-01-31",
         "contact_method": "Call",
         "notes": "Asked to send opps so he can submit internally",
-        "next_followup": "",
-        "heatmap": ""
+        "next_followup": "2026-03-11",
+        "heatmap": "Yellow"
       },
       {
         "id": "row_66f0d82b077b",
-        "name": "Cheri Willi",
+        "name": "Cheri Williams",
         "company": "HPE",
         "title": "SVP Private Cloud",
         "tech": "HCI",
@@ -383,20 +444,20 @@
       {
         "id": "row_3d0c4fe8aabb",
         "name": "Zaheer Aziz",
-        "company": "",
-        "title": "",
+        "company": "Cisco",
+        "title": "AI Architect",
         "tech": "",
         "linkedin": "",
-        "last_contact": "",
-        "contact_method": "",
+        "last_contact": "2026-03-06",
+        "contact_method": "Text",
         "notes": "",
-        "next_followup": "",
-        "heatmap": ""
+        "next_followup": "2026-03-10",
+        "heatmap": "Green"
       },
       {
         "id": "row_4ab42beb969a",
-        "name": "Hassan Sh",
-        "company": "Google",
+        "name": "Amit Katz",
+        "company": "NVDA",
         "title": "",
         "tech": "",
         "linkedin": "",
@@ -408,29 +469,42 @@
       },
       {
         "id": "row_1773122945150",
-        "name": "Amit Katz",
-        "company": "NXDIA",
+        "name": "Asim Ali",
+        "company": "Service Now",
         "title": "",
-        "tech": "",
+        "tech": "SaaS",
         "linkedin": "",
-        "last_contact": "",
-        "contact_method": "",
-        "next_followup": "",
-        "heatmap": "",
+        "last_contact": "2026-03-03",
+        "contact_method": "Text",
+        "next_followup": "2026-03-11",
+        "heatmap": "Green",
         "notes": ""
       },
       {
+        "id": "row_501d29f7df8a",
+        "name": "Ihab Tarazi",
+        "company": "Dell",
+        "title": "Product/CTO",
+        "tech": "Infra",
+        "linkedin": "",
+        "last_contact": "2026-03-06",
+        "contact_method": "Text",
+        "notes": "",
+        "next_followup": "",
+        "heatmap": "Red"
+      },
+      {
         "id": "row_1773122968009",
-        "name": "",
-        "company": "",
-        "title": "",
+        "name": "Liana",
+        "company": "Equinix",
+        "title": "Exec Recruiter",
         "tech": "",
         "linkedin": "",
-        "last_contact": "",
-        "contact_method": "",
-        "next_followup": "",
-        "heatmap": "",
-        "notes": ""
+        "last_contact": "2026-03-05",
+        "contact_method": "Email",
+        "next_followup": "2026-03-11",
+        "heatmap": "Green",
+        "notes": "Follow up with specific job posting. Mention Strategic pRusits and GTM."
       }
     ]
   },
