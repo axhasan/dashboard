@@ -158,7 +158,7 @@
         "linkedin": "",
         "last_contact": "2026-03-05",
         "contact_method": "Text",
-        "notes": "",
+        "notes": "Multiple contact attempts. No response.",
         "next_followup": ""
       },
       {
@@ -404,6 +404,18 @@
       {
         "id": "row_1773103147357",
         "name": "Joe Onesick",
+        "company": "",
+        "title": "",
+        "tech": "",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "next_followup": "",
+        "notes": ""
+      },
+      {
+        "id": "row_1773103299374",
+        "name": "",
         "company": "",
         "title": "",
         "tech": "",
