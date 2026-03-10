@@ -757,6 +757,47 @@ const state = {
 // ════════════════════════════════════════
 //  GOOGLE AUTH
 // ════════════════════════════════════════
+const TOKEN_CACHE_KEY = 'gToken';
+const TOKEN_EXPIRY_KEY = 'gTokenExpiry';
+const USER_CACHE_KEY  = 'gUserInfo';
+// Tokens last 1 hour; we refresh them silently, but we persist user info for 30 days
+const USER_CACHE_TTL  = 30 * 24 * 60 * 60 * 1000;
+
+function saveTokenCache(token, expiresInSec, userInfo) {
+  try {
+    localStorage.setItem(TOKEN_CACHE_KEY, token);
+    localStorage.setItem(TOKEN_EXPIRY_KEY, String(Date.now() + (expiresInSec - 60) * 1000));
+    if (userInfo) localStorage.setItem(USER_CACHE_KEY, JSON.stringify({ ...userInfo, cachedAt: Date.now() }));
+  } catch(e) {}
+}
+
+function loadTokenCache() {
+  try {
+    const token  = localStorage.getItem(TOKEN_CACHE_KEY);
+    const expiry = parseInt(localStorage.getItem(TOKEN_EXPIRY_KEY) || '0', 10);
+    if (token && Date.now() < expiry) return token;
+  } catch(e) {}
+  return null;
+}
+
+function loadUserCache() {
+  try {
+    const raw = localStorage.getItem(USER_CACHE_KEY);
+    if (!raw) return null;
+    const info = JSON.parse(raw);
+    if (Date.now() - info.cachedAt < USER_CACHE_TTL) return info;
+  } catch(e) {}
+  return null;
+}
+
+function clearTokenCache() {
+  try {
+    localStorage.removeItem(TOKEN_CACHE_KEY);
+    localStorage.removeItem(TOKEN_EXPIRY_KEY);
+    localStorage.removeItem(USER_CACHE_KEY);
+  } catch(e) {}
+}
+
 function initGoogleAuth() {
   if (!cfg('GOOGLE_CLIENT_ID')) return;
   state.tokenClient = google.accounts.oauth2.initTokenClient({
@@ -766,6 +807,46 @@ function initGoogleAuth() {
   });
 }
 
+// Called on page load — try cached token first, then silent re-auth, then show login
+async function tryAutoLogin() {
+  if (!cfg('GOOGLE_CLIENT_ID')) return;
+  const cachedToken = loadTokenCache();
+  const cachedUser  = loadUserCache();
+  if (cachedToken && cachedUser) {
+    // Token still valid — boot directly
+    state.accessToken = cachedToken;
+    state.userEmail   = cachedUser.email;
+    state.userName    = cachedUser.given_name || cachedUser.name || 'Allay';
+    bootDashboard();
+    // Schedule a silent refresh ~5 min before expiry
+    scheduleTokenRefresh();
+    return;
+  }
+  if (cachedUser) {
+    // User info cached but token expired — try silent token fetch (no account picker)
+    if (!state.tokenClient) initGoogleAuth();
+    state._silentLogin = true;
+    state.tokenClient.requestAccessToken({ prompt: '' });
+    return;
+  }
+  // No cache at all — show login screen
+}
+
+function scheduleTokenRefresh() {
+  try {
+    const expiry = parseInt(localStorage.getItem(TOKEN_EXPIRY_KEY) || '0', 10);
+    const delay  = expiry - Date.now() - 5 * 60 * 1000; // 5 min before expiry
+    if (delay > 0) {
+      setTimeout(() => {
+        if (state.tokenClient) {
+          state._silentLogin = true;
+          state.tokenClient.requestAccessToken({ prompt: '' });
+        }
+      }, delay);
+    }
+  } catch(e) {}
+}
+
 function handleLogin() {
   if (!cfg('GOOGLE_CLIENT_ID')) { showSetup(); return; }
   if (!state.tokenClient) initGoogleAuth();
@@ -773,9 +854,29 @@ function handleLogin() {
 }
 
 async function handleAuthResponse(resp) {
-  if (resp.error) { console.error('Auth error', resp); return; }
+  if (resp.error) {
+    if (state._silentLogin) {
+      // Silent re-auth failed — show login screen so user can click sign in
+      state._silentLogin = false;
+      document.getElementById('login-screen').style.display = 'flex';
+    }
+    console.error('Auth error', resp);
+    return;
+  }
+  state._silentLogin = false;
   state.accessToken = resp.access_token;
-  // Verify user identity
+  const expiresIn = resp.expires_in || 3600;
+  // Verify user identity (use cache if available to avoid extra fetch)
+  const cachedUser = loadUserCache();
+  if (cachedUser && cachedUser.email?.toLowerCase() === ALLOWED_EMAIL.toLowerCase()) {
+    state.userEmail = cachedUser.email;
+    state.userName  = cachedUser.given_name || cachedUser.name || 'Allay';
+    saveTokenCache(resp.access_token, expiresIn, null); // update token only
+    if (document.getElementById('app').hidden) bootDashboard();
+    // else: token silently refreshed while app is already open — no action needed
+    scheduleTokenRefresh();
+    return;
+  }
   try {
     const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
       headers: { Authorization: `Bearer ${state.accessToken}` }
@@ -787,14 +888,17 @@ async function handleAuthResponse(resp) {
       return;
     }
     state.userEmail = info.email;
-    state.userName = info.given_name || info.name || 'Allay';
+    state.userName  = info.given_name || info.name || 'Allay';
+    saveTokenCache(resp.access_token, expiresIn, info);
     bootDashboard();
+    scheduleTokenRefresh();
   } catch(e) { console.error('User info error', e); }
 }
 
 function logout() {
   if (state.tokenClient) google.accounts.oauth2.revoke(state.accessToken, ()=>{});
   state.accessToken = null;
+  clearTokenCache();
   document.getElementById('app').hidden = true;
   document.getElementById('login-screen').style.display = 'flex';
 }
@@ -856,8 +960,29 @@ async function gmailFetch(path, params={}) {
   return r.json();
 }
 
+function emailListShowLoading() {
+  // Remove all children except the toolbar
+  const el = document.getElementById('email-list');
+  [...el.children].forEach(c => { if (c.id !== 'email-list-toolbar') c.remove(); });
+  const d = document.createElement('div');
+  d.id = 'email-list-loading';
+  d.className = 'empty-state';
+  d.style.cssText = 'padding:40px 10px';
+  d.innerHTML = '<div class="loading-dots" style="font-size:13px;color:var(--text-muted)">Loading</div>';
+  el.appendChild(d);
+}
+
+function emailListShowError(msg) {
+  const el = document.getElementById('email-list');
+  [...el.children].forEach(c => { if (c.id !== 'email-list-toolbar') c.remove(); });
+  const d = document.createElement('div');
+  d.className = 'empty-state';
+  d.innerHTML = `<p>Could not load inbox.<br><small>${msg}</small></p>`;
+  el.appendChild(d);
+}
+
 async function loadInbox() {
-  document.getElementById('email-list').innerHTML = '<div class="empty-state" style="padding:40px 10px"><div class="loading-dots" style="font-size:13px;color:var(--text-muted)">Loading</div></div>';
+  emailListShowLoading();
   try {
     const data = await gmailFetch('users/me/messages', { labelIds: 'INBOX', maxResults: 25 });
     const messages = data.messages || [];
@@ -873,7 +998,7 @@ async function loadInbox() {
     if (unread > 0) { badge.textContent = unread; badge.hidden = false; }
     else badge.hidden = true;
   } catch(e) {
-    document.getElementById('email-list').innerHTML = `<div class="empty-state"><p>Could not load inbox.<br><small>${e.message}</small></p></div>`;
+    emailListShowError(e.message);
   }
 }
 
@@ -2513,11 +2638,12 @@ window.addEventListener('load', () => {
   if (!isConfigured()) {
     showSetup();
   } else {
-    // Wait for GIS to load
+    // Wait for GIS to load, then attempt auto-login from cache
     const waitForGIS = setInterval(() => {
       if (window.google?.accounts?.oauth2) {
         clearInterval(waitForGIS);
         initGoogleAuth();
+        tryAutoLogin();
       }
     }, 100);
   }
