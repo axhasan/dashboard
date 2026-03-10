@@ -45,7 +45,10 @@
         "url": "",
         "notes": ""
       }
-    ]
+    ],
+    "colWidths": {
+      "role": 228
+    }
   },
   "contacts": {
     "columns": [
