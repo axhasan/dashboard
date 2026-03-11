@@ -152,6 +152,104 @@
           "done": false
         }
       ]
+    },
+    {
+      "id": "week_1773214116291",
+      "label": "Week of Mar 16, 2026",
+      "startDate": "2026-03-16",
+      "days": [
+        {
+          "id": "day_1773214116291_xua",
+          "date": "2026-03-16",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_jeb",
+              "text": "",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "day_1773214116291_osg",
+          "date": "2026-03-17",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_usj",
+              "text": "",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "day_1773214116291_unz",
+          "date": "2026-03-18",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_7v1",
+              "text": "",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "day_1773214116291_foy",
+          "date": "2026-03-19",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_b1a",
+              "text": "",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "day_1773214116291_7k1",
+          "date": "2026-03-20",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_bf4",
+              "text": "",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "day_1773214116291_hjl",
+          "date": "2026-03-21",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_zk3",
+              "text": "",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "day_1773214116291_cp0",
+          "date": "2026-03-22",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_ifn",
+              "text": "",
+              "done": false
+            }
+          ]
+        }
+      ],
+      "weeklyGoals": [
+        {
+          "id": "e_1773214116291_4oy",
+          "text": "",
+          "done": false
+        }
+      ],
+      "weeklyOutcomes": [
+        {
+          "id": "e_1773214116291_wk3",
+          "text": "",
+          "done": false
+        }
+      ]
     }
   ]
 }
