@@ -548,6 +548,19 @@
         "contact_method": "LinkedIn",
         "next_followup": "2026-03-17",
         "notes": "Call setup"
+      },
+      {
+        "id": "row_1773221312704",
+        "name": "",
+        "company": "",
+        "title": "",
+        "tech": "",
+        "heatmap": "",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "next_followup": "",
+        "notes": ""
       }
     ],
     "colWidths": {
