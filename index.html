@@ -194,6 +194,12 @@
     .tracker-table tr:last-child td { border-bottom: none; }
     .del-row-btn { visibility: hidden; border: none; background: transparent; color: var(--danger); cursor: pointer; font-size: 16px; padding: 0; }
     .tracker-table tr:hover .del-row-btn { visibility: visible; }
+    /* Closed application rows — strikethrough + muted */
+    .tracker-table tr.row-closed td { text-decoration: line-through; color: #94a3b8; background: #f8fafc; }
+    .tracker-table tr.row-closed td input,
+    .tracker-table tr.row-closed td select,
+    .tracker-table tr.row-closed td a { opacity: 0.5; text-decoration: line-through; }
+    .tracker-table tr.row-closed:hover td { background: #f1f5f9; }
     .url-cell a { color: var(--primary); text-decoration: none; font-size: 12px; }
     .url-cell a:hover { text-decoration: underline; }
     .add-row-btn { margin-top: 10px; }
@@ -1724,8 +1730,48 @@ function renderTracker(type) {
   const tracker = state.trackerData[type];
   const tableEl = document.getElementById(`${type === 'applications' ? 'apps' : 'contacts'}-table`);
   const cols = tracker.columns;
-  const rows = tracker.rows;
   const colWidths = tracker.colWidths || {};
+
+  // For Applications: sort closed rows to bottom, keep other rows in their original order
+  let rows = tracker.rows;
+  if (type === 'applications') {
+    const statusColId = (cols.find(c => c.id === 'status') || {}).id || 'status';
+    const open   = rows.filter(r => (r[statusColId] || '').toLowerCase() !== 'closed');
+    const closed = rows.filter(r => (r[statusColId] || '').toLowerCase() === 'closed');
+    rows = [...open, ...closed];
+  }
+
+  const renderRow = (row) => {
+    const statusColId = (cols.find(c => c.id === 'status') || {}).id || 'status';
+    const isClosed = type === 'applications' && (row[statusColId] || '').toLowerCase() === 'closed';
+    return `
+      <tr draggable="true" data-row-id="${row.id}"${isClosed ? ' class="row-closed"' : ''}>
+        <td class="row-drag-td" title="Drag to reorder">⠿</td>
+        ${cols.map(c => {
+          const val = row[c.id] || '';
+          if (c.id === 'url' || c.id === 'linkedin') {
+            return `<td class="url-cell" contenteditable="true" onblur="updateCell('${type}','${row.id}','${c.id}',this.innerText)" data-col="${c.id}">${val ? `<a href="${escHtml(val)}" target="_blank">${escHtml(val)}</a>` : ''}</td>`;
+          }
+          if (c.type === 'dropdown' && c.options) {
+            const opts = c.options.map(o => `<option value="${escHtml(o)}" ${val===o?'selected':''}>${escHtml(o)||'—'}</option>`).join('');
+            return `<td><select class="tracker-dropdown" onchange="updateCell('${type}','${row.id}','${c.id}',this.value)">${opts}</select></td>`;
+          }
+          if (c.type === 'date') {
+            const iso = toDateInput(val);
+            return `<td><input type="date" class="tracker-date" value="${escHtml(iso)}" onchange="updateCell('${type}','${row.id}','${c.id}',this.value)"></td>`;
+          }
+          if (c.type === 'heatmap') {
+            const hs = HEATMAP_STYLES[val] || {};
+            const opts = ['','Green','Yellow','Red'].map(o =>
+              `<option value="${o}" ${val===o?'selected':''}>${o||'—'}</option>`).join('');
+            return `<td class="${hs.td||''}"><select class="tracker-heatmap ${hs.sel||''}" onchange="applyHeatmap('${type}','${row.id}','${c.id}',this)">${opts}</select></td>`;
+          }
+          return `<td contenteditable="true" onblur="updateCell('${type}','${row.id}','${c.id}',this.innerText)" data-col="${c.id}">${escHtml(val)}</td>`;
+        }).join('')}
+        <td></td>
+        <td><button class="del-row-btn" onclick="deleteRow('${type}','${row.id}')" title="Delete row">✕</button></td>
+      </tr>`;
+  };
 
   tableEl.innerHTML = `
     <thead>
@@ -1740,33 +1786,7 @@ function renderTracker(type) {
       </tr>
     </thead>
     <tbody>
-      ${rows.map(row => `
-        <tr draggable="true" data-row-id="${row.id}">
-          <td class="row-drag-td" title="Drag to reorder">⠿</td>
-          ${cols.map(c => {
-            const val = row[c.id] || '';
-            if (c.id === 'url' || c.id === 'linkedin') {
-              return `<td class="url-cell" contenteditable="true" onblur="updateCell('${type}','${row.id}','${c.id}',this.innerText)" data-col="${c.id}">${val ? `<a href="${escHtml(val)}" target="_blank">${escHtml(val)}</a>` : ''}</td>`;
-            }
-            if (c.type === 'dropdown' && c.options) {
-              const opts = c.options.map(o => `<option value="${escHtml(o)}" ${val===o?'selected':''}>${escHtml(o)||'—'}</option>`).join('');
-              return `<td><select class="tracker-dropdown" onchange="updateCell('${type}','${row.id}','${c.id}',this.value)">${opts}</select></td>`;
-            }
-            if (c.type === 'date') {
-              const iso = toDateInput(val);
-              return `<td><input type="date" class="tracker-date" value="${escHtml(iso)}" onchange="updateCell('${type}','${row.id}','${c.id}',this.value)"></td>`;
-            }
-            if (c.type === 'heatmap') {
-              const hs = HEATMAP_STYLES[val] || {};
-              const opts = ['','Green','Yellow','Red'].map(o =>
-                `<option value="${o}" ${val===o?'selected':''}>${o||'—'}</option>`).join('');
-              return `<td class="${hs.td||''}"><select class="tracker-heatmap ${hs.sel||''}" onchange="applyHeatmap('${type}','${row.id}','${c.id}',this)">${opts}</select></td>`;
-            }
-            return `<td contenteditable="true" onblur="updateCell('${type}','${row.id}','${c.id}',this.innerText)" data-col="${c.id}">${escHtml(val)}</td>`;
-          }).join('')}
-          <td></td>
-          <td><button class="del-row-btn" onclick="deleteRow('${type}','${row.id}')" title="Delete row">✕</button></td>
-        </tr>`).join('')}
+      ${rows.map(renderRow).join('')}
     </tbody>`;
 
   initColResize(tableEl, type);
@@ -2002,6 +2022,10 @@ function updateCell(type, rowId, colId, value) {
   if (row) {
     row[colId] = value.trim();
     saveTrackerDataDebounced();
+    // Re-render applications tracker when status changes so closed rows sort to bottom immediately
+    if (type === 'applications' && colId === 'status') {
+      renderTracker(type);
+    }
   }
 }
 
