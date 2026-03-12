@@ -120,11 +120,21 @@
         "url": "",
         "notes": "So far nothing.",
         "col_next_steps_1773126858633": ""
+      },
+      {
+        "id": "row_1773189969656",
+        "company": "Equinix",
+        "role": "Head of Product Strategy, Infrastructure and Connectivity (Sr. Director)",
+        "date": "03/10",
+        "status": "Sent email to Liana",
+        "notes": "Sent email to Liana",
+        "col_next_steps_1773126858633": "Follow up 03/16",
+        "url": "https://careers.equinix.com/jobs/head-of-product-strategy-infrastructure-and-connectivity-sr-director-toronto-ontario-canada-carrollton-texas-united-states-redwood-city-california"
       }
     ],
     "colWidths": {
       "role": 228,
-      "company": 99,
+      "company": 139,
       "status": 112,
       "date": 108,
       "notes": 353,
@@ -358,19 +368,6 @@
         "heatmap": ""
       },
       {
-        "id": "row_792c169679ff",
-        "name": "Gavin Catc",
-        "company": "Celestica",
-        "title": "Engineering",
-        "tech": "NW/Infra",
-        "linkedin": "",
-        "last_contact": "",
-        "contact_method": "",
-        "notes": "",
-        "next_followup": "",
-        "heatmap": "Red"
-      },
-      {
         "id": "row_4017af9648fe",
         "name": "Amit Thakk",
         "company": "Celestica",
@@ -449,6 +446,19 @@
         "heatmap": ""
       },
       {
+        "id": "row_1773282612685",
+        "name": "Phil Manez",
+        "company": "Vast Data",
+        "title": "VP GTM",
+        "tech": "AI Storage",
+        "heatmap": "Green",
+        "linkedin": "",
+        "last_contact": "2026-03-11",
+        "contact_method": "Email",
+        "next_followup": "2026-03-16",
+        "notes": "Sent email asking about availability at GTC and direct connect with Lior."
+      },
+      {
         "id": "row_7932152e7423",
         "name": "Adeel Ahmed",
         "company": "",
@@ -478,14 +488,14 @@
         "id": "row_4ab42beb969a",
         "name": "Amit Katz",
         "company": "NVDA",
-        "title": "",
-        "tech": "",
+        "title": "VP Networking",
+        "tech": "NW Infra",
         "linkedin": "",
-        "last_contact": "",
-        "contact_method": "",
+        "last_contact": "2026-03-11",
+        "contact_method": "Email",
         "notes": "",
-        "next_followup": "",
-        "heatmap": ""
+        "next_followup": "2026-03-16",
+        "heatmap": "Green"
       },
       {
         "id": "row_1773122945150",
@@ -498,7 +508,59 @@
         "contact_method": "Text",
         "next_followup": "2026-03-11",
         "heatmap": "Green",
+        "notes": "Sent email asking about availability at GTC"
+      },
+      {
+        "id": "row_1773122968009",
+        "name": "Liana Grossman",
+        "company": "Equinix",
+        "title": "Exec Recruiter",
+        "tech": "",
+        "linkedin": "",
+        "last_contact": "2026-03-05",
+        "contact_method": "Email",
+        "next_followup": "2026-03-10",
+        "heatmap": "Green",
+        "notes": "Follow up with specific job posting. Mention Strategic pRusits and GTM.- Done (03/10)"
+      },
+      {
+        "id": "row_1773182941507",
+        "name": "Gabriel Davidov",
+        "company": "Axiros",
+        "title": "CEO",
+        "tech": "NW SW",
+        "heatmap": "Green",
+        "linkedin": "",
+        "last_contact": "2026-03-10",
+        "contact_method": "LinkedIn",
+        "next_followup": "2026-03-18",
+        "notes": "Call setup. Invite on calender."
+      },
+      {
+        "id": "row_1773221312704",
+        "name": "Ed Doe",
+        "company": "",
+        "title": "",
+        "tech": "",
+        "heatmap": "",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "next_followup": "",
         "notes": ""
+      },
+      {
+        "id": "row_792c169679ff",
+        "name": "Gavin Catc",
+        "company": "Celestica",
+        "title": "Engineering",
+        "tech": "NW/Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": "",
+        "next_followup": "",
+        "heatmap": "Red"
       },
       {
         "id": "row_501d29f7df8a",
@@ -514,24 +576,24 @@
         "heatmap": "Red"
       },
       {
-        "id": "row_1773122968009",
-        "name": "Liana",
-        "company": "Equinix",
-        "title": "Exec Recruiter",
+        "id": "row_1773283368772",
+        "name": "Ali Saeed",
+        "company": "Intel",
+        "title": "Retired",
         "tech": "",
-        "linkedin": "",
-        "last_contact": "2026-03-05",
-        "contact_method": "Email",
-        "next_followup": "2026-03-11",
         "heatmap": "Green",
-        "notes": "Follow up with specific job posting. Mention Strategic pRusits and GTM."
+        "linkedin": "",
+        "last_contact": "2026-03-11",
+        "contact_method": "Call",
+        "next_followup": "2026-03-12",
+        "notes": "Send the Intel job posting and the resume"
       }
     ],
     "colWidths": {
-      "title": 246,
-      "company": 158,
-      "tech": 235,
-      "last_contact": 310
+      "title": 229,
+      "company": 157,
+      "tech": 233,
+      "last_contact": 261
     }
   },
   "applied": []

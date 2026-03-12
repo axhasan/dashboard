@@ -28,27 +28,27 @@
             {
               "id": "e_1773122257412_6zo",
               "text": "Send Email to Amit Katz",
-              "done": false
+              "done": true
             },
             {
               "id": "e_1773122903934_hiq",
               "text": "Send Email to Phil Manez",
-              "done": false
+              "done": true
             },
             {
               "id": "e_1773132684980_d69",
               "text": "Reach out to Ali Saeed",
-              "done": false
+              "done": true
             },
             {
               "id": "e_1773132706352_ze5",
               "text": "Apply to \"warm\" opps in Opps dashboard (5)",
-              "done": false
+              "done": true
             },
             {
               "id": "e_1773133189921_ah6",
               "text": "Reach out to Sundip for OpenAI",
-              "done": false
+              "done": true
             },
             {
               "id": "e_1773133200362_1ub",
@@ -64,11 +64,31 @@
             {
               "id": "e_1773122257412_4dm",
               "text": "Find EQNX jobs for Liana",
-              "done": false
+              "done": true
             },
             {
               "id": "e_1773135585486_19k",
               "text": "Apply to all the cold opps in the opps dashboard.",
+              "done": false
+            },
+            {
+              "id": "e_1773214037997_62z",
+              "text": "Text Elena",
+              "done": false
+            },
+            {
+              "id": "e_1773283558750_eg3",
+              "text": "Apply to \"warm\" opps in Opps dashboard (5) (from 03/10)",
+              "done": false
+            },
+            {
+              "id": "e_1773283580293_ssj",
+              "text": "Reach out to Sundip for OpenAI  (from 03/10)",
+              "done": false
+            },
+            {
+              "id": "e_1773283972870_jqm",
+              "text": "Send Ali Saeed Resume and Intel posting. Modify resume.",
               "done": false
             }
           ]
@@ -90,7 +110,7 @@
           "dailyEntries": [
             {
               "id": "e_1773122257412_szg",
-              "text": "",
+              "text": "Make sure the meeting with Gabriel/Axiros is on the calendar.",
               "done": false
             }
           ]
@@ -128,11 +148,119 @@
           "id": "e_1773135504959_m7z",
           "text": "Apply to all the opps in \"Apply\" in the opportunities dashboard- At least 10 applications.",
           "done": false
+        },
+        {
+          "id": "e_1773181406386_nwg",
+          "text": "Make sure research for Axiros",
+          "done": false
+        },
+        {
+          "id": "e_1773214100651_iqz",
+          "text": "Blood test",
+          "done": false
         }
       ],
       "weeklyOutcomes": [
         {
           "id": "e_1773134160057_u9z",
+          "text": "",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "week_1773214116291",
+      "label": "Week of Mar 16, 2026",
+      "startDate": "2026-03-16",
+      "days": [
+        {
+          "id": "day_1773214116291_xua",
+          "date": "2026-03-16",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_jeb",
+              "text": "",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "day_1773214116291_osg",
+          "date": "2026-03-17",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_usj",
+              "text": "",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "day_1773214116291_unz",
+          "date": "2026-03-18",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_7v1",
+              "text": "",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "day_1773214116291_foy",
+          "date": "2026-03-19",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_b1a",
+              "text": "",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "day_1773214116291_7k1",
+          "date": "2026-03-20",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_bf4",
+              "text": "",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "day_1773214116291_hjl",
+          "date": "2026-03-21",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_zk3",
+              "text": "",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": "day_1773214116291_cp0",
+          "date": "2026-03-22",
+          "dailyEntries": [
+            {
+              "id": "e_1773214116291_ifn",
+              "text": "",
+              "done": false
+            }
+          ]
+        }
+      ],
+      "weeklyGoals": [
+        {
+          "id": "e_1773214116291_4oy",
+          "text": "",
+          "done": false
+        }
+      ],
+      "weeklyOutcomes": [
+        {
+          "id": "e_1773214116291_wk3",
           "text": "",
           "done": false
         }

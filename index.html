@@ -761,14 +761,24 @@
 'use strict';
 
 // ════════════════════════════════════════
-//  CONFIG  (stored in localStorage)
+//  CONFIG  (stored in localStorage, with hardcoded defaults so no setup needed on new devices)
 // ════════════════════════════════════════
 const CFG_KEYS = ['GOOGLE_CLIENT_ID','CLAUDE_KEY','ALPHA_KEY','WEATHER_KEY','GITHUB_PAT'];
 const ALLOWED_EMAIL = 'ahasan@gmail.com';
 const GITHUB_OWNER = 'axhasan';
 const GITHUB_REPO = 'dashboard';
 
-function cfg(key) { return localStorage.getItem('dash_' + key) || ''; }
+// Defaults injected at deploy time by GitHub Actions (see .github/workflows/deploy.yml)
+// Placeholders are replaced with actual values from repository secrets — never stored in source
+const CFG_DEFAULTS = {
+  GOOGLE_CLIENT_ID: '%%DASH_GOOGLE_CLIENT_ID%%',
+  CLAUDE_KEY:       '%%DASH_CLAUDE_KEY%%',
+  ALPHA_KEY:        '%%DASH_ALPHA_KEY%%',
+  WEATHER_KEY:      '%%DASH_WEATHER_KEY%%',
+  GITHUB_PAT:       '%%DASH_GITHUB_PAT%%',
+};
+
+function cfg(key) { return localStorage.getItem('dash_' + key) || CFG_DEFAULTS[key] || ''; }
 function cfgSet(key, val) { localStorage.setItem('dash_' + key, val); }
 function isConfigured() { return CFG_KEYS.every(k => cfg(k)); }
 
@@ -908,7 +918,6 @@ function scheduleTokenRefresh() {
 }
 
 function handleLogin() {
-  if (!cfg('GOOGLE_CLIENT_ID')) { showSetup(); return; }
   if (!state.tokenClient) initGoogleAuth();
   state.tokenClient.requestAccessToken({ prompt: 'select_account' });
 }
