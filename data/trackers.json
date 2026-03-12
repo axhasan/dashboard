@@ -446,6 +446,19 @@
         "heatmap": ""
       },
       {
+        "id": "row_1773282612685",
+        "name": "Phil Manez",
+        "company": "Vast Data",
+        "title": "VP GTM",
+        "tech": "AI Storage",
+        "heatmap": "Green",
+        "linkedin": "",
+        "last_contact": "2026-03-11",
+        "contact_method": "Email",
+        "next_followup": "2026-03-16",
+        "notes": "Sent email asking about availability at GTC and direct connect with Lior."
+      },
+      {
         "id": "row_7932152e7423",
         "name": "Adeel Ahmed",
         "company": "",
@@ -548,19 +561,6 @@
         "notes": "",
         "next_followup": "",
         "heatmap": "Red"
-      },
-      {
-        "id": "row_1773282612685",
-        "name": "Phil Manez",
-        "company": "Vast Data",
-        "title": "VP GTM",
-        "tech": "AI Storage",
-        "heatmap": "Green",
-        "linkedin": "",
-        "last_contact": "2026-03-11",
-        "contact_method": "Email",
-        "next_followup": "2026-03-16",
-        "notes": "Sent email asking about availability at GTC and direct connect with Lior."
       },
       {
         "id": "row_501d29f7df8a",
