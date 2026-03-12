@@ -498,19 +498,6 @@
         "notes": "Sent email asking about availability at GTC"
       },
       {
-        "id": "row_501d29f7df8a",
-        "name": "Ihab Tarazi",
-        "company": "Dell",
-        "title": "Product/CTO",
-        "tech": "Infra",
-        "linkedin": "",
-        "last_contact": "2026-03-06",
-        "contact_method": "Text",
-        "notes": "",
-        "next_followup": "",
-        "heatmap": "Red"
-      },
-      {
         "id": "row_1773122968009",
         "name": "Liana",
         "company": "Equinix",
@@ -574,6 +561,19 @@
         "contact_method": "Email",
         "next_followup": "2026-03-16",
         "notes": "Sent email asking about availability at GTC and direct connect with Lior."
+      },
+      {
+        "id": "row_501d29f7df8a",
+        "name": "Ihab Tarazi",
+        "company": "Dell",
+        "title": "Product/CTO",
+        "tech": "Infra",
+        "linkedin": "",
+        "last_contact": "2026-03-06",
+        "contact_method": "Text",
+        "notes": "",
+        "next_followup": "",
+        "heatmap": "Red"
       }
     ],
     "colWidths": {
