@@ -368,19 +368,6 @@
         "heatmap": ""
       },
       {
-        "id": "row_792c169679ff",
-        "name": "Gavin Catc",
-        "company": "Celestica",
-        "title": "Engineering",
-        "tech": "NW/Infra",
-        "linkedin": "",
-        "last_contact": "",
-        "contact_method": "",
-        "notes": "",
-        "next_followup": "",
-        "heatmap": "Red"
-      },
-      {
         "id": "row_4017af9648fe",
         "name": "Amit Thakk",
         "company": "Celestica",
@@ -561,6 +548,19 @@
         "contact_method": "",
         "next_followup": "",
         "notes": ""
+      },
+      {
+        "id": "row_792c169679ff",
+        "name": "Gavin Catc",
+        "company": "Celestica",
+        "title": "Engineering",
+        "tech": "NW/Infra",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "notes": "",
+        "next_followup": "",
+        "heatmap": "Red"
       },
       {
         "id": "row_1773282612685",
