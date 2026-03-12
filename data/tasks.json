@@ -43,12 +43,12 @@
             {
               "id": "e_1773132706352_ze5",
               "text": "Apply to \"warm\" opps in Opps dashboard (5)",
-              "done": false
+              "done": true
             },
             {
               "id": "e_1773133189921_ah6",
               "text": "Reach out to Sundip for OpenAI",
-              "done": false
+              "done": true
             },
             {
               "id": "e_1773133200362_1ub",
@@ -83,7 +83,7 @@
             },
             {
               "id": "e_1773283580293_ssj",
-              "text": "Reach out to Sundip for OpenAI",
+              "text": "Reach out to Sundip for OpenAI  (from 03/10)",
               "done": false
             }
           ]
