@@ -547,11 +547,24 @@
         "last_contact": "2026-03-10",
         "contact_method": "LinkedIn",
         "next_followup": "2026-03-18",
-        "notes": "Call setup"
+        "notes": "Call setup. Invite on calender."
       },
       {
         "id": "row_1773221312704",
         "name": "Ed Doe",
+        "company": "",
+        "title": "",
+        "tech": "",
+        "heatmap": "",
+        "linkedin": "",
+        "last_contact": "",
+        "contact_method": "",
+        "next_followup": "",
+        "notes": ""
+      },
+      {
+        "id": "row_1773282612685",
+        "name": "",
         "company": "",
         "title": "",
         "tech": "",
